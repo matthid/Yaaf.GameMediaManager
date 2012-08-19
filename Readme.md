@@ -2,10 +2,10 @@
 
 
 WirePlugin makes uploading Matchmedia in ESL-Matches very simple. 
-Whenever you record anything in any supported game or make a screenshot WirePlugin will rename and move this files however you like.
-The idea is basically play the game and after playing already have the "Matchmedia upload Window" perfectly filled with all your data.
+Whenever you record anything in any supported game or make a screenshot WirePlugin will rename and move these files however you like.
+The idea is basically to play a game and after playing already have the "Matchmedia upload Window" perfectly filled with all your data.
 
-WirePlugin goes even one step further and allows the same file management for any gaming you do on any public server.
+WirePlugin goes even one step further and allows the same file management for any gaming you do besides ESL-Matches.
 
 ## Dependencies
 
