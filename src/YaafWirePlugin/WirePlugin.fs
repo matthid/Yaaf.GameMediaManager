@@ -46,6 +46,7 @@ type ReplayWirePlugin() =
         cm
     let mutable matchData = None
     let mutable watcher = None
+    let mutable startTime = System.DateTime.Now
     do  logger.logVerb "Starting up Yaaf wire plugin"
     static do 
         Application.EnableVisualStyles()
@@ -55,6 +56,13 @@ type ReplayWirePlugin() =
             Settings.Default.upgradeSettings <- false
             Settings.Default.Save()
         
+        if System.String.IsNullOrEmpty Settings.Default.MatchMediaPath then
+            Settings.Default.MatchMediaPath <-
+                Path.Combine(
+                    System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
+                    "ESL Match Media")
+            Settings.Default.Save()
+
     override x.Author with get() = "Matthias Dittrich"
     override x.Title with get() = "Yaaf WirePlugin"
     override x.Version with get() = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
@@ -80,41 +88,36 @@ type ReplayWirePlugin() =
         // Match started (before Game started and only with wire)
         gameInterface.add_MatchStarted
             (fun matchId matchMediaPath -> 
+                Settings.Default.MatchMediaPath <- matchMediaPath
+                Settings.Default.Save()
                 let logger = logger.childTracer ("MatchStart" + string matchId)
                 matchData <- Some(matchId, matchMediaPath)
                 ())
         // Game started (with or without wire)
         gameInterface.add_GameStarted
             (fun gameId gamePath -> 
-                let logger = logger.childTracer ("GameStart_" + string gameId)
+                let logger = logger.childTracer ("GameStart" + string gameId)
+                startTime <- System.DateTime.Now
                 let parentDir = Path.GetDirectoryName(gamePath)
                 let modDir, source =
                     match gameId with
-                    | 43 -> // HL2
-                        "hl2", Some true
-                    | 60 -> // CSS
-                        "cstrike" , Some true
-                    | 112 -> // DOD:Source
-                        "dod", Some true
-                    | 126 -> // TF2
-                        "tf", Some true
-                    | 182 -> // HL2:DM
-                        "hl2", Some true
-                    | 5484 -> // CS Promod
-                        "cstrike", Some true
-                    | 59 -> // CS:CZ
-                        "czero", Some false
-                    | 61 -> // CS 1.6
-                        "cstrike", Some false
-                    | 64 -> // DoD
-                        "dod", Some false
-                    | _ ->
-                        "", None
+                    | 43 ->  "hl2", Some true // HL2
+                    | 59 -> "czero", Some false // CS:CZ
+                    | 60 -> "cstrike" , Some true // CSS
+                    | 61 -> "cstrike", Some false // CS 1.6
+                    | 64 -> "dod", Some false// DoD
+                    | 112 ->"dod", Some true // DOD:Source
+                    | 126 -> "tf", Some true // TF2
+                    | 182 -> "hl2", Some true// HL2:DM
+                    | 5484 -> "cstrike", Some true // CS Promod
+                    | _ -> "", None
                 match source with
                 | Some(sourceGame) ->
                     watcher <- 
-                        new SourceMatchmediaWatcher(logger, Path.Combine(parentDir, modDir), sourceGame)
-                        |> Some
+                        let w =
+                            new SourceMatchmediaWatcher(logger, Path.Combine(parentDir, modDir), sourceGame)
+                        w.StartGame()
+                        Some (w :> MatchmediaWatcher)
                 | None ->
                     logger.logInfo "Ignoring unknown game: %d, %s" gameId gamePath
                 )
@@ -123,12 +126,81 @@ type ReplayWirePlugin() =
         gameInterface.add_GameStopped
             (fun gameId -> 
                 let logger = logger.childTracer  ("GameEnd" + string gameId)
-                match watcher with
-                | Some (w) ->
-                    w.EndGame()
-                    for m in w.FoundMedia do
-                        
-                ())
+                try
+                    match watcher with
+                    | Some (w) ->
+                        w.EndGame()
+                        let game = 
+                            match gameId with
+                            | 43 -> "hl2" // HL2
+                            | 59 -> "cscz"// CS:CZ
+                            | 60 -> "css" // CSS
+                            | 61 -> "cs16"// CS 1.6
+                            | 64 -> "dod"// DoD
+                            | 112 -> "dodsource" // DOD:Source
+                            | 126 -> "tf2" // TF2
+                            | 182 -> "hl2dm" // HL2:DM
+                            | 5484 -> "cspromod" // CS Promod
+                            | _ -> "unknown_game"
+
+                        match matchData with
+                        | Some (warId, matchMediaPath) ->
+                            let info = gameInterface.matchInfo(warId)
+                            let enemy = info.["name"] :?> string
+                            let enemy =
+                                if enemy.StartsWith("vs. ") then
+                                    enemy.Substring(4)
+                                else enemy
+
+                            ///let gameTitle = info.["gameTitle"]
+                            //let gameTime = info.["time"]
+                            let warFormat = Settings.Default.WarFileFormat
+                            if Settings.Default.WarSaveInWire then
+                                w.FoundMedia
+                                |> Seq.iteri 
+                                    (fun i (lNum, m) ->
+                                    let info = MediaAnalyser.analyseMedia m
+                                    let oldParent = Path.GetDirectoryName(m)
+                                    let newName = 
+                                        System.String.Format(warFormat, startTime, info.Map, game, lNum, i, warId, enemy) + Path.GetExtension(m)
+                                    let oldRenamed = Path.Combine(oldParent, newName)
+                                    let mutable success = false
+                                    while not success do
+                                        try
+                                            File.Move(m,oldRenamed)
+                                            success <- true
+                                        with 
+                                            | :? IOException as ex -> 
+                                                logger.logWarn "File in use... waiting (Ex: %O)" ex
+                                                System.Threading.Thread.Sleep(500)
+                                                success <- false
+                                    gameInterface.moveToMatchMedia(
+                                        oldRenamed, 
+                                        warId) |> ignore)
+
+                        | None ->
+                            let publicFormat = Settings.Default.PublicFileFormat
+                            if Settings.Default.PublicSaveInWire then
+                                let publicWireFolderFormat = Settings.Default.PublicFolderFormat
+                                let newPath = Path.Combine(publicWireFolderFormat, publicFormat)
+
+                                w.FoundMedia
+                                |> Seq.iteri 
+                                    (fun i (lNum, m) ->
+                                        let info = MediaAnalyser.analyseMedia m
+                                        let gameInfo = gameInterface.gameInfo(gameId)
+                                        let newFileName = 
+                                            System.String.Format(newPath, startTime, info.Map, game, lNum, i) + Path.GetExtension(m)
+                                        let target = Path.Combine(Settings.Default.MatchMediaPath, newFileName)
+                                        let parent = Path.GetDirectoryName(target)
+                                        if not <| Directory.Exists parent then
+                                            Directory.CreateDirectory parent |> ignore
+                                        File.Move(m, target))
+
+                    | None ->
+                        logger.logInfo "unknown game closed: %d" gameId
+                with exn ->
+                    logger.logErr "Error: %O" exn)
 
         // Match ended (the Matchmedia dialog is already opened)
         gameInterface.add_MatchEnded

@@ -57,10 +57,10 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 200);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 91);
+            this.label1.Size = new System.Drawing.Size(197, 117);
             this.label1.TabIndex = 0;
-            this.label1.Text = "War Variables:\r\n{0} - Datum\r\n{1} - Map\r\n{2} - Game\r\n{3} - MatchId\r\n{4} - Enemy\r\n\r" +
-    "\n";
+            this.label1.Text = "War Variables:\r\n{0} - Datum\r\n{1} - Map\r\n{2} - Game\r\n{3} - increasing number (fore" +
+    "ach filetype)\r\n{4} - global increasing number\r\n{5} - MatchId\r\n{6} - Enemy\r\n\r\n";
             // 
             // WarStyleTextBox
             // 
@@ -83,11 +83,12 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(112, 226);
+            this.label3.Location = new System.Drawing.Point(233, 200);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(85, 65);
+            this.label3.Size = new System.Drawing.Size(197, 78);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Public Variables:\r\n{0} - Datum\r\n{1} - Map\r\n{2} - Game\r\n\r\n";
+            this.label3.Text = "Public Variables:\r\n{0} - Datum\r\n{1} - Map\r\n{2} - Game\r\n{3} - increasing number (f" +
+    "oreach filetype)\r\n{4} - global increasing number\r\n";
             // 
             // WarStyleExampleLabel
             // 
@@ -168,7 +169,7 @@
             this.WarSaveInWireCheckBox.Name = "WarSaveInWireCheckBox";
             this.WarSaveInWireCheckBox.Size = new System.Drawing.Size(315, 17);
             this.WarSaveInWireCheckBox.TabIndex = 12;
-            this.WarSaveInWireCheckBox.Text = "Save in Matchmedia Folder \"ESL Match Media\\{3}_(vs. {4})\"";
+            this.WarSaveInWireCheckBox.Text = "Save in Matchmedia Folder \"ESL Match Media\\{5}_(vs. {6})\"";
             this.WarSaveInWireCheckBox.UseVisualStyleBackColor = true;
             // 
             // checkBox2
@@ -239,7 +240,7 @@
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(457, 243);
+            this.SaveButton.Location = new System.Drawing.Point(425, 270);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(107, 47);
             this.SaveButton.TabIndex = 20;
@@ -249,7 +250,7 @@
             // 
             // AbortButton
             // 
-            this.AbortButton.Location = new System.Drawing.Point(345, 262);
+            this.AbortButton.Location = new System.Drawing.Point(319, 289);
             this.AbortButton.Name = "AbortButton";
             this.AbortButton.Size = new System.Drawing.Size(85, 28);
             this.AbortButton.TabIndex = 21;
@@ -259,7 +260,7 @@
             // 
             // ResetButton
             // 
-            this.ResetButton.Location = new System.Drawing.Point(345, 226);
+            this.ResetButton.Location = new System.Drawing.Point(215, 289);
             this.ResetButton.Name = "ResetButton";
             this.ResetButton.Size = new System.Drawing.Size(84, 28);
             this.ResetButton.TabIndex = 22;
@@ -271,7 +272,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(576, 300);
+            this.ClientSize = new System.Drawing.Size(553, 335);
             this.Controls.Add(this.ResetButton);
             this.Controls.Add(this.AbortButton);
             this.Controls.Add(this.SaveButton);

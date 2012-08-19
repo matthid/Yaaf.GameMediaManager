@@ -7,18 +7,31 @@ open System.IO
 [<AbstractClass>]
 type MatchmediaWatcher(logger : ITracer) =
     let settings = new Settings()
-    let foundMedia = new System.Collections.Generic.List<System.String>()
+    let notifyEvent = new Event<unit>()
+    let foundMedia = new System.Collections.Generic.List<int * System.String>()
     let watcher = new System.Collections.Generic.List<FileSystemWatcher>()
     let mutable started = false
     let defaultFilters = 
-        NotifyFilters.LastWrite ||| NotifyFilters.Size ||| NotifyFilters.CreationTime
+        NotifyFilters.LastWrite ||| 
+        NotifyFilters.Size ||| 
+        NotifyFilters.CreationTime ||| 
+        NotifyFilters.Attributes |||
+        NotifyFilters.FileName |||
+        NotifyFilters.Security |||
+        NotifyFilters.LastAccess |||
+        NotifyFilters.DirectoryName
     do
         settings.Reload()
 
+    [<CLIEventAttribute>]
+    member x.NotifyRecord = notifyEvent.Publish
+
+    member x.NotifyRecordMissing () = notifyEvent.Trigger()
 
     member x.Settings with get() = settings
-    member x.FoundMedia with get() = new System.Collections.Generic.List<System.String>(foundMedia)
+    member x.FoundMedia with get() = new System.Collections.Generic.List<int * System.String>(foundMedia)
     member x.BasicWatchFolder path filter = 
+        let localNr = ref 0
         let w = new FileSystemWatcher(path, filter)
         w.Error
             |> Event.add (fun e -> logger.logErr "Error in Watcher: %O" (e.GetException()))
@@ -26,7 +39,8 @@ type MatchmediaWatcher(logger : ITracer) =
             |> Event.add 
                 (fun e -> 
                     logger.logVerb "Found Matchmedia: %s" e.FullPath
-                    foundMedia.Add(e.FullPath)
+                    foundMedia.Add(!localNr, e.FullPath)
+                    localNr := !localNr + 1
                     x.FileChanged(e.FullPath))
         w.Changed
             |> Event.add (fun e -> x.FileChanged(e.FullPath))
@@ -49,19 +63,18 @@ type MatchmediaWatcher(logger : ITracer) =
         x.EndGameAbstract()
     abstract member EndGameAbstract : unit -> unit
 
+
 type SourceMatchmediaWatcher (logger : ITracer, modPath:string, sourceGame:bool) = 
     inherit MatchmediaWatcher(logger)
 
-    override x.FileChanged path = 
-        ()
+    override x.FileChanged path = logger.logVerb "Media %s changed" path
 
     override x.StartGameAbstract() = 
-        x.BasicWatchFolder modPath ".dem"
-        x.BasicWatchFolder modPath (if sourceGame then ".jpeg" else ".bmp")
-        ()
+        logger.logVerb "Starting watching in %s" modPath
+        x.BasicWatchFolder modPath "*.dem"
+        x.BasicWatchFolder modPath (if sourceGame then "*.jpg" else "*.bmp")
 
-    override x.EndGameAbstract() = 
-        ()
+    override x.EndGameAbstract() = ()
 
     
 

@@ -94,5 +94,17 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
                 this["upgradeSettings"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MatchMediaPath {
+            get {
+                return ((string)(this["MatchMediaPath"]));
+            }
+            set {
+                this["MatchMediaPath"] = value;
+            }
+        }
     }
 }
