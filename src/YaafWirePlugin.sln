@@ -5,7 +5,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Yaaf.WirePlugin", "YaafWire
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MediaChecker", "MediaChecker\MediaChecker.fsproj", "{B8B4E2C8-861F-4560-B825-A30E57AF884A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormGui", "WinFormGui\WinFormGui.csproj", "{E138FFD4-1A33-458E-A93C-1D8373756C86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yaaf.WirePlugin.WinFormGui", "WinFormGui\Yaaf.WirePlugin.WinFormGui.csproj", "{E138FFD4-1A33-458E-A93C-1D8373756C86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
