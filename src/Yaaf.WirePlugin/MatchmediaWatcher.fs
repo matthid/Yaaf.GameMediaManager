@@ -4,6 +4,7 @@ open Yaaf.WirePlugin.WinFormGui.Properties
 open Yaaf.Logging
 open System.IO
 
+/// This class provides observation functionality which can used in subclasses
 [<AbstractClass>]
 type MatchmediaWatcher(logger : ITracer) =
     let settings = new Settings()
@@ -63,7 +64,7 @@ type MatchmediaWatcher(logger : ITracer) =
         x.EndGameAbstract()
     abstract member EndGameAbstract : unit -> unit
 
-
+/// Observator for a source powered game (and old hl mods)
 type SourceMatchmediaWatcher (logger : ITracer, modPath:string, sourceGame:bool) = 
     inherit MatchmediaWatcher(logger)
 

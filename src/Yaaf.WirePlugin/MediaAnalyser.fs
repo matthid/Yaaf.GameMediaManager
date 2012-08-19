@@ -2,10 +2,10 @@
     open System.IO
 
     type MediaInfo = {
-        Map : string;
-
+            Map : string;
         }
 
+    /// entract data from .dem file
     let analyseDemo (path:string) = 
         use tr = new StreamReader(path)
         let buffer = Array.create 64 (char 0)
@@ -27,6 +27,7 @@
         readWhile 796
         let gameName = readString 32
         { Map = mapName }
+
     let analysePicName (name:string) = 
         { Map = name.Substring(0, name.Length - 4) }
 
