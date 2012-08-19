@@ -1,4 +1,8 @@
-﻿namespace Yaaf.WirePlugin
+﻿// ----------------------------------------------------------------------------
+// This file is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package.
+// ----------------------------------------------------------------------------
+namespace Yaaf.WirePlugin
 
 open Yaaf.WirePlugin.WinFormGui.Properties
 open Yaaf.Logging

@@ -9,7 +9,7 @@ WirePlugin goes even one step further and allows the same file management for an
 
 ## Dependencies
 
-- https://github.com/fsharp/fsharp FSharp libraries required to use SyncLib and fsc required to build the Project
+- https://github.com/fsharp/fsharp FSharp libraries required to use WirePlugin and fsc required to build the Project
   * install: http://www.microsoft.com/de-de/download/details.aspx?id=13450
 - CLI Runtime (one of those)
   * .NET 3.5 (Included in > Windows Vista) http://www.microsoft.com/de-de/download/details.aspx?id=21

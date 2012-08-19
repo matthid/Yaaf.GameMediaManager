@@ -1,5 +1,7 @@
-﻿// Weitere Informationen zu F# unter "http://fsharp.net".
-
+﻿// ----------------------------------------------------------------------------
+// This file is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package.
+// ----------------------------------------------------------------------------
 namespace Yaaf.WirePlugin
 
 open Wire
@@ -11,6 +13,7 @@ open Yaaf.Logging
 open Yaaf.WirePlugin.WinFormGui
 open Yaaf.WirePlugin.WinFormGui.Properties
 
+/// The Wire Plugin implementation
 type ReplayWirePlugin() as x = 
     inherit Wire.Plugin()
     
@@ -50,6 +53,7 @@ type ReplayWirePlugin() as x =
     
     let mutable gameInterface = None 
 
+    /// Starts the mediawatcher fpr the given game
     let gameStarted (logger:ITracer) gameId gamePath= 
         startTime <- System.DateTime.Now
         let parentDir = Path.GetDirectoryName(gamePath)
@@ -75,6 +79,7 @@ type ReplayWirePlugin() as x =
         | None ->
             logger.logInfo "Ignoring unknown game: %d, %s" gameId gamePath
 
+    /// Stops the watcher and renames the files properly
     let gameStopped (logger:ITracer) gameId = 
         match watcher with
         | Some (w) ->

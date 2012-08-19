@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{409e9ac5-1304-4605-9479-c7f4b98b4d55}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>YaafWirePlugin</RootNamespace>
+    <RootNamespace>Yaaf.WirePlugin</RootNamespace>
     <AssemblyName>Yaaf.WirePlugin</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Name>Yaaf.WirePlugin</Name>
@@ -21,7 +21,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\YaafWirePlugin.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Yaaf.WirePlugin.XML</DocumentationFile>
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\EslWire\pluginContainer\wire-plugin.exe</StartProgram>
     <StartArguments>"D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\YaafWirePlugin\bin\Debug\Yaaf.WirePlugin.dll"</StartArguments>
@@ -33,11 +33,12 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\YaafWirePlugin.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Yaaf.WirePlugin.XML</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="!Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
   <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Logging.fs" />
     <Compile Include="MatchmediaWatcher.fs" />
     <Compile Include="MediaAnalyser.fs" />
@@ -61,6 +62,7 @@
     <Reference Include="FSharp.Core" />
     <Reference Include="PluginInterface">
       <HintPath>C:\Program Files\EslWire\pluginContainer\PluginInterface.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
