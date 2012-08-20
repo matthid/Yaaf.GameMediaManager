@@ -74,16 +74,25 @@ type ReplayWirePlugin() as x =
             | 5484 -> "cstrike", Some true // CS Promod
             | 6220 -> "csgo", Some true // CS:GO
             | _ -> "", None
-        match source with
-        | Some(sourceGame) ->
-            watcher <- 
-                let w =
-                    new SourceMatchmediaWatcher(logger, Path.Combine(parentDir, modDir), sourceGame)
-                w.StartGame()
-                Some (w :> MatchmediaWatcher)
-        | None ->
-            logger.logInfo "Ignoring unknown game: %d, %s" gameId gamePath
-    
+        watcher <- 
+            match source with
+            | Some(sourceGame) ->
+                new SourceMatchmediaWatcher(logger, Path.Combine(parentDir, modDir), sourceGame)
+                :> MatchmediaWatcher
+                |> Some
+            | None ->
+                match gameId with
+                | 687 -> 
+                    new Starcraft2MediaWatcher(logger) :> MatchmediaWatcher |> Some
+                | _ ->
+                    logger.logInfo "Ignoring unknown game: %d, %s" gameId gamePath
+                    None
+
+        match watcher with
+        | Some (w) -> 
+            w.StartGame()
+        | None -> ()
+
     let escapeInvalidChars escChar (path:string)  = 
         let invalid = 
             Path.GetInvalidFileNameChars() 
@@ -124,6 +133,7 @@ type ReplayWirePlugin() as x =
                 | 112 -> "dodsource" // DOD:Source
                 | 126 -> "tf2" // TF2
                 | 182 -> "hl2dm" // HL2:DM
+                | 687 -> "sc2"
                 | 5484 -> "cspromod" // CS Promod
                 | 6220 -> "csgo" // CS:GO
                 | _ -> "unknown_game"

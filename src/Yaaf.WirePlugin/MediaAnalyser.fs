@@ -36,6 +36,14 @@ module MediaAnalyser =
     let analysePicName (name:string) = 
         { Map = name.Substring(0, name.Length - 4) }
 
+    let analyseSimpleName (name:string) = 
+        let dupl = name.IndexOf '('
+        let mapname = (
+            if dupl = -1 
+            then name
+            else name.Substring(0, dupl)).Trim()
+        { Map = mapname }
+
     let analyseMedia path = 
         let ext = Path.GetExtension(path)
         let name = Path.GetFileNameWithoutExtension(path)
@@ -44,6 +52,8 @@ module MediaAnalyser =
             analyseDemo path
         | ".jpg" ->
             analysePicName name
+        | ".SC2Replay" ->
+            analyseSimpleName name
         | _ ->
             { Map = "_unknown_" }
             
