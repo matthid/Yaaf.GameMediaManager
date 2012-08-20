@@ -55,12 +55,13 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 200);
+            this.label1.Location = new System.Drawing.Point(12, 236);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(197, 117);
+            this.label1.Size = new System.Drawing.Size(197, 130);
             this.label1.TabIndex = 0;
-            this.label1.Text = "War Variables:\r\n{0} - Datum\r\n{1} - Map\r\n{2} - Game\r\n{3} - increasing number (fore" +
-    "ach filetype)\r\n{4} - global increasing number\r\n{5} - MatchId\r\n{6} - Enemy\r\n\r\n";
+            this.label1.Text = "War Variables:\r\n{0} - Date (of war)\r\n{1} - Date of mediafile\r\n{2} - Map\r\n{3} - Ga" +
+    "me\r\n{4} - increasing number (foreach filetype)\r\n{5} - global increasing number\r\n" +
+    "{6} - MatchId\r\n{7} - Enemy\r\n\r\n";
             // 
             // WarStyleTextBox
             // 
@@ -68,7 +69,7 @@
             this.WarStyleTextBox.Name = "WarStyleTextBox";
             this.WarStyleTextBox.Size = new System.Drawing.Size(209, 20);
             this.WarStyleTextBox.TabIndex = 1;
-            this.WarStyleTextBox.Text = "{0:HH_mm_ss} on {1}";
+            this.WarStyleTextBox.Text = "{1:HH_mm_ss} on {2}";
             this.WarStyleTextBox.TextChanged += new System.EventHandler(this.WarStyleTextBox_TextChanged);
             // 
             // label2
@@ -83,17 +84,18 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(233, 200);
+            this.label3.Location = new System.Drawing.Point(233, 236);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(197, 78);
+            this.label3.Size = new System.Drawing.Size(197, 91);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Public Variables:\r\n{0} - Datum\r\n{1} - Map\r\n{2} - Game\r\n{3} - increasing number (f" +
-    "oreach filetype)\r\n{4} - global increasing number\r\n";
+            this.label3.Text = "Public Variables:\r\n{0} - Date (of session)\r\n{1} - Date of mediafile\r\n{2} - Map\r\n{" +
+    "3} - Game\r\n{4} - increasing number (foreach filetype)\r\n{5} - global increasing n" +
+    "umber\r\n";
             // 
             // WarStyleExampleLabel
             // 
             this.WarStyleExampleLabel.AutoSize = true;
-            this.WarStyleExampleLabel.Location = new System.Drawing.Point(364, 141);
+            this.WarStyleExampleLabel.Location = new System.Drawing.Point(97, 165);
             this.WarStyleExampleLabel.Name = "WarStyleExampleLabel";
             this.WarStyleExampleLabel.Size = new System.Drawing.Size(53, 13);
             this.WarStyleExampleLabel.TabIndex = 4;
@@ -102,7 +104,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 171);
+            this.label4.Location = new System.Drawing.Point(12, 191);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(74, 13);
             this.label4.TabIndex = 5;
@@ -110,17 +112,17 @@
             // 
             // PublicStyleTextBox
             // 
-            this.PublicStyleTextBox.Location = new System.Drawing.Point(149, 168);
+            this.PublicStyleTextBox.Location = new System.Drawing.Point(149, 188);
             this.PublicStyleTextBox.Name = "PublicStyleTextBox";
             this.PublicStyleTextBox.Size = new System.Drawing.Size(209, 20);
             this.PublicStyleTextBox.TabIndex = 6;
-            this.PublicStyleTextBox.Text = "{0:HH_mm_ss} on {1}";
+            this.PublicStyleTextBox.Text = "{1:HH_mm_ss} on {2}";
             this.PublicStyleTextBox.TextChanged += new System.EventHandler(this.PublicStyleTextBox_TextChanged);
             // 
             // PublicStyleExampleLabel
             // 
             this.PublicStyleExampleLabel.AutoSize = true;
-            this.PublicStyleExampleLabel.Location = new System.Drawing.Point(364, 171);
+            this.PublicStyleExampleLabel.Location = new System.Drawing.Point(97, 214);
             this.PublicStyleExampleLabel.Name = "PublicStyleExampleLabel";
             this.PublicStyleExampleLabel.Size = new System.Drawing.Size(53, 13);
             this.PublicStyleExampleLabel.TabIndex = 7;
@@ -169,7 +171,7 @@
             this.WarSaveInWireCheckBox.Name = "WarSaveInWireCheckBox";
             this.WarSaveInWireCheckBox.Size = new System.Drawing.Size(315, 17);
             this.WarSaveInWireCheckBox.TabIndex = 12;
-            this.WarSaveInWireCheckBox.Text = "Save in Matchmedia Folder \"ESL Match Media\\{5}_(vs. {6})\"";
+            this.WarSaveInWireCheckBox.Text = "Save in Matchmedia Folder \"ESL Match Media\\{6}_(vs. {7})\"";
             this.WarSaveInWireCheckBox.UseVisualStyleBackColor = true;
             // 
             // checkBox2
@@ -232,15 +234,15 @@
             // 
             // PublicFolderFormatTextBox
             // 
-            this.PublicFolderFormatTextBox.Location = new System.Drawing.Point(281, 66);
+            this.PublicFolderFormatTextBox.Location = new System.Drawing.Point(261, 66);
             this.PublicFolderFormatTextBox.Name = "PublicFolderFormatTextBox";
-            this.PublicFolderFormatTextBox.Size = new System.Drawing.Size(149, 20);
+            this.PublicFolderFormatTextBox.Size = new System.Drawing.Size(193, 20);
             this.PublicFolderFormatTextBox.TabIndex = 19;
-            this.PublicFolderFormatTextBox.Text = "PublicStuff\\{0:yyyy-MM-dd}";
+            this.PublicFolderFormatTextBox.Text = "PublicStuff\\{1:yyyy-MM-dd}\\{3}";
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(425, 270);
+            this.SaveButton.Location = new System.Drawing.Point(425, 315);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(107, 47);
             this.SaveButton.TabIndex = 20;
@@ -250,7 +252,7 @@
             // 
             // AbortButton
             // 
-            this.AbortButton.Location = new System.Drawing.Point(319, 289);
+            this.AbortButton.Location = new System.Drawing.Point(319, 334);
             this.AbortButton.Name = "AbortButton";
             this.AbortButton.Size = new System.Drawing.Size(85, 28);
             this.AbortButton.TabIndex = 21;
@@ -260,7 +262,7 @@
             // 
             // ResetButton
             // 
-            this.ResetButton.Location = new System.Drawing.Point(215, 289);
+            this.ResetButton.Location = new System.Drawing.Point(215, 334);
             this.ResetButton.Name = "ResetButton";
             this.ResetButton.Size = new System.Drawing.Size(84, 28);
             this.ResetButton.TabIndex = 22;
@@ -272,7 +274,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(553, 335);
+            this.ClientSize = new System.Drawing.Size(547, 378);
             this.Controls.Add(this.ResetButton);
             this.Controls.Add(this.AbortButton);
             this.Controls.Add(this.SaveButton);

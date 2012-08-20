@@ -6,10 +6,16 @@
 
     public partial class OptionsForm : Form
     {
-        public OptionsForm()
+        private readonly Action<System.Diagnostics.TraceEventType, string> logger;
+
+
+        public OptionsForm(Action<System.Diagnostics.TraceEventType, string> logger)
         {
+            this.logger = logger;
             this.InitializeComponent();
         }
+
+
         public bool Saved { get; set; }
 
         private void OptionsForm_Load(object sender, EventArgs e)
@@ -25,6 +31,11 @@
             this.PublicFolderFormat = Settings.Default.PublicFolderFormat;
             this.WarFileFormat = Settings.Default.WarFileFormat;
             this.PublicFileFormat = Settings.Default.PublicFileFormat;
+
+            PublicStyleTextBox_TextChanged(null, null);
+            WarStyleTextBox_TextChanged(null, null);
+            checkBox3_CheckedChanged(null, null);
+            checkBox2_CheckedChanged(null, null);
         }
 
         private void SaveData()
@@ -35,6 +46,59 @@
             Settings.Default.WarFileFormat = this.WarFileFormat;
             Settings.Default.PublicFileFormat = this.PublicFileFormat;
             Settings.Default.Save();
+        }
+
+        public void CheckValid()
+        {
+            try
+            {
+                string.Format(
+                    this.WarFileFormat,
+                    DateTime.Now - TimeSpan.FromMinutes(3.56),
+                    DateTime.Now,
+                    "de_dust2",
+                    "css",
+                    3,
+                    6,
+                    1234567,
+                    "RoXX");
+            }
+            catch (Exception e)
+            {
+                throw new FormatException(Resources.OptionsForm_CheckValid_Invalid_War_File_Format_, e);
+            }
+
+            try
+            {
+                string.Format(
+                    this.PublicFileFormat,
+                    DateTime.Now - TimeSpan.FromMinutes(3.56),
+                    DateTime.Now,
+                    "de_dust2",
+                    "css",
+                    3,
+                    6);
+            }
+            catch (Exception e)
+            {
+                throw new FormatException(Resources.OptionsForm_CheckValid_Invalid_Public_File_Format_, e);
+            }
+            
+            try
+            {
+                string.Format(
+                    this.PublicFolderFormat,
+                    DateTime.Now - TimeSpan.FromMinutes(3.56),
+                    DateTime.Now,
+                    "de_dust2",
+                    "css",
+                    3,
+                    6);
+            }
+            catch (Exception e)
+            {
+                throw new FormatException(Resources.OptionsForm_CheckValid_Invalid_Public_Folder_Format_, e);
+            }
         }
 
         public bool WarSaveInWire
@@ -103,7 +167,7 @@
             {
                 this.WarStyleExampleLabel.Text = string.Format(
                     Resources.Example,
-                    string.Format(this.WarStyleTextBox.Text, DateTime.Now, "de_dust2", "css", 1234567, "RoXX") + ".dem");
+                    string.Format(this.WarStyleTextBox.Text, DateTime.Now - TimeSpan.FromMinutes(3.56), DateTime.Now, "de_dust2", "css", 3, 6, 1234567, "RoXX") + ".dem");
             }
             catch (Exception ex)
             {
@@ -112,13 +176,14 @@
             }
         }
 
+
         private void PublicStyleTextBox_TextChanged(object sender, EventArgs e)
         {
             try
             {
                 this.PublicStyleExampleLabel.Text = string.Format(
                     Resources.Example,
-                    string.Format(this.PublicStyleTextBox.Text, DateTime.Now, "de_dust2", "css") + ".dem");
+                    string.Format(this.PublicStyleTextBox.Text, DateTime.Now - TimeSpan.FromMinutes(3.56), DateTime.Now, "de_dust2", "css", 3, 6) + ".dem");
             }
             catch (Exception ex)
             {
@@ -163,6 +228,17 @@
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
+            try
+            {
+                this.CheckValid();
+            }
+            catch (FormatException ex)
+            {
+                logger(System.Diagnostics.TraceEventType.Warning, "Input Validation: " + ex);
+                MessageBox.Show(ex.Message, Resources.OptionsForm_SaveButton_Click_Invalid_Input_,MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                
+                return;
+            }
             Saved = true;
             this.SaveData();
             this.Close();

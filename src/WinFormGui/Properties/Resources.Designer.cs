@@ -198,6 +198,15 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Info ähnelt.
+        /// </summary>
+        public static string Info {
+            get {
+                return ResourceManager.GetString("Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Invalid Value (Error: {0}) ähnelt.
         /// </summary>
         public static string InvalidValue {
@@ -224,6 +233,42 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
             get {
                 object obj = ResourceManager.GetObject("next", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid Public File Format! ähnelt.
+        /// </summary>
+        public static string OptionsForm_CheckValid_Invalid_Public_File_Format_ {
+            get {
+                return ResourceManager.GetString("OptionsForm_CheckValid_Invalid_Public_File_Format_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid Public Folder Format! ähnelt.
+        /// </summary>
+        public static string OptionsForm_CheckValid_Invalid_Public_Folder_Format_ {
+            get {
+                return ResourceManager.GetString("OptionsForm_CheckValid_Invalid_Public_Folder_Format_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid War File Format! ähnelt.
+        /// </summary>
+        public static string OptionsForm_CheckValid_Invalid_War_File_Format_ {
+            get {
+                return ResourceManager.GetString("OptionsForm_CheckValid_Invalid_War_File_Format_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid Input! ähnelt.
+        /// </summary>
+        public static string OptionsForm_SaveButton_Click_Invalid_Input_ {
+            get {
+                return ResourceManager.GetString("OptionsForm_SaveButton_Click_Invalid_Input_", resourceCulture);
             }
         }
         

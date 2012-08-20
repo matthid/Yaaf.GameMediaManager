@@ -13,7 +13,7 @@ open System.IO
 type MatchmediaWatcher(logger : ITracer) =
     let settings = new Settings()
     let notifyEvent = new Event<unit>()
-    let foundMedia = new System.Collections.Generic.List<int * System.String>()
+    let foundMedia = new System.Collections.Generic.List<int * System.DateTime * System.String>()
     let watcher = new System.Collections.Generic.List<FileSystemWatcher>()
     let mutable started = false
     let defaultFilters = 
@@ -34,7 +34,7 @@ type MatchmediaWatcher(logger : ITracer) =
     member x.NotifyRecordMissing () = notifyEvent.Trigger()
 
     member x.Settings with get() = settings
-    member x.FoundMedia with get() = new System.Collections.Generic.List<int * System.String>(foundMedia)
+    member x.FoundMedia with get() = new System.Collections.Generic.List<int * System.DateTime * System.String>(foundMedia)
     member x.BasicWatchFolder path filter = 
         let localNr = ref 0
         let w = new FileSystemWatcher(path, filter)
@@ -44,7 +44,7 @@ type MatchmediaWatcher(logger : ITracer) =
             |> Event.add 
                 (fun e -> 
                     logger.logVerb "Found Matchmedia: %s" e.FullPath
-                    foundMedia.Add(!localNr, e.FullPath)
+                    foundMedia.Add(!localNr, System.DateTime.Now, e.FullPath)
                     localNr := !localNr + 1
                     x.FileChanged(e.FullPath))
         w.Changed

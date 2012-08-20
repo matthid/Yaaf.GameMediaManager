@@ -35,13 +35,17 @@ type ReplayWirePlugin() as x =
         [
             item Resources.Settings Resources.settingsPic
                 (fun () ->
-                    using (new OptionsForm()) (fun o ->
+                    using (new OptionsForm(fun tr s -> logger.log tr "%s" s)) (fun o ->
                         o.ShowDialog() |> ignore))
             item Resources.ReportBug Resources.mail
                 (fun () -> 
                     try 
                         Process.Start("https://github.com/matthid/Yaaf.WirePlugin/issues") |> ignore
                     with exn -> logger.logErr "Error: %O" exn)
+            item Resources.Info Resources.i
+                (fun () ->
+                    using (new InfoForm(fun tr s -> logger.log tr "%s" s)) (fun o ->
+                        o.ShowDialog() |> ignore))
             new ToolStripSeparator() :> ToolStripItem
             item Resources.CloseMenu Resources.cancel id
         ]
@@ -68,6 +72,7 @@ type ReplayWirePlugin() as x =
             | 126 -> "tf", Some true // TF2
             | 182 -> "hl2", Some true// HL2:DM
             | 5484 -> "cstrike", Some true // CS Promod
+            | 6220 -> "csgo", Some true // CS:GO
             | _ -> "", None
         match source with
         | Some(sourceGame) ->
@@ -78,6 +83,31 @@ type ReplayWirePlugin() as x =
                 Some (w :> MatchmediaWatcher)
         | None ->
             logger.logInfo "Ignoring unknown game: %d, %s" gameId gamePath
+    
+    let escapeInvalidChars escChar (path:string)  = 
+        let invalid = 
+            Path.GetInvalidFileNameChars() 
+            |> Seq.append (Path.GetInvalidPathChars())   
+            |> Seq.filter (fun c -> c <> Path.DirectorySeparatorChar)
+
+        (
+        path 
+            |> Seq.fold 
+                (fun (builder:System.Text.StringBuilder) char -> 
+                    builder.Append(
+                        if invalid |> Seq.exists (fun i -> i = char) 
+                        then escChar
+                        else char))
+                (new System.Text.StringBuilder(path.Length))
+        ).ToString()
+
+    let backupFile file = 
+        if (File.Exists file) then
+            let rename = 
+                Path.Combine(
+                    (Path.GetDirectoryName file),
+                    sprintf "%s-%s%s" (Path.GetFileNameWithoutExtension file) (System.Guid.NewGuid().ToString()) (Path.GetExtension file))
+            File.Move(file, rename)
 
     /// Stops the watcher and renames the files properly
     let gameStopped (logger:ITracer) gameId = 
@@ -95,6 +125,7 @@ type ReplayWirePlugin() as x =
                 | 126 -> "tf2" // TF2
                 | 182 -> "hl2dm" // HL2:DM
                 | 5484 -> "cspromod" // CS Promod
+                | 6220 -> "csgo" // CS:GO
                 | _ -> "unknown_game"
 
             match matchData with
@@ -112,22 +143,17 @@ type ReplayWirePlugin() as x =
                 if Settings.Default.WarSaveInWire then
                     w.FoundMedia
                     |> Seq.iteri 
-                        (fun i (lNum, m) ->
+                        (fun i (lNum, mediaDate, m) ->
                         let info = MediaAnalyser.analyseMedia m
                         let oldParent = Path.GetDirectoryName(m)
                         let newName = 
-                            System.String.Format(warFormat, startTime, info.Map, game, lNum, i, warId, enemy) + Path.GetExtension(m)
+                            System.String.Format(warFormat, startTime, mediaDate, info.Map, game, lNum, i, warId, enemy) + Path.GetExtension(m)
+                        let newName = newName |> escapeInvalidChars '_' 
                         let oldRenamed = Path.Combine(oldParent, newName)
-                        let mutable success = false
-                        while not success do
-                            try
-                                File.Move(m,oldRenamed)
-                                success <- true
-                            with 
-                                | :? IOException as ex -> 
-                                    logger.logWarn "File in use... waiting (Ex: %O)" ex
-                                    System.Threading.Thread.Sleep(500)
-                                    success <- false
+                        
+                        backupFile(oldRenamed)
+                        File.Move(m, oldRenamed)
+                              
                         x.GameInterface.moveToMatchMedia(
                             oldRenamed, 
                             warId) |> ignore)
@@ -136,19 +162,23 @@ type ReplayWirePlugin() as x =
                 let publicFormat = Settings.Default.PublicFileFormat
                 if Settings.Default.PublicSaveInWire then
                     let publicWireFolderFormat = Settings.Default.PublicFolderFormat
+
                     let newPath = Path.Combine(publicWireFolderFormat, publicFormat)
 
                     w.FoundMedia
                     |> Seq.iteri 
-                        (fun i (lNum, m) ->
+                        (fun i (lNum, mediaDate, m) ->
                             let info = MediaAnalyser.analyseMedia m
                             let gameInfo = x.GameInterface.gameInfo(gameId)
                             let newFileName = 
-                                System.String.Format(newPath, startTime, info.Map, game, lNum, i) + Path.GetExtension(m)
+                                System.String.Format(newPath, startTime, mediaDate, info.Map, game, lNum, i) + Path.GetExtension(m)
+                            let newFileName = newFileName |> escapeInvalidChars '_' 
                             let target = Path.Combine(Settings.Default.MatchMediaPath, newFileName)
                             let parent = Path.GetDirectoryName(target)
                             if not <| Directory.Exists parent then
                                 Directory.CreateDirectory parent |> ignore
+                                
+                            backupFile(target)
                             File.Move(m, target))
 
         | None ->

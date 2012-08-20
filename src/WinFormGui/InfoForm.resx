@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="textBox1.Text" xml:space="preserve">
+    <value>alias recorddemo "record01"
+
+alias record01 "stop; record saved_demo01; echo Recording saved_demo01; alias recorddemo record02"
+alias record02 "stop; record saved_demo02; echo Recording saved_demo02; alias recorddemo record03"
+alias record03 "stop; record saved_demo03; echo Recording saved_demo03; alias recorddemo record04"
+alias record04 "stop; record saved_demo04; echo Recording saved_demo04; alias recorddemo record05"
+alias record05 "stop; record saved_demo05; echo Recording saved_demo05; alias recorddemo record06"
+alias record06 "stop; record saved_demo06; echo Recording saved_demo06; alias recorddemo record07"
+alias record07 "stop; record saved_demo07; echo Recording saved_demo07; alias recorddemo record08"
+alias record08 "stop; record saved_demo08; echo Recording saved_demo08; alias recorddemo record09"
+alias record09 "stop; record saved_demo09; echo Recording saved_demo09; alias recorddemo record10"
+alias record10 "stop; record saved_demo10; echo Recording saved_demo10; alias recorddemo record11"
+alias record11 "stop; record saved_demo11; echo Recording saved_demo11; alias recorddemo record12"
+alias record12 "stop; record saved_demo12; echo Recording saved_demo12; alias recorddemo record13"
+alias record13 "stop; record saved_demo13; echo Recording saved_demo13; alias recorddemo record14"
+alias record14 "stop; record saved_demo14; echo Recording saved_demo14; alias recorddemo record15"
+alias record15 "stop; record saved_demo15; echo Recording saved_demo15; alias recorddemo record16"
+alias record16 "stop; record saved_demo16; echo Recording saved_demo16; alias recorddemo record17"
+alias record17 "stop; record saved_demo17; echo Recording saved_demo17; alias recorddemo record18"
+alias record18 "stop; record saved_demo18; echo Recording saved_demo18; alias recorddemo record19"
+alias record19 "stop; record saved_demo19; echo Recording saved_demo19; alias recorddemo record20"
+alias record20 "stop; record saved_demo20; echo Recording saved_demo20; alias recorddemo record21"
+alias record21 "stop; record saved_demo21; echo Recording saved_demo21; alias recorddemo record22"
+alias record22 "stop; record saved_demo22; echo Recording saved_demo22; alias recorddemo record23"
+alias record23 "stop; record saved_demo23; echo Recording saved_demo23; alias recorddemo record24"
+alias record24 "stop; record saved_demo24; echo Recording saved_demo24; alias recorddemo record25"
+alias record25 "stop; record saved_demo25; echo Recording saved_demo25; alias recorddemo record26"
+alias record26 "stop; record saved_demo26; echo Recording saved_demo26; alias recorddemo record27"
+alias record27 "stop; record saved_demo27; echo Recording saved_demo27; alias recorddemo record28"
+alias record28 "stop; record saved_demo28; echo Recording saved_demo28; alias recorddemo record29"
+alias record29 "stop; record saved_demo29; echo Recording saved_demo29; alias recorddemo record30"
+alias record30 "stop; record saved_demo30; echo Recording saved_demo30; alias recorddemo record31"
+alias record31 "stop; record saved_demo31; echo Recording saved_demo31; alias recorddemo record32"
+alias record32 "stop; record saved_demo32; echo Recording saved_demo32; alias recorddemo record33"
+alias record33 "stop; record saved_demo33; echo Recording saved_demo33; alias recorddemo record34"
+alias record34 "stop; record saved_demo34; echo Recording saved_demo34; alias recorddemo record35"
+alias record35 "stop; record saved_demo35; echo Recording saved_demo35; alias recorddemo record36"
+alias record36 "stop; record saved_demo36; echo Recording saved_demo36; alias recorddemo record37"
+alias record37 "stop; record saved_demo37; echo Recording saved_demo37; alias recorddemo record38"
+alias record38 "stop; record saved_demo38; echo Recording saved_demo38; alias recorddemo record39"
+alias record39 "stop; record saved_demo39; echo Recording saved_demo39; alias recorddemo record40"
+alias record40 "stop; record saved_demo40; echo Recording saved_demo40; alias recorddemo record41"
+alias record41 "stop; record saved_demo41; echo Recording saved_demo41; alias recorddemo record42"
+alias record42 "stop; record saved_demo42; echo Recording saved_demo42; alias recorddemo record43"
+alias record43 "stop; record saved_demo43; echo Recording saved_demo43; alias recorddemo record44"
+alias record44 "stop; record saved_demo44; echo Recording saved_demo44; alias recorddemo record45"
+alias record45 "stop; record saved_demo45; echo Recording saved_demo45; alias recorddemo record46"
+alias record46 "stop; record saved_demo46; echo Recording saved_demo46; alias recorddemo record47"
+alias record47 "stop; record saved_demo47; echo Recording saved_demo47; alias recorddemo record48"
+alias record48 "stop; record saved_demo48; echo Recording saved_demo48; alias recorddemo record49"
+alias record49 "stop; record saved_demo49; echo Recording saved_demo49; alias recorddemo record50"
+alias record50 "stop; record saved_demo50; echo Recording saved_demo50; alias recorddemo WARNING"
+alias WARNING "stop; say UNABLE TO CONTINUE, PLEASE RESTART THE GAME"
+
+bind "KP_ENTER" "recorddemo" 
+bind "KP_MINUS" "stop; echo Stopping" 
+bind "KP_PLUS" "demo_pause; echo Creating marker..." </value>
+  </data>
+</root>

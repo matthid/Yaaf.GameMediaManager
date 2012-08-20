@@ -25,7 +25,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("{0:HH_mm_ss} on {1}")]
+        [global::System.Configuration.DefaultSettingValueAttribute("{1:HH_mm_ss} on {2}")]
         public string WarFileFormat {
             get {
                 return ((string)(this["WarFileFormat"]));
@@ -37,7 +37,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("{0:HH_mm_ss} on {1}")]
+        [global::System.Configuration.DefaultSettingValueAttribute("{1:HH_mm_ss} on {2}")]
         public string PublicFileFormat {
             get {
                 return ((string)(this["PublicFileFormat"]));
@@ -73,7 +73,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("PublicStuff\\{0:yyyy-MM-dd}")]
+        [global::System.Configuration.DefaultSettingValueAttribute("PublicStuff\\{1:yyyy-MM-dd}")]
         public string PublicFolderFormat {
             get {
                 return ((string)(this["PublicFolderFormat"]));
