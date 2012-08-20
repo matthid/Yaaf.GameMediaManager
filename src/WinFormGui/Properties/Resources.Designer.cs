@@ -207,6 +207,24 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You are using version: {0} check for the latest Version ähnelt.
+        /// </summary>
+        public static string InfoForm_InfoForm_Load_VersionString___0_ {
+            get {
+                return ResourceManager.GetString("InfoForm_InfoForm_Load_VersionString___0_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Could not start browser ähnelt.
+        /// </summary>
+        public static string InfoForm_TryStart_Could_not_start_browser {
+            get {
+                return ResourceManager.GetString("InfoForm_TryStart_Could_not_start_browser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Invalid Value (Error: {0}) ähnelt.
         /// </summary>
         public static string InvalidValue {

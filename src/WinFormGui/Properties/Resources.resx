@@ -241,16 +241,22 @@
   <data name="Info" xml:space="preserve">
     <value>Info</value>
   </data>
-  <data name="OptionsForm_SaveButton_Click_Invalid_Input_">
-    <value xml:space="preserve">Invalid Input!</value>
+  <data name="OptionsForm_SaveButton_Click_Invalid_Input_" xml:space="preserve">
+    <value>Invalid Input!</value>
   </data>
-  <data name="OptionsForm_CheckValid_Invalid_Public_Folder_Format_">
-    <value xml:space="preserve">Invalid Public Folder Format!</value>
+  <data name="OptionsForm_CheckValid_Invalid_Public_Folder_Format_" xml:space="preserve">
+    <value>Invalid Public Folder Format!</value>
   </data>
-  <data name="OptionsForm_CheckValid_Invalid_Public_File_Format_">
-    <value xml:space="preserve">Invalid Public File Format!</value>
+  <data name="OptionsForm_CheckValid_Invalid_Public_File_Format_" xml:space="preserve">
+    <value>Invalid Public File Format!</value>
   </data>
-  <data name="OptionsForm_CheckValid_Invalid_War_File_Format_">
-    <value xml:space="preserve">Invalid War File Format!</value>
+  <data name="OptionsForm_CheckValid_Invalid_War_File_Format_" xml:space="preserve">
+    <value>Invalid War File Format!</value>
+  </data>
+  <data name="InfoForm_InfoForm_Load_VersionString___0_" xml:space="preserve">
+    <value>You are using version: {0} check for the latest Version</value>
+  </data>
+  <data name="InfoForm_TryStart_Could_not_start_browser">
+    <value xml:space="preserve">Could not start browser</value>
   </data>
 </root>
