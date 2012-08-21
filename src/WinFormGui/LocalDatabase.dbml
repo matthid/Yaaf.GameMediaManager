@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\WinFormGui\LocalDatabase.sdf" EntityNamespace="Yaaf.WirePlugin.WinFormGui.Database" ContextNamespace="Yaaf.WirePlugin.WinFormGui.Database" Class="LocalDatabaseDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="Action" Member="Actions">
+    <Type Name="Action">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="Parameters" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Association Name="Action_ActionObject" Member="ActionObject" ThisKey="Id" OtherKey="ActionId" Type="ActionObject" />
+    </Type>
+  </Table>
+  <Table Name="ActionObjects">
+    <Type Name="ActionObject">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ActionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FilterId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Association Name="ActionObject_ObjectParameter" Member="ObjectParameter" ThisKey="Id" OtherKey="ObjectId" Type="ObjectParameter" />
+      <Association Name="Action_ActionObject" Member="Action" ThisKey="ActionId" OtherKey="Id" Type="Action" IsForeignKey="true" />
+      <Association Name="Filter_ActionObject" Member="Filter" ThisKey="ActionId" OtherKey="Id" Type="Filter" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="Filter" Member="Filters">
+    <Type Name="Filter">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="Parameter" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Association Name="Filter_ActionObject" Member="ActionObject" ThisKey="Id" OtherKey="ActionId" Type="ActionObject" />
+    </Type>
+  </Table>
+  <Table Name="Games">
+    <Type Name="Game">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Shortname" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="EnableNotification" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="EnableMatchForm" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="EnablePublicNotification" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="EnableWarMatchForm" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="MatchFormActions">
+    <Type Name="MatchFormAction">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="GameId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ActionObjectId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastUsed" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="SetWarDefault" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="SetPublicDefault" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="ObjectParameter" Member="ObjectParameters">
+    <Type Name="ObjectParameter">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ObjectId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="ParamNum" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Parameter" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+      <Association Name="ActionObject_ObjectParameter" Member="ActionObject" ThisKey="ObjectId" OtherKey="Id" Type="ActionObject" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="WatchFolder" Member="WatchFolders">
+    <Type Name="WatchFolder">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="GameId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Folder" Type="System.String" DbType="NVarChar(4000) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+</Database>

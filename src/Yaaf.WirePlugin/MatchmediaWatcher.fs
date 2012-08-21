@@ -98,32 +98,32 @@ type MatchmediaWatcher(logger : ITracer) =
         x.EndGameAbstract()
     abstract member EndGameAbstract : unit -> unit
 
-/// Observator for a source powered game (and old hl mods)
-type SourceMatchmediaWatcher (logger : ITracer, modPath:string, sourceGame:bool) = 
+type GenericMatchmediaWatcher (logger : ITracer, folders : List<string * string>, notification:string option) = 
     inherit MatchmediaWatcher(logger)
-
-    override x.FileChanged path = logger.logVerb "Media %s changed" path
+    
+    override x.FileChanged path = 
+        logger.logVerb "Media %s changed" path
 
     override x.StartGameAbstract() = 
-        logger.logVerb "Starting watching in %s" modPath
-        x.BasicWatchFolder modPath "*.dem"
-        x.BasicWatchFolder modPath (if sourceGame then "*.jpg" else "*.bmp")
+        for path, filter in folders do
+            logger.logVerb "Starting watching in %s (with filter: %s)" path filter
+            x.BasicWatchFolder path filter
 
     override x.EndGameAbstract() = ()
 
     
+/// Observator for a source powered game (and old hl mods)
+type SourceMatchmediaWatcher (logger : ITracer, modPath:string, sourceGame:bool) = 
+    inherit GenericMatchmediaWatcher(
+        logger, 
+        [modPath, "*.dem"; modPath, (if sourceGame then "*.jpg" else "*.bmp")], 
+        Some "*.dem")
+    
 type Starcraft2MediaWatcher(logger: ITracer) = 
-    inherit MatchmediaWatcher(logger)
-
-    override x.FileChanged path = logger.logVerb "Media %s changed" path
-
-    override x.StartGameAbstract() = 
-        let modPath = 
-            Path.Combine(
+    inherit GenericMatchmediaWatcher(
+        logger, 
+        [ Path.Combine(
                 System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
-                "StarCraft II")
-        logger.logVerb "Starting watching in %s" modPath
-        x.BasicWatchFolder modPath "*.SC2Replay"
-
-    override x.EndGameAbstract() = ()
+                "StarCraft II"), "*.SC2Replay" ],
+        None)
 
