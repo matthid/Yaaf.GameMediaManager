@@ -222,6 +222,15 @@ type ReplayWirePlugin() as x =
                     System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
                     "ESL Match Media")
             Settings.Default.Save()
+
+        #if DEBUG
+        let dir = Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly().Location)
+        let winFormGui = System.Reflection.Assembly.LoadFile(Path.Combine(dir, "Yaaf.WirePlugin.WinFormGui.dll"))
+        System.AppDomain.CurrentDomain.add_AssemblyResolve
+            (System.ResolveEventHandler(fun o e -> if e.Name.StartsWith("Yaaf.WirePlugin.WinFormGui") then winFormGui else null))
+
+        #endif
+
     member x.GameInterface 
         with get() : GameInterface = 
             match gameInterface with

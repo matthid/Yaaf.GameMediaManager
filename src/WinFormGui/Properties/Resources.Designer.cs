@@ -347,7 +347,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Report Bug ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Report Bug or Request Feature ähnelt.
         /// </summary>
         public static string ReportBug {
             get {

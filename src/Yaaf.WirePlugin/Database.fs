@@ -8,11 +8,13 @@ module Database =
     open System.IO
     open Microsoft.FSharp.Linq
     open Yaaf.WirePlugin.WinFormGui
+    let pluginFolder =
+            [ System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
+                "Yaaf"; "WirePlugin" ] |> pathCombine
     let db = 
         let dbFileName = "LocalDatabase.sdf"
         let dbFile =
-            [ System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
-                "Yaaf"; "WirePlugin"; dbFileName ] |> pathCombine
+            [ pluginFolder; dbFileName ] |> pathCombine
         
         if not <| File.Exists dbFile then
             if File.Exists dbFileName then
@@ -40,7 +42,22 @@ module Database =
                     if a.Id = id then
                         yield a } @>
     
-    let mediaPath (m:Database.Matchmedia) = "test"
+    let mediaPath (m:Database.Matchmedia) = 
+        let innerPath = 
+            System.String.Format(
+                "{1}{0}{2}{0}{3} ({4}){5}",
+                Path.DirectorySeparatorChar,
+                m.MatchSession.Game.Shortname,
+                m.MatchSession.Id,
+                m.Name,
+                m.Id,
+                m.Type)
+
+        let mediaPath = [ pluginFolder; "media"; innerPath ] |> pathCombine
+        let dir = Path.GetDirectoryName mediaPath
+        if not <| Directory.Exists dir then
+            Directory.CreateDirectory dir |> ignore
+        mediaPath
 
     let getActivatedMatchFormActions isWar (game : Database.Game) = 
         <@ seq {

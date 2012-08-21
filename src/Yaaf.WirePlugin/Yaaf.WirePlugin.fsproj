@@ -78,6 +78,8 @@
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\WinFormGui\Yaaf.WirePlugin.WinFormGui.csproj">
       <Name>Yaaf.WirePlugin.WinFormGui</Name>
       <Project>{e138ffd4-1a33-458e-a93c-1d8373756c86}</Project>
