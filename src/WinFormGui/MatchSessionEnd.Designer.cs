@@ -43,6 +43,7 @@
             this.Map = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.addMatchmediaButton = new System.Windows.Forms.Button();
             this.managePlayersButton = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // eslMatchCheckBox
@@ -96,6 +97,7 @@
             // 
             // deleteMatchmediaButton
             // 
+            this.deleteMatchmediaButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             resources.ApplyResources(this.deleteMatchmediaButton, "deleteMatchmediaButton");
             this.deleteMatchmediaButton.Name = "deleteMatchmediaButton";
             this.deleteMatchmediaButton.UseVisualStyleBackColor = true;
@@ -127,12 +129,19 @@
             resources.ApplyResources(this.managePlayersButton, "managePlayersButton");
             this.managePlayersButton.Name = "managePlayersButton";
             // 
+            // checkBox1
+            // 
+            resources.ApplyResources(this.checkBox1, "checkBox1");
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // MatchSessionEnd
             // 
             this.AcceptButton = this.saveMatchmediaButton;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.deleteMatchmediaButton;
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.managePlayersButton);
             this.Controls.Add(this.addMatchmediaButton);
             this.Controls.Add(this.deleteMatchmediaButton);
@@ -165,5 +174,6 @@
         private System.Windows.Forms.ColumnHeader Map;
         private System.Windows.Forms.Button addMatchmediaButton;
         private System.Windows.Forms.Button managePlayersButton;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

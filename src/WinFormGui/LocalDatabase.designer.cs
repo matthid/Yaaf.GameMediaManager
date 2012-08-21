@@ -22,7 +22,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 	using System;
 	
 	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="D:\\Projects\\Aktuell\\WireYaafCssPlugin\\Yaaf\\src\\WinFormGui\\LocalDatabase.sdf")]
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="D:\\projects\\aktuell\\wireyaafcssplugin\\yaaf\\src\\WinFormGui\\LocalDatabase.sdf")]
 	public partial class LocalDatabaseDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -45,9 +45,33 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void InsertMatchFormAction(MatchFormAction instance);
     partial void UpdateMatchFormAction(MatchFormAction instance);
     partial void DeleteMatchFormAction(MatchFormAction instance);
+    partial void InsertMatchmedia(Matchmedia instance);
+    partial void UpdateMatchmedia(Matchmedia instance);
+    partial void DeleteMatchmedia(Matchmedia instance);
+    partial void InsertMatchmedia_Tag(Matchmedia_Tag instance);
+    partial void UpdateMatchmedia_Tag(Matchmedia_Tag instance);
+    partial void DeleteMatchmedia_Tag(Matchmedia_Tag instance);
+    partial void InsertMatchSession(MatchSession instance);
+    partial void UpdateMatchSession(MatchSession instance);
+    partial void DeleteMatchSession(MatchSession instance);
+    partial void InsertMatchSessions_Player(MatchSessions_Player instance);
+    partial void UpdateMatchSessions_Player(MatchSessions_Player instance);
+    partial void DeleteMatchSessions_Player(MatchSessions_Player instance);
+    partial void InsertMatchSessions_Tag(MatchSessions_Tag instance);
+    partial void UpdateMatchSessions_Tag(MatchSessions_Tag instance);
+    partial void DeleteMatchSessions_Tag(MatchSessions_Tag instance);
     partial void InsertObjectParameter(ObjectParameter instance);
     partial void UpdateObjectParameter(ObjectParameter instance);
     partial void DeleteObjectParameter(ObjectParameter instance);
+    partial void InsertPlayer_Tag(Player_Tag instance);
+    partial void UpdatePlayer_Tag(Player_Tag instance);
+    partial void DeletePlayer_Tag(Player_Tag instance);
+    partial void InsertPlayer(Player instance);
+    partial void UpdatePlayer(Player instance);
+    partial void DeletePlayer(Player instance);
+    partial void InsertTag(Tag instance);
+    partial void UpdateTag(Tag instance);
+    partial void DeleteTag(Tag instance);
     partial void InsertWatchFolder(WatchFolder instance);
     partial void UpdateWatchFolder(WatchFolder instance);
     partial void DeleteWatchFolder(WatchFolder instance);
@@ -117,11 +141,75 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
+		public System.Data.Linq.Table<Matchmedia> Matchmedias
+		{
+			get
+			{
+				return this.GetTable<Matchmedia>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Matchmedia_Tag> Matchmedia_Tags
+		{
+			get
+			{
+				return this.GetTable<Matchmedia_Tag>();
+			}
+		}
+		
+		public System.Data.Linq.Table<MatchSession> MatchSessions
+		{
+			get
+			{
+				return this.GetTable<MatchSession>();
+			}
+		}
+		
+		public System.Data.Linq.Table<MatchSessions_Player> MatchSessions_Players
+		{
+			get
+			{
+				return this.GetTable<MatchSessions_Player>();
+			}
+		}
+		
+		public System.Data.Linq.Table<MatchSessions_Tag> MatchSessions_Tags
+		{
+			get
+			{
+				return this.GetTable<MatchSessions_Tag>();
+			}
+		}
+		
 		public System.Data.Linq.Table<ObjectParameter> ObjectParameters
 		{
 			get
 			{
 				return this.GetTable<ObjectParameter>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Player_Tag> Player_Tags
+		{
+			get
+			{
+				return this.GetTable<Player_Tag>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Player> Players
+		{
+			get
+			{
+				return this.GetTable<Player>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Tag> Tags
+		{
+			get
+			{
+				return this.GetTable<Tag>();
 			}
 		}
 		
@@ -288,6 +376,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private EntitySet<ObjectParameter> _ObjectParameter;
 		
+		private EntitySet<MatchFormAction> _MatchFormAction;
+		
 		private EntityRef<Action> _Action;
 		
 		private EntityRef<Filter> _Filter;
@@ -309,6 +399,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		public ActionObject()
 		{
 			this._ObjectParameter = new EntitySet<ObjectParameter>(new Action<ObjectParameter>(this.attach_ObjectParameter), new Action<ObjectParameter>(this.detach_ObjectParameter));
+			this._MatchFormAction = new EntitySet<MatchFormAction>(new Action<MatchFormAction>(this.attach_MatchFormAction), new Action<MatchFormAction>(this.detach_MatchFormAction));
 			this._Action = default(EntityRef<Action>);
 			this._Filter = default(EntityRef<Filter>);
 			OnCreated();
@@ -345,7 +436,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				if ((this._ActionId != value))
 				{
-					if ((this._Action.HasLoadedOrAssignedValue || this._Filter.HasLoadedOrAssignedValue))
+					if (this._Action.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -369,6 +460,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				if ((this._FilterId != value))
 				{
+					if (this._Filter.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnFilterIdChanging(value);
 					this.SendPropertyChanging();
 					this._FilterId = value;
@@ -411,6 +506,19 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_MatchFormAction", Storage="_MatchFormAction", ThisKey="Id", OtherKey="ActionObjectId")]
+		public EntitySet<MatchFormAction> MatchFormAction
+		{
+			get
+			{
+				return this._MatchFormAction;
+			}
+			set
+			{
+				this._MatchFormAction.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Action_ActionObject", Storage="_Action", ThisKey="ActionId", OtherKey="Id", IsForeignKey=true)]
 		public Action Action
 		{
@@ -445,7 +553,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Filter_ActionObject", Storage="_Filter", ThisKey="ActionId", OtherKey="Id", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Filter_ActionObject", Storage="_Filter", ThisKey="FilterId", OtherKey="Id", IsForeignKey=true)]
 		public Filter Filter
 		{
 			get
@@ -468,11 +576,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 					if ((value != null))
 					{
 						value.ActionObject.Add(this);
-						this._ActionId = value.Id;
+						this._FilterId = value.Id;
 					}
 					else
 					{
-						this._ActionId = default(int);
+						this._FilterId = default(int);
 					}
 					this.SendPropertyChanged("Filter");
 				}
@@ -506,6 +614,18 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		}
 		
 		private void detach_ObjectParameter(ObjectParameter entity)
+		{
+			this.SendPropertyChanging();
+			entity.ActionObject = null;
+		}
+		
+		private void attach_MatchFormAction(MatchFormAction entity)
+		{
+			this.SendPropertyChanging();
+			entity.ActionObject = this;
+		}
+		
+		private void detach_MatchFormAction(MatchFormAction entity)
 		{
 			this.SendPropertyChanging();
 			entity.ActionObject = null;
@@ -604,7 +724,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Filter_ActionObject", Storage="_ActionObject", ThisKey="Id", OtherKey="ActionId")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Filter_ActionObject", Storage="_ActionObject", ThisKey="Id", OtherKey="FilterId")]
 		public EntitySet<ActionObject> ActionObject
 		{
 			get
@@ -670,6 +790,12 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private bool _EnableWarMatchForm;
 		
+		private EntitySet<WatchFolder> _WatchFolder;
+		
+		private EntitySet<MatchFormAction> _MatchFormAction;
+		
+		private EntitySet<MatchSession> _MatchSession;
+		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -692,6 +818,9 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		public Game()
 		{
+			this._WatchFolder = new EntitySet<WatchFolder>(new Action<WatchFolder>(this.attach_WatchFolder), new Action<WatchFolder>(this.detach_WatchFolder));
+			this._MatchFormAction = new EntitySet<MatchFormAction>(new Action<MatchFormAction>(this.attach_MatchFormAction), new Action<MatchFormAction>(this.detach_MatchFormAction));
+			this._MatchSession = new EntitySet<MatchSession>(new Action<MatchSession>(this.attach_MatchSession), new Action<MatchSession>(this.detach_MatchSession));
 			OnCreated();
 		}
 		
@@ -835,6 +964,45 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Game_WatchFolder", Storage="_WatchFolder", ThisKey="Id", OtherKey="GameId")]
+		public EntitySet<WatchFolder> WatchFolder
+		{
+			get
+			{
+				return this._WatchFolder;
+			}
+			set
+			{
+				this._WatchFolder.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Game_MatchFormAction", Storage="_MatchFormAction", ThisKey="Id", OtherKey="GameId")]
+		public EntitySet<MatchFormAction> MatchFormAction
+		{
+			get
+			{
+				return this._MatchFormAction;
+			}
+			set
+			{
+				this._MatchFormAction.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Game_MatchSession", Storage="_MatchSession", ThisKey="Id", OtherKey="GameId")]
+		public EntitySet<MatchSession> MatchSession
+		{
+			get
+			{
+				return this._MatchSession;
+			}
+			set
+			{
+				this._MatchSession.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -853,6 +1021,42 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_WatchFolder(WatchFolder entity)
+		{
+			this.SendPropertyChanging();
+			entity.Game = this;
+		}
+		
+		private void detach_WatchFolder(WatchFolder entity)
+		{
+			this.SendPropertyChanging();
+			entity.Game = null;
+		}
+		
+		private void attach_MatchFormAction(MatchFormAction entity)
+		{
+			this.SendPropertyChanging();
+			entity.Game = this;
+		}
+		
+		private void detach_MatchFormAction(MatchFormAction entity)
+		{
+			this.SendPropertyChanging();
+			entity.Game = null;
+		}
+		
+		private void attach_MatchSession(MatchSession entity)
+		{
+			this.SendPropertyChanging();
+			entity.Game = this;
+		}
+		
+		private void detach_MatchSession(MatchSession entity)
+		{
+			this.SendPropertyChanging();
+			entity.Game = null;
 		}
 	}
 	
@@ -874,6 +1078,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private bool _SetPublicDefault;
 		
+		private EntityRef<Game> _Game;
+		
+		private EntityRef<ActionObject> _ActionObject;
+		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -894,6 +1102,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		public MatchFormAction()
 		{
+			this._Game = default(EntityRef<Game>);
+			this._ActionObject = default(EntityRef<ActionObject>);
 			OnCreated();
 		}
 		
@@ -928,6 +1138,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				if ((this._GameId != value))
 				{
+					if (this._Game.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnGameIdChanging(value);
 					this.SendPropertyChanging();
 					this._GameId = value;
@@ -948,6 +1162,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				if ((this._ActionObjectId != value))
 				{
+					if (this._ActionObject.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnActionObjectIdChanging(value);
 					this.SendPropertyChanging();
 					this._ActionObjectId = value;
@@ -1013,6 +1231,1208 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 					this._SetPublicDefault = value;
 					this.SendPropertyChanged("SetPublicDefault");
 					this.OnSetPublicDefaultChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Game_MatchFormAction", Storage="_Game", ThisKey="GameId", OtherKey="Id", IsForeignKey=true)]
+		public Game Game
+		{
+			get
+			{
+				return this._Game.Entity;
+			}
+			set
+			{
+				Game previousValue = this._Game.Entity;
+				if (((previousValue != value) 
+							|| (this._Game.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Game.Entity = null;
+						previousValue.MatchFormAction.Remove(this);
+					}
+					this._Game.Entity = value;
+					if ((value != null))
+					{
+						value.MatchFormAction.Add(this);
+						this._GameId = value.Id;
+					}
+					else
+					{
+						this._GameId = default(int);
+					}
+					this.SendPropertyChanged("Game");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_MatchFormAction", Storage="_ActionObject", ThisKey="ActionObjectId", OtherKey="Id", IsForeignKey=true)]
+		public ActionObject ActionObject
+		{
+			get
+			{
+				return this._ActionObject.Entity;
+			}
+			set
+			{
+				ActionObject previousValue = this._ActionObject.Entity;
+				if (((previousValue != value) 
+							|| (this._ActionObject.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ActionObject.Entity = null;
+						previousValue.MatchFormAction.Remove(this);
+					}
+					this._ActionObject.Entity = value;
+					if ((value != null))
+					{
+						value.MatchFormAction.Add(this);
+						this._ActionObjectId = value.Id;
+					}
+					else
+					{
+						this._ActionObjectId = default(int);
+					}
+					this.SendPropertyChanged("ActionObject");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute()]
+	public partial class Matchmedia : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private string _Name;
+		
+		private string _Type;
+		
+		private int _MatchSessionId;
+		
+		private string _Map;
+		
+		private string _Path;
+		
+		private EntitySet<Matchmedia_Tag> _Matchmedia_Tag;
+		
+		private EntityRef<MatchSession> _MatchSession;
+		
+    #region Definitionen der Erweiterungsmethoden
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnTypeChanging(string value);
+    partial void OnTypeChanged();
+    partial void OnMatchSessionIdChanging(int value);
+    partial void OnMatchSessionIdChanged();
+    partial void OnMapChanging(string value);
+    partial void OnMapChanged();
+    partial void OnPathChanging(string value);
+    partial void OnPathChanged();
+    #endregion
+		
+		public Matchmedia()
+		{
+			this._Matchmedia_Tag = new EntitySet<Matchmedia_Tag>(new Action<Matchmedia_Tag>(this.attach_Matchmedia_Tag), new Action<Matchmedia_Tag>(this.detach_Matchmedia_Tag));
+			this._MatchSession = default(EntityRef<MatchSession>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100)")]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string Type
+		{
+			get
+			{
+				return this._Type;
+			}
+			set
+			{
+				if ((this._Type != value))
+				{
+					this.OnTypeChanging(value);
+					this.SendPropertyChanging();
+					this._Type = value;
+					this.SendPropertyChanged("Type");
+					this.OnTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MatchSessionId", DbType="Int NOT NULL")]
+		public int MatchSessionId
+		{
+			get
+			{
+				return this._MatchSessionId;
+			}
+			set
+			{
+				if ((this._MatchSessionId != value))
+				{
+					if (this._MatchSession.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnMatchSessionIdChanging(value);
+					this.SendPropertyChanging();
+					this._MatchSessionId = value;
+					this.SendPropertyChanged("MatchSessionId");
+					this.OnMatchSessionIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Map", DbType="NVarChar(100)")]
+		public string Map
+		{
+			get
+			{
+				return this._Map;
+			}
+			set
+			{
+				if ((this._Map != value))
+				{
+					this.OnMapChanging(value);
+					this.SendPropertyChanging();
+					this._Map = value;
+					this.SendPropertyChanged("Map");
+					this.OnMapChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Path", DbType="NVarChar(1000)")]
+		public string Path
+		{
+			get
+			{
+				return this._Path;
+			}
+			set
+			{
+				if ((this._Path != value))
+				{
+					this.OnPathChanging(value);
+					this.SendPropertyChanging();
+					this._Path = value;
+					this.SendPropertyChanged("Path");
+					this.OnPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Matchmedia_Matchmedia_Tag", Storage="_Matchmedia_Tag", ThisKey="Id", OtherKey="MatchmediaId")]
+		public EntitySet<Matchmedia_Tag> Matchmedia_Tag
+		{
+			get
+			{
+				return this._Matchmedia_Tag;
+			}
+			set
+			{
+				this._Matchmedia_Tag.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MatchSession_Matchmedia", Storage="_MatchSession", ThisKey="MatchSessionId", OtherKey="Id", IsForeignKey=true)]
+		public MatchSession MatchSession
+		{
+			get
+			{
+				return this._MatchSession.Entity;
+			}
+			set
+			{
+				MatchSession previousValue = this._MatchSession.Entity;
+				if (((previousValue != value) 
+							|| (this._MatchSession.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._MatchSession.Entity = null;
+						previousValue.Matchmedia.Remove(this);
+					}
+					this._MatchSession.Entity = value;
+					if ((value != null))
+					{
+						value.Matchmedia.Add(this);
+						this._MatchSessionId = value.Id;
+					}
+					else
+					{
+						this._MatchSessionId = default(int);
+					}
+					this.SendPropertyChanged("MatchSession");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Matchmedia_Tag(Matchmedia_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Matchmedia = this;
+		}
+		
+		private void detach_Matchmedia_Tag(Matchmedia_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Matchmedia = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="Matchmedia_Tags")]
+	public partial class Matchmedia_Tag : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _MatchmediaId;
+		
+		private int _TagId;
+		
+		private EntityRef<Matchmedia> _Matchmedia;
+		
+		private EntityRef<Tag> _Tag;
+		
+    #region Definitionen der Erweiterungsmethoden
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnMatchmediaIdChanging(int value);
+    partial void OnMatchmediaIdChanged();
+    partial void OnTagIdChanging(int value);
+    partial void OnTagIdChanged();
+    #endregion
+		
+		public Matchmedia_Tag()
+		{
+			this._Matchmedia = default(EntityRef<Matchmedia>);
+			this._Tag = default(EntityRef<Tag>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MatchmediaId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int MatchmediaId
+		{
+			get
+			{
+				return this._MatchmediaId;
+			}
+			set
+			{
+				if ((this._MatchmediaId != value))
+				{
+					if (this._Matchmedia.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnMatchmediaIdChanging(value);
+					this.SendPropertyChanging();
+					this._MatchmediaId = value;
+					this.SendPropertyChanged("MatchmediaId");
+					this.OnMatchmediaIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TagId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int TagId
+		{
+			get
+			{
+				return this._TagId;
+			}
+			set
+			{
+				if ((this._TagId != value))
+				{
+					if (this._Tag.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnTagIdChanging(value);
+					this.SendPropertyChanging();
+					this._TagId = value;
+					this.SendPropertyChanged("TagId");
+					this.OnTagIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Matchmedia_Matchmedia_Tag", Storage="_Matchmedia", ThisKey="MatchmediaId", OtherKey="Id", IsForeignKey=true)]
+		public Matchmedia Matchmedia
+		{
+			get
+			{
+				return this._Matchmedia.Entity;
+			}
+			set
+			{
+				Matchmedia previousValue = this._Matchmedia.Entity;
+				if (((previousValue != value) 
+							|| (this._Matchmedia.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Matchmedia.Entity = null;
+						previousValue.Matchmedia_Tag.Remove(this);
+					}
+					this._Matchmedia.Entity = value;
+					if ((value != null))
+					{
+						value.Matchmedia_Tag.Add(this);
+						this._MatchmediaId = value.Id;
+					}
+					else
+					{
+						this._MatchmediaId = default(int);
+					}
+					this.SendPropertyChanged("Matchmedia");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_Matchmedia_Tag", Storage="_Tag", ThisKey="TagId", OtherKey="Id", IsForeignKey=true)]
+		public Tag Tag
+		{
+			get
+			{
+				return this._Tag.Entity;
+			}
+			set
+			{
+				Tag previousValue = this._Tag.Entity;
+				if (((previousValue != value) 
+							|| (this._Tag.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Tag.Entity = null;
+						previousValue.Matchmedia_Tag.Remove(this);
+					}
+					this._Tag.Entity = value;
+					if ((value != null))
+					{
+						value.Matchmedia_Tag.Add(this);
+						this._TagId = value.Id;
+					}
+					else
+					{
+						this._TagId = default(int);
+					}
+					this.SendPropertyChanged("Tag");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="MatchSessions")]
+	public partial class MatchSession : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private int _GameId;
+		
+		private System.Nullable<int> _EslMatchId;
+		
+		private System.DateTime _Startdate;
+		
+		private int _Duration;
+		
+		private EntitySet<MatchSessions_Tag> _MatchSessions_Tag;
+		
+		private EntitySet<MatchSessions_Player> _MatchSessions_Player;
+		
+		private EntitySet<Matchmedia> _Matchmedia;
+		
+		private EntityRef<Game> _Game;
+		
+    #region Definitionen der Erweiterungsmethoden
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnGameIdChanging(int value);
+    partial void OnGameIdChanged();
+    partial void OnEslMatchIdChanging(System.Nullable<int> value);
+    partial void OnEslMatchIdChanged();
+    partial void OnStartdateChanging(System.DateTime value);
+    partial void OnStartdateChanged();
+    partial void OnDurationChanging(int value);
+    partial void OnDurationChanged();
+    #endregion
+		
+		public MatchSession()
+		{
+			this._MatchSessions_Tag = new EntitySet<MatchSessions_Tag>(new Action<MatchSessions_Tag>(this.attach_MatchSessions_Tag), new Action<MatchSessions_Tag>(this.detach_MatchSessions_Tag));
+			this._MatchSessions_Player = new EntitySet<MatchSessions_Player>(new Action<MatchSessions_Player>(this.attach_MatchSessions_Player), new Action<MatchSessions_Player>(this.detach_MatchSessions_Player));
+			this._Matchmedia = new EntitySet<Matchmedia>(new Action<Matchmedia>(this.attach_Matchmedia), new Action<Matchmedia>(this.detach_Matchmedia));
+			this._Game = default(EntityRef<Game>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GameId", DbType="Int NOT NULL")]
+		public int GameId
+		{
+			get
+			{
+				return this._GameId;
+			}
+			set
+			{
+				if ((this._GameId != value))
+				{
+					if (this._Game.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnGameIdChanging(value);
+					this.SendPropertyChanging();
+					this._GameId = value;
+					this.SendPropertyChanged("GameId");
+					this.OnGameIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EslMatchId", DbType="Int")]
+		public System.Nullable<int> EslMatchId
+		{
+			get
+			{
+				return this._EslMatchId;
+			}
+			set
+			{
+				if ((this._EslMatchId != value))
+				{
+					this.OnEslMatchIdChanging(value);
+					this.SendPropertyChanging();
+					this._EslMatchId = value;
+					this.SendPropertyChanged("EslMatchId");
+					this.OnEslMatchIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Startdate", DbType="DateTime NOT NULL")]
+		public System.DateTime Startdate
+		{
+			get
+			{
+				return this._Startdate;
+			}
+			set
+			{
+				if ((this._Startdate != value))
+				{
+					this.OnStartdateChanging(value);
+					this.SendPropertyChanging();
+					this._Startdate = value;
+					this.SendPropertyChanged("Startdate");
+					this.OnStartdateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Duration", DbType="Int NOT NULL")]
+		public int Duration
+		{
+			get
+			{
+				return this._Duration;
+			}
+			set
+			{
+				if ((this._Duration != value))
+				{
+					this.OnDurationChanging(value);
+					this.SendPropertyChanging();
+					this._Duration = value;
+					this.SendPropertyChanged("Duration");
+					this.OnDurationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MatchSession_MatchSessions_Tag", Storage="_MatchSessions_Tag", ThisKey="Id", OtherKey="MatchSessionId")]
+		public EntitySet<MatchSessions_Tag> MatchSessions_Tag
+		{
+			get
+			{
+				return this._MatchSessions_Tag;
+			}
+			set
+			{
+				this._MatchSessions_Tag.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MatchSession_MatchSessions_Player", Storage="_MatchSessions_Player", ThisKey="Id", OtherKey="MatchSessionId")]
+		public EntitySet<MatchSessions_Player> MatchSessions_Player
+		{
+			get
+			{
+				return this._MatchSessions_Player;
+			}
+			set
+			{
+				this._MatchSessions_Player.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MatchSession_Matchmedia", Storage="_Matchmedia", ThisKey="Id", OtherKey="MatchSessionId")]
+		public EntitySet<Matchmedia> Matchmedia
+		{
+			get
+			{
+				return this._Matchmedia;
+			}
+			set
+			{
+				this._Matchmedia.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Game_MatchSession", Storage="_Game", ThisKey="GameId", OtherKey="Id", IsForeignKey=true)]
+		public Game Game
+		{
+			get
+			{
+				return this._Game.Entity;
+			}
+			set
+			{
+				Game previousValue = this._Game.Entity;
+				if (((previousValue != value) 
+							|| (this._Game.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Game.Entity = null;
+						previousValue.MatchSession.Remove(this);
+					}
+					this._Game.Entity = value;
+					if ((value != null))
+					{
+						value.MatchSession.Add(this);
+						this._GameId = value.Id;
+					}
+					else
+					{
+						this._GameId = default(int);
+					}
+					this.SendPropertyChanged("Game");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_MatchSessions_Tag(MatchSessions_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.MatchSession = this;
+		}
+		
+		private void detach_MatchSessions_Tag(MatchSessions_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.MatchSession = null;
+		}
+		
+		private void attach_MatchSessions_Player(MatchSessions_Player entity)
+		{
+			this.SendPropertyChanging();
+			entity.MatchSession = this;
+		}
+		
+		private void detach_MatchSessions_Player(MatchSessions_Player entity)
+		{
+			this.SendPropertyChanging();
+			entity.MatchSession = null;
+		}
+		
+		private void attach_Matchmedia(Matchmedia entity)
+		{
+			this.SendPropertyChanging();
+			entity.MatchSession = this;
+		}
+		
+		private void detach_Matchmedia(Matchmedia entity)
+		{
+			this.SendPropertyChanging();
+			entity.MatchSession = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="MatchSessions_Players")]
+	public partial class MatchSessions_Player : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _MatchSessionId;
+		
+		private int _PlayerId;
+		
+		private byte _Team;
+		
+		private System.Nullable<byte> _Skill;
+		
+		private string _Description;
+		
+		private bool _Cheating;
+		
+		private EntityRef<MatchSession> _MatchSession;
+		
+		private EntityRef<Player> _Player;
+		
+    #region Definitionen der Erweiterungsmethoden
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnMatchSessionIdChanging(int value);
+    partial void OnMatchSessionIdChanged();
+    partial void OnPlayerIdChanging(int value);
+    partial void OnPlayerIdChanged();
+    partial void OnTeamChanging(byte value);
+    partial void OnTeamChanged();
+    partial void OnSkillChanging(System.Nullable<byte> value);
+    partial void OnSkillChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnCheatingChanging(bool value);
+    partial void OnCheatingChanged();
+    #endregion
+		
+		public MatchSessions_Player()
+		{
+			this._MatchSession = default(EntityRef<MatchSession>);
+			this._Player = default(EntityRef<Player>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MatchSessionId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int MatchSessionId
+		{
+			get
+			{
+				return this._MatchSessionId;
+			}
+			set
+			{
+				if ((this._MatchSessionId != value))
+				{
+					if (this._MatchSession.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnMatchSessionIdChanging(value);
+					this.SendPropertyChanging();
+					this._MatchSessionId = value;
+					this.SendPropertyChanged("MatchSessionId");
+					this.OnMatchSessionIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlayerId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int PlayerId
+		{
+			get
+			{
+				return this._PlayerId;
+			}
+			set
+			{
+				if ((this._PlayerId != value))
+				{
+					if (this._Player.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPlayerIdChanging(value);
+					this.SendPropertyChanging();
+					this._PlayerId = value;
+					this.SendPropertyChanged("PlayerId");
+					this.OnPlayerIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Team", DbType="TinyInt NOT NULL")]
+		public byte Team
+		{
+			get
+			{
+				return this._Team;
+			}
+			set
+			{
+				if ((this._Team != value))
+				{
+					this.OnTeamChanging(value);
+					this.SendPropertyChanging();
+					this._Team = value;
+					this.SendPropertyChanged("Team");
+					this.OnTeamChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Skill", DbType="TinyInt")]
+		public System.Nullable<byte> Skill
+		{
+			get
+			{
+				return this._Skill;
+			}
+			set
+			{
+				if ((this._Skill != value))
+				{
+					this.OnSkillChanging(value);
+					this.SendPropertyChanging();
+					this._Skill = value;
+					this.SendPropertyChanged("Skill");
+					this.OnSkillChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(1000)")]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Cheating", DbType="Bit NOT NULL")]
+		public bool Cheating
+		{
+			get
+			{
+				return this._Cheating;
+			}
+			set
+			{
+				if ((this._Cheating != value))
+				{
+					this.OnCheatingChanging(value);
+					this.SendPropertyChanging();
+					this._Cheating = value;
+					this.SendPropertyChanged("Cheating");
+					this.OnCheatingChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MatchSession_MatchSessions_Player", Storage="_MatchSession", ThisKey="MatchSessionId", OtherKey="Id", IsForeignKey=true)]
+		public MatchSession MatchSession
+		{
+			get
+			{
+				return this._MatchSession.Entity;
+			}
+			set
+			{
+				MatchSession previousValue = this._MatchSession.Entity;
+				if (((previousValue != value) 
+							|| (this._MatchSession.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._MatchSession.Entity = null;
+						previousValue.MatchSessions_Player.Remove(this);
+					}
+					this._MatchSession.Entity = value;
+					if ((value != null))
+					{
+						value.MatchSessions_Player.Add(this);
+						this._MatchSessionId = value.Id;
+					}
+					else
+					{
+						this._MatchSessionId = default(int);
+					}
+					this.SendPropertyChanged("MatchSession");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Player_MatchSessions_Player", Storage="_Player", ThisKey="PlayerId", OtherKey="Id", IsForeignKey=true)]
+		public Player Player
+		{
+			get
+			{
+				return this._Player.Entity;
+			}
+			set
+			{
+				Player previousValue = this._Player.Entity;
+				if (((previousValue != value) 
+							|| (this._Player.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Player.Entity = null;
+						previousValue.MatchSessions_Player.Remove(this);
+					}
+					this._Player.Entity = value;
+					if ((value != null))
+					{
+						value.MatchSessions_Player.Add(this);
+						this._PlayerId = value.Id;
+					}
+					else
+					{
+						this._PlayerId = default(int);
+					}
+					this.SendPropertyChanged("Player");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="MatchSessions_Tags")]
+	public partial class MatchSessions_Tag : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _MatchSessionId;
+		
+		private int _TagId;
+		
+		private EntityRef<MatchSession> _MatchSession;
+		
+		private EntityRef<Tag> _Tag;
+		
+    #region Definitionen der Erweiterungsmethoden
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnMatchSessionIdChanging(int value);
+    partial void OnMatchSessionIdChanged();
+    partial void OnTagIdChanging(int value);
+    partial void OnTagIdChanged();
+    #endregion
+		
+		public MatchSessions_Tag()
+		{
+			this._MatchSession = default(EntityRef<MatchSession>);
+			this._Tag = default(EntityRef<Tag>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MatchSessionId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int MatchSessionId
+		{
+			get
+			{
+				return this._MatchSessionId;
+			}
+			set
+			{
+				if ((this._MatchSessionId != value))
+				{
+					if (this._MatchSession.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnMatchSessionIdChanging(value);
+					this.SendPropertyChanging();
+					this._MatchSessionId = value;
+					this.SendPropertyChanged("MatchSessionId");
+					this.OnMatchSessionIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TagId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int TagId
+		{
+			get
+			{
+				return this._TagId;
+			}
+			set
+			{
+				if ((this._TagId != value))
+				{
+					if (this._Tag.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnTagIdChanging(value);
+					this.SendPropertyChanging();
+					this._TagId = value;
+					this.SendPropertyChanged("TagId");
+					this.OnTagIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MatchSession_MatchSessions_Tag", Storage="_MatchSession", ThisKey="MatchSessionId", OtherKey="Id", IsForeignKey=true)]
+		public MatchSession MatchSession
+		{
+			get
+			{
+				return this._MatchSession.Entity;
+			}
+			set
+			{
+				MatchSession previousValue = this._MatchSession.Entity;
+				if (((previousValue != value) 
+							|| (this._MatchSession.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._MatchSession.Entity = null;
+						previousValue.MatchSessions_Tag.Remove(this);
+					}
+					this._MatchSession.Entity = value;
+					if ((value != null))
+					{
+						value.MatchSessions_Tag.Add(this);
+						this._MatchSessionId = value.Id;
+					}
+					else
+					{
+						this._MatchSessionId = default(int);
+					}
+					this.SendPropertyChanged("MatchSession");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_MatchSessions_Tag", Storage="_Tag", ThisKey="TagId", OtherKey="Id", IsForeignKey=true)]
+		public Tag Tag
+		{
+			get
+			{
+				return this._Tag.Entity;
+			}
+			set
+			{
+				Tag previousValue = this._Tag.Entity;
+				if (((previousValue != value) 
+							|| (this._Tag.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Tag.Entity = null;
+						previousValue.MatchSessions_Tag.Remove(this);
+					}
+					this._Tag.Entity = value;
+					if ((value != null))
+					{
+						value.MatchSessions_Tag.Add(this);
+						this._TagId = value.Id;
+					}
+					else
+					{
+						this._TagId = default(int);
+					}
+					this.SendPropertyChanged("Tag");
 				}
 			}
 		}
@@ -1237,6 +2657,510 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="Player_Tags")]
+	public partial class Player_Tag : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _PlayerId;
+		
+		private int _TagId;
+		
+		private EntityRef<Player> _Player;
+		
+		private EntityRef<Tag> _Tag;
+		
+    #region Definitionen der Erweiterungsmethoden
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnPlayerIdChanging(int value);
+    partial void OnPlayerIdChanged();
+    partial void OnTagIdChanging(int value);
+    partial void OnTagIdChanged();
+    #endregion
+		
+		public Player_Tag()
+		{
+			this._Player = default(EntityRef<Player>);
+			this._Tag = default(EntityRef<Tag>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlayerId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int PlayerId
+		{
+			get
+			{
+				return this._PlayerId;
+			}
+			set
+			{
+				if ((this._PlayerId != value))
+				{
+					if (this._Player.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPlayerIdChanging(value);
+					this.SendPropertyChanging();
+					this._PlayerId = value;
+					this.SendPropertyChanged("PlayerId");
+					this.OnPlayerIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TagId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int TagId
+		{
+			get
+			{
+				return this._TagId;
+			}
+			set
+			{
+				if ((this._TagId != value))
+				{
+					if (this._Tag.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnTagIdChanging(value);
+					this.SendPropertyChanging();
+					this._TagId = value;
+					this.SendPropertyChanged("TagId");
+					this.OnTagIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Player_Player_Tag", Storage="_Player", ThisKey="PlayerId", OtherKey="Id", IsForeignKey=true)]
+		public Player Player
+		{
+			get
+			{
+				return this._Player.Entity;
+			}
+			set
+			{
+				Player previousValue = this._Player.Entity;
+				if (((previousValue != value) 
+							|| (this._Player.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Player.Entity = null;
+						previousValue.Player_Tag.Remove(this);
+					}
+					this._Player.Entity = value;
+					if ((value != null))
+					{
+						value.Player_Tag.Add(this);
+						this._PlayerId = value.Id;
+					}
+					else
+					{
+						this._PlayerId = default(int);
+					}
+					this.SendPropertyChanged("Player");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_Player_Tag", Storage="_Tag", ThisKey="TagId", OtherKey="Id", IsForeignKey=true)]
+		public Tag Tag
+		{
+			get
+			{
+				return this._Tag.Entity;
+			}
+			set
+			{
+				Tag previousValue = this._Tag.Entity;
+				if (((previousValue != value) 
+							|| (this._Tag.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Tag.Entity = null;
+						previousValue.Player_Tag.Remove(this);
+					}
+					this._Tag.Entity = value;
+					if ((value != null))
+					{
+						value.Player_Tag.Add(this);
+						this._TagId = value.Id;
+					}
+					else
+					{
+						this._TagId = default(int);
+					}
+					this.SendPropertyChanged("Tag");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="Players")]
+	public partial class Player : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private string _Name;
+		
+		private System.Nullable<int> _EslPlayerId;
+		
+		private EntitySet<MatchSessions_Player> _MatchSessions_Player;
+		
+		private EntitySet<Player_Tag> _Player_Tag;
+		
+    #region Definitionen der Erweiterungsmethoden
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnEslPlayerIdChanging(System.Nullable<int> value);
+    partial void OnEslPlayerIdChanged();
+    #endregion
+		
+		public Player()
+		{
+			this._MatchSessions_Player = new EntitySet<MatchSessions_Player>(new Action<MatchSessions_Player>(this.attach_MatchSessions_Player), new Action<MatchSessions_Player>(this.detach_MatchSessions_Player));
+			this._Player_Tag = new EntitySet<Player_Tag>(new Action<Player_Tag>(this.attach_Player_Tag), new Action<Player_Tag>(this.detach_Player_Tag));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EslPlayerId", DbType="Int")]
+		public System.Nullable<int> EslPlayerId
+		{
+			get
+			{
+				return this._EslPlayerId;
+			}
+			set
+			{
+				if ((this._EslPlayerId != value))
+				{
+					this.OnEslPlayerIdChanging(value);
+					this.SendPropertyChanging();
+					this._EslPlayerId = value;
+					this.SendPropertyChanged("EslPlayerId");
+					this.OnEslPlayerIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Player_MatchSessions_Player", Storage="_MatchSessions_Player", ThisKey="Id", OtherKey="PlayerId")]
+		public EntitySet<MatchSessions_Player> MatchSessions_Player
+		{
+			get
+			{
+				return this._MatchSessions_Player;
+			}
+			set
+			{
+				this._MatchSessions_Player.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Player_Player_Tag", Storage="_Player_Tag", ThisKey="Id", OtherKey="PlayerId")]
+		public EntitySet<Player_Tag> Player_Tag
+		{
+			get
+			{
+				return this._Player_Tag;
+			}
+			set
+			{
+				this._Player_Tag.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_MatchSessions_Player(MatchSessions_Player entity)
+		{
+			this.SendPropertyChanging();
+			entity.Player = this;
+		}
+		
+		private void detach_MatchSessions_Player(MatchSessions_Player entity)
+		{
+			this.SendPropertyChanging();
+			entity.Player = null;
+		}
+		
+		private void attach_Player_Tag(Player_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Player = this;
+		}
+		
+		private void detach_Player_Tag(Player_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Player = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="Tags")]
+	public partial class Tag : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private string _Name;
+		
+		private EntitySet<MatchSessions_Tag> _MatchSessions_Tag;
+		
+		private EntitySet<Matchmedia_Tag> _Matchmedia_Tag;
+		
+		private EntitySet<Player_Tag> _Player_Tag;
+		
+    #region Definitionen der Erweiterungsmethoden
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    #endregion
+		
+		public Tag()
+		{
+			this._MatchSessions_Tag = new EntitySet<MatchSessions_Tag>(new Action<MatchSessions_Tag>(this.attach_MatchSessions_Tag), new Action<MatchSessions_Tag>(this.detach_MatchSessions_Tag));
+			this._Matchmedia_Tag = new EntitySet<Matchmedia_Tag>(new Action<Matchmedia_Tag>(this.attach_Matchmedia_Tag), new Action<Matchmedia_Tag>(this.detach_Matchmedia_Tag));
+			this._Player_Tag = new EntitySet<Player_Tag>(new Action<Player_Tag>(this.attach_Player_Tag), new Action<Player_Tag>(this.detach_Player_Tag));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100)")]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_MatchSessions_Tag", Storage="_MatchSessions_Tag", ThisKey="Id", OtherKey="TagId")]
+		public EntitySet<MatchSessions_Tag> MatchSessions_Tag
+		{
+			get
+			{
+				return this._MatchSessions_Tag;
+			}
+			set
+			{
+				this._MatchSessions_Tag.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_Matchmedia_Tag", Storage="_Matchmedia_Tag", ThisKey="Id", OtherKey="TagId")]
+		public EntitySet<Matchmedia_Tag> Matchmedia_Tag
+		{
+			get
+			{
+				return this._Matchmedia_Tag;
+			}
+			set
+			{
+				this._Matchmedia_Tag.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_Player_Tag", Storage="_Player_Tag", ThisKey="Id", OtherKey="TagId")]
+		public EntitySet<Player_Tag> Player_Tag
+		{
+			get
+			{
+				return this._Player_Tag;
+			}
+			set
+			{
+				this._Player_Tag.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_MatchSessions_Tag(MatchSessions_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Tag = this;
+		}
+		
+		private void detach_MatchSessions_Tag(MatchSessions_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Tag = null;
+		}
+		
+		private void attach_Matchmedia_Tag(Matchmedia_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Tag = this;
+		}
+		
+		private void detach_Matchmedia_Tag(Matchmedia_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Tag = null;
+		}
+		
+		private void attach_Player_Tag(Player_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Tag = this;
+		}
+		
+		private void detach_Player_Tag(Player_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Tag = null;
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute()]
 	public partial class WatchFolder : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -1248,6 +3172,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		private int _GameId;
 		
 		private string _Folder;
+		
+		private EntityRef<Game> _Game;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -1263,6 +3189,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		public WatchFolder()
 		{
+			this._Game = default(EntityRef<Game>);
 			OnCreated();
 		}
 		
@@ -1297,6 +3224,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				if ((this._GameId != value))
 				{
+					if (this._Game.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnGameIdChanging(value);
 					this.SendPropertyChanging();
 					this._GameId = value;
@@ -1322,6 +3253,40 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 					this._Folder = value;
 					this.SendPropertyChanged("Folder");
 					this.OnFolderChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Game_WatchFolder", Storage="_Game", ThisKey="GameId", OtherKey="Id", IsForeignKey=true)]
+		public Game Game
+		{
+			get
+			{
+				return this._Game.Entity;
+			}
+			set
+			{
+				Game previousValue = this._Game.Entity;
+				if (((previousValue != value) 
+							|| (this._Game.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Game.Entity = null;
+						previousValue.WatchFolder.Remove(this);
+					}
+					this._Game.Entity = value;
+					if ((value != null))
+					{
+						value.WatchFolder.Add(this);
+						this._GameId = value.Id;
+					}
+					else
+					{
+						this._GameId = default(int);
+					}
+					this.SendPropertyChanged("Game");
 				}
 			}
 		}

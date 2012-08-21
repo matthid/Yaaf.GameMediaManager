@@ -78,6 +78,7 @@
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="LocalDatabase.bat" />
     <None Include="LocalDatabase.dbml.layout">
       <DependentUpon>LocalDatabase.dbml</DependentUpon>
     </None>
