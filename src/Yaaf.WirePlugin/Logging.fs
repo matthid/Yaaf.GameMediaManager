@@ -57,14 +57,12 @@ module Logging =
             member x.TraceSource = trace
             member x.ActivityId = activity
 
-    let curry f a b = f (a,b)
-    let uncurry f (a,b) = f a b
     /// The Logging Path
     let logPath = 
         let path = [
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             "Yaaf"; "WirePlugin" ; "log" ]
-                |> List.fold (curry Path.Combine) ""
+                |> pathCombine
         if not <| Directory.Exists path then
             Directory.CreateDirectory path |> ignore
         path

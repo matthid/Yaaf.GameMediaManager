@@ -30,15 +30,12 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnCreated();
-    partial void InsertAction(Action instance);
-    partial void UpdateAction(Action instance);
-    partial void DeleteAction(Action instance);
+    partial void InsertActionAndFilter(ActionAndFilter instance);
+    partial void UpdateActionAndFilter(ActionAndFilter instance);
+    partial void DeleteActionAndFilter(ActionAndFilter instance);
     partial void InsertActionObject(ActionObject instance);
     partial void UpdateActionObject(ActionObject instance);
     partial void DeleteActionObject(ActionObject instance);
-    partial void InsertFilter(Filter instance);
-    partial void UpdateFilter(Filter instance);
-    partial void DeleteFilter(Filter instance);
     partial void InsertGame(Game instance);
     partial void UpdateGame(Game instance);
     partial void DeleteGame(Game instance);
@@ -101,11 +98,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<Action> Actions
+		public System.Data.Linq.Table<ActionAndFilter> ActionAndFilters
 		{
 			get
 			{
-				return this.GetTable<Action>();
+				return this.GetTable<ActionAndFilter>();
 			}
 		}
 		
@@ -114,14 +111,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			get
 			{
 				return this.GetTable<ActionObject>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Filter> Filters
-		{
-			get
-			{
-				return this.GetTable<Filter>();
 			}
 		}
 		
@@ -223,7 +212,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute()]
-	public partial class Action : INotifyPropertyChanging, INotifyPropertyChanged
+	public partial class ActionAndFilter : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
@@ -234,7 +223,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private byte _Parameters;
 		
+		private byte _Type;
+		
 		private EntitySet<ActionObject> _ActionObject;
+		
+		private EntitySet<ActionObject> _ActionObject1;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -246,11 +239,14 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnNameChanged();
     partial void OnParametersChanging(byte value);
     partial void OnParametersChanged();
+    partial void OnTypeChanging(byte value);
+    partial void OnTypeChanged();
     #endregion
 		
-		public Action()
+		public ActionAndFilter()
 		{
 			this._ActionObject = new EntitySet<ActionObject>(new Action<ActionObject>(this.attach_ActionObject), new Action<ActionObject>(this.detach_ActionObject));
+			this._ActionObject1 = new EntitySet<ActionObject>(new Action<ActionObject>(this.attach_ActionObject1), new Action<ActionObject>(this.detach_ActionObject1));
 			OnCreated();
 		}
 		
@@ -274,7 +270,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(128) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -314,7 +310,27 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Action_ActionObject", Storage="_ActionObject", ThisKey="Id", OtherKey="ActionId")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="TinyInt NOT NULL")]
+		public byte Type
+		{
+			get
+			{
+				return this._Type;
+			}
+			set
+			{
+				if ((this._Type != value))
+				{
+					this.OnTypeChanging(value);
+					this.SendPropertyChanging();
+					this._Type = value;
+					this.SendPropertyChanged("Type");
+					this.OnTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionAndFilter_ActionObject", Storage="_ActionObject", ThisKey="Id", OtherKey="ActionId")]
 		public EntitySet<ActionObject> ActionObject
 		{
 			get
@@ -324,6 +340,19 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			set
 			{
 				this._ActionObject.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionAndFilter_ActionObject1", Storage="_ActionObject1", ThisKey="Id", OtherKey="FilterId")]
+		public EntitySet<ActionObject> ActionObject1
+		{
+			get
+			{
+				return this._ActionObject1;
+			}
+			set
+			{
+				this._ActionObject1.Assign(value);
 			}
 		}
 		
@@ -350,13 +379,25 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		private void attach_ActionObject(ActionObject entity)
 		{
 			this.SendPropertyChanging();
-			entity.Action = this;
+			entity.ActionAndFilter = this;
 		}
 		
 		private void detach_ActionObject(ActionObject entity)
 		{
 			this.SendPropertyChanging();
-			entity.Action = null;
+			entity.ActionAndFilter = null;
+		}
+		
+		private void attach_ActionObject1(ActionObject entity)
+		{
+			this.SendPropertyChanging();
+			entity.ActionAndFilter1 = this;
+		}
+		
+		private void detach_ActionObject1(ActionObject entity)
+		{
+			this.SendPropertyChanging();
+			entity.ActionAndFilter1 = null;
 		}
 	}
 	
@@ -374,13 +415,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private string _Name;
 		
-		private EntitySet<ObjectParameter> _ObjectParameter;
+		private EntitySet<ObjectParameter> _ObjectParameter1;
 		
-		private EntitySet<MatchFormAction> _MatchFormAction;
+		private EntityRef<ActionAndFilter> _ActionAndFilter;
 		
-		private EntityRef<Action> _Action;
-		
-		private EntityRef<Filter> _Filter;
+		private EntityRef<ActionAndFilter> _ActionAndFilter1;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -398,10 +437,9 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		public ActionObject()
 		{
-			this._ObjectParameter = new EntitySet<ObjectParameter>(new Action<ObjectParameter>(this.attach_ObjectParameter), new Action<ObjectParameter>(this.detach_ObjectParameter));
-			this._MatchFormAction = new EntitySet<MatchFormAction>(new Action<MatchFormAction>(this.attach_MatchFormAction), new Action<MatchFormAction>(this.detach_MatchFormAction));
-			this._Action = default(EntityRef<Action>);
-			this._Filter = default(EntityRef<Filter>);
+			this._ObjectParameter1 = new EntitySet<ObjectParameter>(new Action<ObjectParameter>(this.attach_ObjectParameter1), new Action<ObjectParameter>(this.detach_ObjectParameter1));
+			this._ActionAndFilter = default(EntityRef<ActionAndFilter>);
+			this._ActionAndFilter1 = default(EntityRef<ActionAndFilter>);
 			OnCreated();
 		}
 		
@@ -436,7 +474,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				if ((this._ActionId != value))
 				{
-					if (this._Action.HasLoadedOrAssignedValue)
+					if (this._ActionAndFilter.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -460,7 +498,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				if ((this._FilterId != value))
 				{
-					if (this._Filter.HasLoadedOrAssignedValue)
+					if (this._ActionAndFilter1.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -493,52 +531,39 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_ObjectParameter", Storage="_ObjectParameter", ThisKey="Id", OtherKey="ObjectId")]
-		public EntitySet<ObjectParameter> ObjectParameter
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_ObjectParameter1", Storage="_ObjectParameter1", ThisKey="Id", OtherKey="LinkedAction")]
+		public EntitySet<ObjectParameter> ObjectParameter1
 		{
 			get
 			{
-				return this._ObjectParameter;
+				return this._ObjectParameter1;
 			}
 			set
 			{
-				this._ObjectParameter.Assign(value);
+				this._ObjectParameter1.Assign(value);
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_MatchFormAction", Storage="_MatchFormAction", ThisKey="Id", OtherKey="ActionObjectId")]
-		public EntitySet<MatchFormAction> MatchFormAction
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionAndFilter_ActionObject", Storage="_ActionAndFilter", ThisKey="ActionId", OtherKey="Id", IsForeignKey=true)]
+		public ActionAndFilter ActionAndFilter
 		{
 			get
 			{
-				return this._MatchFormAction;
+				return this._ActionAndFilter.Entity;
 			}
 			set
 			{
-				this._MatchFormAction.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Action_ActionObject", Storage="_Action", ThisKey="ActionId", OtherKey="Id", IsForeignKey=true)]
-		public Action Action
-		{
-			get
-			{
-				return this._Action.Entity;
-			}
-			set
-			{
-				Action previousValue = this._Action.Entity;
+				ActionAndFilter previousValue = this._ActionAndFilter.Entity;
 				if (((previousValue != value) 
-							|| (this._Action.HasLoadedOrAssignedValue == false)))
+							|| (this._ActionAndFilter.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._Action.Entity = null;
+						this._ActionAndFilter.Entity = null;
 						previousValue.ActionObject.Remove(this);
 					}
-					this._Action.Entity = value;
+					this._ActionAndFilter.Entity = value;
 					if ((value != null))
 					{
 						value.ActionObject.Add(this);
@@ -548,41 +573,41 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 					{
 						this._ActionId = default(int);
 					}
-					this.SendPropertyChanged("Action");
+					this.SendPropertyChanged("ActionAndFilter");
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Filter_ActionObject", Storage="_Filter", ThisKey="FilterId", OtherKey="Id", IsForeignKey=true)]
-		public Filter Filter
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionAndFilter_ActionObject1", Storage="_ActionAndFilter1", ThisKey="FilterId", OtherKey="Id", IsForeignKey=true)]
+		public ActionAndFilter ActionAndFilter1
 		{
 			get
 			{
-				return this._Filter.Entity;
+				return this._ActionAndFilter1.Entity;
 			}
 			set
 			{
-				Filter previousValue = this._Filter.Entity;
+				ActionAndFilter previousValue = this._ActionAndFilter1.Entity;
 				if (((previousValue != value) 
-							|| (this._Filter.HasLoadedOrAssignedValue == false)))
+							|| (this._ActionAndFilter1.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._Filter.Entity = null;
-						previousValue.ActionObject.Remove(this);
+						this._ActionAndFilter1.Entity = null;
+						previousValue.ActionObject1.Remove(this);
 					}
-					this._Filter.Entity = value;
+					this._ActionAndFilter1.Entity = value;
 					if ((value != null))
 					{
-						value.ActionObject.Add(this);
+						value.ActionObject1.Add(this);
 						this._FilterId = value.Id;
 					}
 					else
 					{
 						this._FilterId = default(int);
 					}
-					this.SendPropertyChanged("Filter");
+					this.SendPropertyChanged("ActionAndFilter1");
 				}
 			}
 		}
@@ -607,166 +632,16 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		private void attach_ObjectParameter(ObjectParameter entity)
+		private void attach_ObjectParameter1(ObjectParameter entity)
 		{
 			this.SendPropertyChanging();
-			entity.ActionObject = this;
+			entity.ActionObject1 = this;
 		}
 		
-		private void detach_ObjectParameter(ObjectParameter entity)
+		private void detach_ObjectParameter1(ObjectParameter entity)
 		{
 			this.SendPropertyChanging();
-			entity.ActionObject = null;
-		}
-		
-		private void attach_MatchFormAction(MatchFormAction entity)
-		{
-			this.SendPropertyChanging();
-			entity.ActionObject = this;
-		}
-		
-		private void detach_MatchFormAction(MatchFormAction entity)
-		{
-			this.SendPropertyChanging();
-			entity.ActionObject = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute()]
-	public partial class Filter : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private string _Name;
-		
-		private byte _Parameter;
-		
-		private EntitySet<ActionObject> _ActionObject;
-		
-    #region Definitionen der Erweiterungsmethoden
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
-    partial void OnParameterChanging(byte value);
-    partial void OnParameterChanged();
-    #endregion
-		
-		public Filter()
-		{
-			this._ActionObject = new EntitySet<ActionObject>(new Action<ActionObject>(this.attach_ActionObject), new Action<ActionObject>(this.detach_ActionObject));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(128) NOT NULL", CanBeNull=false)]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
-			set
-			{
-				if ((this._Name != value))
-				{
-					this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Parameter", DbType="TinyInt NOT NULL")]
-		public byte Parameter
-		{
-			get
-			{
-				return this._Parameter;
-			}
-			set
-			{
-				if ((this._Parameter != value))
-				{
-					this.OnParameterChanging(value);
-					this.SendPropertyChanging();
-					this._Parameter = value;
-					this.SendPropertyChanged("Parameter");
-					this.OnParameterChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Filter_ActionObject", Storage="_ActionObject", ThisKey="Id", OtherKey="FilterId")]
-		public EntitySet<ActionObject> ActionObject
-		{
-			get
-			{
-				return this._ActionObject;
-			}
-			set
-			{
-				this._ActionObject.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_ActionObject(ActionObject entity)
-		{
-			this.SendPropertyChanging();
-			entity.Filter = this;
-		}
-		
-		private void detach_ActionObject(ActionObject entity)
-		{
-			this.SendPropertyChanging();
-			entity.Filter = null;
+			entity.ActionObject1 = null;
 		}
 	}
 	
@@ -790,11 +665,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private bool _EnableWarMatchForm;
 		
-		private EntitySet<WatchFolder> _WatchFolder;
-		
 		private EntitySet<MatchFormAction> _MatchFormAction;
 		
 		private EntitySet<MatchSession> _MatchSession;
+		
+		private EntitySet<WatchFolder> _WatchFolder;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -818,9 +693,9 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		public Game()
 		{
-			this._WatchFolder = new EntitySet<WatchFolder>(new Action<WatchFolder>(this.attach_WatchFolder), new Action<WatchFolder>(this.detach_WatchFolder));
 			this._MatchFormAction = new EntitySet<MatchFormAction>(new Action<MatchFormAction>(this.attach_MatchFormAction), new Action<MatchFormAction>(this.detach_MatchFormAction));
 			this._MatchSession = new EntitySet<MatchSession>(new Action<MatchSession>(this.attach_MatchSession), new Action<MatchSession>(this.detach_MatchSession));
+			this._WatchFolder = new EntitySet<WatchFolder>(new Action<WatchFolder>(this.attach_WatchFolder), new Action<WatchFolder>(this.detach_WatchFolder));
 			OnCreated();
 		}
 		
@@ -964,19 +839,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Game_WatchFolder", Storage="_WatchFolder", ThisKey="Id", OtherKey="GameId")]
-		public EntitySet<WatchFolder> WatchFolder
-		{
-			get
-			{
-				return this._WatchFolder;
-			}
-			set
-			{
-				this._WatchFolder.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Game_MatchFormAction", Storage="_MatchFormAction", ThisKey="Id", OtherKey="GameId")]
 		public EntitySet<MatchFormAction> MatchFormAction
 		{
@@ -1003,6 +865,19 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Game_WatchFolder", Storage="_WatchFolder", ThisKey="Id", OtherKey="GameId")]
+		public EntitySet<WatchFolder> WatchFolder
+		{
+			get
+			{
+				return this._WatchFolder;
+			}
+			set
+			{
+				this._WatchFolder.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1021,18 +896,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_WatchFolder(WatchFolder entity)
-		{
-			this.SendPropertyChanging();
-			entity.Game = this;
-		}
-		
-		private void detach_WatchFolder(WatchFolder entity)
-		{
-			this.SendPropertyChanging();
-			entity.Game = null;
 		}
 		
 		private void attach_MatchFormAction(MatchFormAction entity)
@@ -1054,6 +917,18 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		}
 		
 		private void detach_MatchSession(MatchSession entity)
+		{
+			this.SendPropertyChanging();
+			entity.Game = null;
+		}
+		
+		private void attach_WatchFolder(WatchFolder entity)
+		{
+			this.SendPropertyChanging();
+			entity.Game = this;
+		}
+		
+		private void detach_WatchFolder(WatchFolder entity)
 		{
 			this.SendPropertyChanging();
 			entity.Game = null;
@@ -1278,26 +1153,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 			set
 			{
-				ActionObject previousValue = this._ActionObject.Entity;
-				if (((previousValue != value) 
-							|| (this._ActionObject.HasLoadedOrAssignedValue == false)))
+				if ((this._ActionObject.Entity != value))
 				{
 					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ActionObject.Entity = null;
-						previousValue.MatchFormAction.Remove(this);
-					}
 					this._ActionObject.Entity = value;
-					if ((value != null))
-					{
-						value.MatchFormAction.Add(this);
-						this._ActionObjectId = value.Id;
-					}
-					else
-					{
-						this._ActionObjectId = default(int);
-					}
 					this.SendPropertyChanged("ActionObject");
 				}
 			}
@@ -1759,11 +1618,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private int _Duration;
 		
-		private EntitySet<MatchSessions_Tag> _MatchSessions_Tag;
+		private EntitySet<Matchmedia> _Matchmedia;
 		
 		private EntitySet<MatchSessions_Player> _MatchSessions_Player;
 		
-		private EntitySet<Matchmedia> _Matchmedia;
+		private EntitySet<MatchSessions_Tag> _MatchSessions_Tag;
 		
 		private EntityRef<Game> _Game;
 		
@@ -1785,9 +1644,9 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		public MatchSession()
 		{
-			this._MatchSessions_Tag = new EntitySet<MatchSessions_Tag>(new Action<MatchSessions_Tag>(this.attach_MatchSessions_Tag), new Action<MatchSessions_Tag>(this.detach_MatchSessions_Tag));
-			this._MatchSessions_Player = new EntitySet<MatchSessions_Player>(new Action<MatchSessions_Player>(this.attach_MatchSessions_Player), new Action<MatchSessions_Player>(this.detach_MatchSessions_Player));
 			this._Matchmedia = new EntitySet<Matchmedia>(new Action<Matchmedia>(this.attach_Matchmedia), new Action<Matchmedia>(this.detach_Matchmedia));
+			this._MatchSessions_Player = new EntitySet<MatchSessions_Player>(new Action<MatchSessions_Player>(this.attach_MatchSessions_Player), new Action<MatchSessions_Player>(this.detach_MatchSessions_Player));
+			this._MatchSessions_Tag = new EntitySet<MatchSessions_Tag>(new Action<MatchSessions_Tag>(this.attach_MatchSessions_Tag), new Action<MatchSessions_Tag>(this.detach_MatchSessions_Tag));
 			this._Game = default(EntityRef<Game>);
 			OnCreated();
 		}
@@ -1896,16 +1755,16 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MatchSession_MatchSessions_Tag", Storage="_MatchSessions_Tag", ThisKey="Id", OtherKey="MatchSessionId")]
-		public EntitySet<MatchSessions_Tag> MatchSessions_Tag
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MatchSession_Matchmedia", Storage="_Matchmedia", ThisKey="Id", OtherKey="MatchSessionId")]
+		public EntitySet<Matchmedia> Matchmedia
 		{
 			get
 			{
-				return this._MatchSessions_Tag;
+				return this._Matchmedia;
 			}
 			set
 			{
-				this._MatchSessions_Tag.Assign(value);
+				this._Matchmedia.Assign(value);
 			}
 		}
 		
@@ -1922,16 +1781,16 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MatchSession_Matchmedia", Storage="_Matchmedia", ThisKey="Id", OtherKey="MatchSessionId")]
-		public EntitySet<Matchmedia> Matchmedia
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MatchSession_MatchSessions_Tag", Storage="_MatchSessions_Tag", ThisKey="Id", OtherKey="MatchSessionId")]
+		public EntitySet<MatchSessions_Tag> MatchSessions_Tag
 		{
 			get
 			{
-				return this._Matchmedia;
+				return this._MatchSessions_Tag;
 			}
 			set
 			{
-				this._Matchmedia.Assign(value);
+				this._MatchSessions_Tag.Assign(value);
 			}
 		}
 		
@@ -1989,13 +1848,13 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		private void attach_MatchSessions_Tag(MatchSessions_Tag entity)
+		private void attach_Matchmedia(Matchmedia entity)
 		{
 			this.SendPropertyChanging();
 			entity.MatchSession = this;
 		}
 		
-		private void detach_MatchSessions_Tag(MatchSessions_Tag entity)
+		private void detach_Matchmedia(Matchmedia entity)
 		{
 			this.SendPropertyChanging();
 			entity.MatchSession = null;
@@ -2013,13 +1872,13 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			entity.MatchSession = null;
 		}
 		
-		private void attach_Matchmedia(Matchmedia entity)
+		private void attach_MatchSessions_Tag(MatchSessions_Tag entity)
 		{
 			this.SendPropertyChanging();
 			entity.MatchSession = this;
 		}
 		
-		private void detach_Matchmedia(Matchmedia entity)
+		private void detach_MatchSessions_Tag(MatchSessions_Tag entity)
 		{
 			this.SendPropertyChanging();
 			entity.MatchSession = null;
@@ -2474,7 +2333,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private string _Parameter;
 		
+		private System.Nullable<int> _LinkedAction;
+		
 		private EntityRef<ActionObject> _ActionObject;
+		
+		private EntityRef<ActionObject> _ActionObject1;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -2490,11 +2353,14 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnParamNumChanged();
     partial void OnParameterChanging(string value);
     partial void OnParameterChanged();
+    partial void OnLinkedActionChanging(System.Nullable<int> value);
+    partial void OnLinkedActionChanged();
     #endregion
 		
 		public ObjectParameter()
 		{
 			this._ActionObject = default(EntityRef<ActionObject>);
+			this._ActionObject1 = default(EntityRef<ActionObject>);
 			OnCreated();
 		}
 		
@@ -2602,6 +2468,30 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LinkedAction", DbType="Int")]
+		public System.Nullable<int> LinkedAction
+		{
+			get
+			{
+				return this._LinkedAction;
+			}
+			set
+			{
+				if ((this._LinkedAction != value))
+				{
+					if (this._ActionObject1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnLinkedActionChanging(value);
+					this.SendPropertyChanging();
+					this._LinkedAction = value;
+					this.SendPropertyChanged("LinkedAction");
+					this.OnLinkedActionChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_ObjectParameter", Storage="_ActionObject", ThisKey="ObjectId", OtherKey="Id", IsForeignKey=true)]
 		public ActionObject ActionObject
 		{
@@ -2611,27 +2501,45 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 			set
 			{
-				ActionObject previousValue = this._ActionObject.Entity;
+				if ((this._ActionObject.Entity != value))
+				{
+					this.SendPropertyChanging();
+					this._ActionObject.Entity = value;
+					this.SendPropertyChanged("ActionObject");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_ObjectParameter1", Storage="_ActionObject1", ThisKey="LinkedAction", OtherKey="Id", IsForeignKey=true)]
+		public ActionObject ActionObject1
+		{
+			get
+			{
+				return this._ActionObject1.Entity;
+			}
+			set
+			{
+				ActionObject previousValue = this._ActionObject1.Entity;
 				if (((previousValue != value) 
-							|| (this._ActionObject.HasLoadedOrAssignedValue == false)))
+							|| (this._ActionObject1.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._ActionObject.Entity = null;
-						previousValue.ObjectParameter.Remove(this);
+						this._ActionObject1.Entity = null;
+						previousValue.ObjectParameter1.Remove(this);
 					}
-					this._ActionObject.Entity = value;
+					this._ActionObject1.Entity = value;
 					if ((value != null))
 					{
-						value.ObjectParameter.Add(this);
-						this._ObjectId = value.Id;
+						value.ObjectParameter1.Add(this);
+						this._LinkedAction = value.Id;
 					}
 					else
 					{
-						this._ObjectId = default(int);
+						this._LinkedAction = default(Nullable<int>);
 					}
-					this.SendPropertyChanged("ActionObject");
+					this.SendPropertyChanged("ActionObject1");
 				}
 			}
 		}
@@ -3001,9 +2909,9 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private string _Name;
 		
-		private EntitySet<MatchSessions_Tag> _MatchSessions_Tag;
-		
 		private EntitySet<Matchmedia_Tag> _Matchmedia_Tag;
+		
+		private EntitySet<MatchSessions_Tag> _MatchSessions_Tag;
 		
 		private EntitySet<Player_Tag> _Player_Tag;
 		
@@ -3019,8 +2927,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		public Tag()
 		{
-			this._MatchSessions_Tag = new EntitySet<MatchSessions_Tag>(new Action<MatchSessions_Tag>(this.attach_MatchSessions_Tag), new Action<MatchSessions_Tag>(this.detach_MatchSessions_Tag));
 			this._Matchmedia_Tag = new EntitySet<Matchmedia_Tag>(new Action<Matchmedia_Tag>(this.attach_Matchmedia_Tag), new Action<Matchmedia_Tag>(this.detach_Matchmedia_Tag));
+			this._MatchSessions_Tag = new EntitySet<MatchSessions_Tag>(new Action<MatchSessions_Tag>(this.attach_MatchSessions_Tag), new Action<MatchSessions_Tag>(this.detach_MatchSessions_Tag));
 			this._Player_Tag = new EntitySet<Player_Tag>(new Action<Player_Tag>(this.attach_Player_Tag), new Action<Player_Tag>(this.detach_Player_Tag));
 			OnCreated();
 		}
@@ -3065,19 +2973,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_MatchSessions_Tag", Storage="_MatchSessions_Tag", ThisKey="Id", OtherKey="TagId")]
-		public EntitySet<MatchSessions_Tag> MatchSessions_Tag
-		{
-			get
-			{
-				return this._MatchSessions_Tag;
-			}
-			set
-			{
-				this._MatchSessions_Tag.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_Matchmedia_Tag", Storage="_Matchmedia_Tag", ThisKey="Id", OtherKey="TagId")]
 		public EntitySet<Matchmedia_Tag> Matchmedia_Tag
 		{
@@ -3088,6 +2983,19 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			set
 			{
 				this._Matchmedia_Tag.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_MatchSessions_Tag", Storage="_MatchSessions_Tag", ThisKey="Id", OtherKey="TagId")]
+		public EntitySet<MatchSessions_Tag> MatchSessions_Tag
+		{
+			get
+			{
+				return this._MatchSessions_Tag;
+			}
+			set
+			{
+				this._MatchSessions_Tag.Assign(value);
 			}
 		}
 		
@@ -3124,18 +3032,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		private void attach_MatchSessions_Tag(MatchSessions_Tag entity)
-		{
-			this.SendPropertyChanging();
-			entity.Tag = this;
-		}
-		
-		private void detach_MatchSessions_Tag(MatchSessions_Tag entity)
-		{
-			this.SendPropertyChanging();
-			entity.Tag = null;
-		}
-		
 		private void attach_Matchmedia_Tag(Matchmedia_Tag entity)
 		{
 			this.SendPropertyChanging();
@@ -3143,6 +3039,18 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		}
 		
 		private void detach_Matchmedia_Tag(Matchmedia_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Tag = null;
+		}
+		
+		private void attach_MatchSessions_Tag(MatchSessions_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Tag = this;
+		}
+		
+		private void detach_MatchSessions_Tag(MatchSessions_Tag entity)
 		{
 			this.SendPropertyChanging();
 			entity.Tag = null;
@@ -3173,6 +3081,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private string _Folder;
 		
+		private string _Filter;
+		
+		private System.Nullable<int> _NotifyOnInativity;
+		
 		private EntityRef<Game> _Game;
 		
     #region Definitionen der Erweiterungsmethoden
@@ -3185,6 +3097,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnGameIdChanged();
     partial void OnFolderChanging(string value);
     partial void OnFolderChanged();
+    partial void OnFilterChanging(string value);
+    partial void OnFilterChanged();
+    partial void OnNotifyOnInativityChanging(System.Nullable<int> value);
+    partial void OnNotifyOnInativityChanged();
     #endregion
 		
 		public WatchFolder()
@@ -3253,6 +3169,46 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 					this._Folder = value;
 					this.SendPropertyChanged("Folder");
 					this.OnFolderChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Filter", DbType="NVarChar(100)")]
+		public string Filter
+		{
+			get
+			{
+				return this._Filter;
+			}
+			set
+			{
+				if ((this._Filter != value))
+				{
+					this.OnFilterChanging(value);
+					this.SendPropertyChanging();
+					this._Filter = value;
+					this.SendPropertyChanged("Filter");
+					this.OnFilterChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NotifyOnInativity", DbType="Int")]
+		public System.Nullable<int> NotifyOnInativity
+		{
+			get
+			{
+				return this._NotifyOnInativity;
+			}
+			set
+			{
+				if ((this._NotifyOnInativity != value))
+				{
+					this.OnNotifyOnInativityChanging(value);
+					this.SendPropertyChanging();
+					this._NotifyOnInativity = value;
+					this.SendPropertyChanged("NotifyOnInativity");
+					this.OnNotifyOnInativityChanged();
 				}
 			}
 		}

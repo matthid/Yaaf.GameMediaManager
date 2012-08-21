@@ -61,6 +61,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalDatabase.dbml</DependentUpon>
     </Compile>
+    <Compile Include="LocalDatabaseWrapper.cs" />
     <Compile Include="MatchSessionEnd.cs">
       <SubType>Form</SubType>
     </Compile>

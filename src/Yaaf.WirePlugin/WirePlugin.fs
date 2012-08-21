@@ -57,37 +57,26 @@ type ReplayWirePlugin() as x =
     
     let mutable gameInterface = None 
 
-    /// Starts the mediawatcher fpr the given game
-    let gameStarted (logger:ITracer) gameId gamePath= 
+    /// Starts the mediawatcher for the given game
+    let gameStarted (logger:ITracer) gameId gamePath = 
         startTime <- System.DateTime.Now
-        let parentDir = Path.GetDirectoryName(gamePath)
-        let modDir, source =
-            match gameId with
-            | 43 ->  "hl2", Some true // HL2
-            | 59 -> "czero", Some false // CS:CZ
-            | 60 -> "cstrike" , Some true // CSS
-            | 61 -> "cstrike", Some false // CS 1.6
-            | 64 -> "dod", Some false// DoD
-            | 112 ->"dod", Some true // DOD:Source
-            | 126 -> "tf", Some true // TF2
-            | 182 -> "hl2", Some true// HL2:DM
-            | 5484 -> "cstrike", Some true // CS Promod
-            | 6220 -> "csgo", Some true // CS:GO
-            | _ -> "", None
+        let game = Database.getGame gameId
         watcher <- 
-            match source with
-            | Some(sourceGame) ->
-                new SourceMatchmediaWatcher(logger, Path.Combine(parentDir, modDir), sourceGame)
-                :> MatchmediaWatcher
-                |> Some
+            match game with
             | None ->
-                match gameId with
-                | 687 -> 
-                    new Starcraft2MediaWatcher(logger) :> MatchmediaWatcher |> Some
-                | _ ->
-                    logger.logInfo "Ignoring unknown game: %d, %s" gameId gamePath
-                    None
-
+                logger.logInfo "Ignoring unknown game: %d, %s" gameId gamePath
+                None
+            | Some (game) ->
+                // Load data and create watcher
+                game.WatchFolder.Load()
+                let watchFolder = 
+                    game.WatchFolder 
+                    |> Seq.map (fun w -> w.Folder, w.Filter, if w.NotifyOnInativity.HasValue then Some w.NotifyOnInativity.Value else None)
+                    |> Seq.toList
+                new GenericMatchmediaWatcher(
+                    logger,
+                    watchFolder) |> Some  
+                
         match watcher with
         | Some (w) -> 
             w.StartGame()
@@ -120,16 +109,17 @@ type ReplayWirePlugin() as x =
 
     /// Stops the watcher and renames the files properly
     let gameStopped (logger:ITracer) gameId = 
-        match watcher with
-        | Some (w) ->
+        let game = Database.getGame gameId
+        match watcher, game with
+        | Some(w), Some(game) ->
             w.EndGame()
             let game = 
                 match gameId with
                 | 43 -> "hl2" // HL2
-                | 59 -> "cscz"// CS:CZ
+                | 59 -> "cscz" // CS:CZ
                 | 60 -> "css" // CSS
                 | 61 -> "cs16"// CS 1.6
-                | 64 -> "dod"// DoD
+                | 64 -> "dod" // DoD
                 | 112 -> "dodsource" // DOD:Source
                 | 126 -> "tf2" // TF2
                 | 182 -> "hl2dm" // HL2:DM
@@ -191,8 +181,8 @@ type ReplayWirePlugin() as x =
                             backupFile(target)
                             File.Move(m, target))
 
-        | None ->
-            logger.logInfo "unknown game closed: %d" gameId
+        | _ ->
+            logger.logInfo "unknown game or game without watcher closed: %d" gameId
 
     do  logger.logVerb "Starting up Yaaf wire plugin"
     static do 

@@ -68,7 +68,7 @@ type MatchmediaWatcher(logger : ITracer) =
 
     member x.Settings with get() = settings
     member x.FoundMedia with get() = new System.Collections.Generic.List<int * System.DateTime * System.String>(foundMedia)
-    member x.BasicWatchFolder path filter = 
+    member x.BasicWatchFolder path filter notify = 
         let localNr = ref 0
         let w = new RecursiveFileSystemWatcher(path, filter)
         w.Error
@@ -98,16 +98,16 @@ type MatchmediaWatcher(logger : ITracer) =
         x.EndGameAbstract()
     abstract member EndGameAbstract : unit -> unit
 
-type GenericMatchmediaWatcher (logger : ITracer, folders : List<string * string>, notification:string option) = 
+type GenericMatchmediaWatcher (logger : ITracer, folders : List<string * string * int option>) = 
     inherit MatchmediaWatcher(logger)
     
     override x.FileChanged path = 
         logger.logVerb "Media %s changed" path
 
     override x.StartGameAbstract() = 
-        for path, filter in folders do
-            logger.logVerb "Starting watching in %s (with filter: %s)" path filter
-            x.BasicWatchFolder path filter
+        for path, filter, notify in folders do
+            logger.logVerb "Starting watching in %s (with filter: %s, %A)" path filter notify
+            x.BasicWatchFolder path filter notify
 
     override x.EndGameAbstract() = ()
 
@@ -116,14 +116,12 @@ type GenericMatchmediaWatcher (logger : ITracer, folders : List<string * string>
 type SourceMatchmediaWatcher (logger : ITracer, modPath:string, sourceGame:bool) = 
     inherit GenericMatchmediaWatcher(
         logger, 
-        [modPath, "*.dem"; modPath, (if sourceGame then "*.jpg" else "*.bmp")], 
-        Some "*.dem")
+        [modPath, "*.dem", None; modPath, (if sourceGame then "*.jpg" else "*.bmp"), None])
     
 type Starcraft2MediaWatcher(logger: ITracer) = 
     inherit GenericMatchmediaWatcher(
         logger, 
         [ Path.Combine(
                 System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
-                "StarCraft II"), "*.SC2Replay" ],
-        None)
+                "StarCraft II"), "*.SC2Replay", None ])
 

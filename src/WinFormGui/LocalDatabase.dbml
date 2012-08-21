@@ -1,10 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="D:\projects\aktuell\wireyaafcssplugin\yaaf\src\WinFormGui\LocalDatabase.sdf" EntityNamespace="Yaaf.WirePlugin.WinFormGui.Database" ContextNamespace="Yaaf.WirePlugin.WinFormGui.Database" Class="LocalDatabaseDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Table Name="Action" Member="Actions">
-    <Type Name="Action">
+  <Table Name="ActionAndFilter" Member="ActionAndFilters">
+    <Type Name="ActionAndFilter">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="Parameters" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Association Name="Action_ActionObject" Member="ActionObject" ThisKey="Id" OtherKey="ActionId" Type="ActionObject" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Association Name="ActionAndFilter_ActionObject" Member="ActionObject" ThisKey="Id" OtherKey="ActionId" Type="ActionObject" />
+      <Association Name="ActionAndFilter_ActionObject1" Member="ActionObject1" ThisKey="Id" OtherKey="FilterId" Type="ActionObject" />
     </Type>
   </Table>
   <Table Name="ActionObjects">
@@ -13,18 +15,9 @@
       <Column Name="ActionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="FilterId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Association Name="ActionObject_ObjectParameter" Member="ObjectParameter" ThisKey="Id" OtherKey="ObjectId" Type="ObjectParameter" />
-      <Association Name="ActionObject_MatchFormAction" Member="MatchFormAction" ThisKey="Id" OtherKey="ActionObjectId" Type="MatchFormAction" />
-      <Association Name="Action_ActionObject" Member="Action" ThisKey="ActionId" OtherKey="Id" Type="Action" IsForeignKey="true" />
-      <Association Name="Filter_ActionObject" Member="Filter" ThisKey="FilterId" OtherKey="Id" Type="Filter" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="Filter" Member="Filters">
-    <Type Name="Filter">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
-      <Column Name="Parameter" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Association Name="Filter_ActionObject" Member="ActionObject" ThisKey="Id" OtherKey="FilterId" Type="ActionObject" />
+      <Association Name="ActionObject_ObjectParameter1" Member="ObjectParameter1" ThisKey="Id" OtherKey="LinkedAction" Type="ObjectParameter" />
+      <Association Name="ActionAndFilter_ActionObject" Member="ActionAndFilter" ThisKey="ActionId" OtherKey="Id" Type="ActionAndFilter" IsForeignKey="true" />
+      <Association Name="ActionAndFilter_ActionObject1" Member="ActionAndFilter1" ThisKey="FilterId" OtherKey="Id" Type="ActionAndFilter" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="Games">
@@ -36,9 +29,9 @@
       <Column Name="EnableMatchForm" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="EnablePublicNotification" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="EnableWarMatchForm" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Association Name="Game_WatchFolder" Member="WatchFolder" ThisKey="Id" OtherKey="GameId" Type="WatchFolder" />
       <Association Name="Game_MatchFormAction" Member="MatchFormAction" ThisKey="Id" OtherKey="GameId" Type="MatchFormAction" />
       <Association Name="Game_MatchSession" Member="MatchSession" ThisKey="Id" OtherKey="GameId" Type="MatchSession" />
+      <Association Name="Game_WatchFolder" Member="WatchFolder" ThisKey="Id" OtherKey="GameId" Type="WatchFolder" />
     </Type>
   </Table>
   <Table Name="MatchFormActions">
@@ -80,9 +73,9 @@
       <Column Name="EslMatchId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Startdate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="Duration" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="MatchSession_MatchSessions_Tag" Member="MatchSessions_Tag" ThisKey="Id" OtherKey="MatchSessionId" Type="MatchSessions_Tag" />
-      <Association Name="MatchSession_MatchSessions_Player" Member="MatchSessions_Player" ThisKey="Id" OtherKey="MatchSessionId" Type="MatchSessions_Player" />
       <Association Name="MatchSession_Matchmedia" Member="Matchmedia" ThisKey="Id" OtherKey="MatchSessionId" Type="Matchmedia" />
+      <Association Name="MatchSession_MatchSessions_Player" Member="MatchSessions_Player" ThisKey="Id" OtherKey="MatchSessionId" Type="MatchSessions_Player" />
+      <Association Name="MatchSession_MatchSessions_Tag" Member="MatchSessions_Tag" ThisKey="Id" OtherKey="MatchSessionId" Type="MatchSessions_Tag" />
       <Association Name="Game_MatchSession" Member="Game" ThisKey="GameId" OtherKey="Id" Type="Game" IsForeignKey="true" />
     </Type>
   </Table>
@@ -113,7 +106,9 @@
       <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
       <Column Name="ParamNum" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
       <Column Name="Parameter" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+      <Column Name="LinkedAction" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="ActionObject_ObjectParameter" Member="ActionObject" ThisKey="ObjectId" OtherKey="Id" Type="ActionObject" IsForeignKey="true" />
+      <Association Name="ActionObject_ObjectParameter1" Member="ActionObject1" ThisKey="LinkedAction" OtherKey="Id" Type="ActionObject" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="Player_Tags">
@@ -137,8 +132,8 @@
     <Type Name="Tag">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Association Name="Tag_MatchSessions_Tag" Member="MatchSessions_Tag" ThisKey="Id" OtherKey="TagId" Type="MatchSessions_Tag" />
       <Association Name="Tag_Matchmedia_Tag" Member="Matchmedia_Tag" ThisKey="Id" OtherKey="TagId" Type="Matchmedia_Tag" />
+      <Association Name="Tag_MatchSessions_Tag" Member="MatchSessions_Tag" ThisKey="Id" OtherKey="TagId" Type="MatchSessions_Tag" />
       <Association Name="Tag_Player_Tag" Member="Player_Tag" ThisKey="Id" OtherKey="TagId" Type="Player_Tag" />
     </Type>
   </Table>
@@ -147,6 +142,8 @@
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="GameId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Folder" Type="System.String" DbType="NVarChar(4000) NOT NULL" CanBeNull="false" />
+      <Column Name="Filter" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="NotifyOnInativity" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="Game_WatchFolder" Member="Game" ThisKey="GameId" OtherKey="Id" Type="Game" IsForeignKey="true" />
     </Type>
   </Table>

@@ -152,7 +152,6 @@
             this.Controls.Add(this.tagTextBox);
             this.Controls.Add(this.EslMatchIdTextBox);
             this.Controls.Add(this.eslMatchCheckBox);
-            this.Name = "MatchSessionEnd";
             this.ResumeLayout(false);
             this.PerformLayout();
 
