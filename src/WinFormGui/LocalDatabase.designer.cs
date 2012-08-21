@@ -225,10 +225,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private byte _Type;
 		
-		private EntitySet<ActionObject> _ActionObject;
-		
-		private EntitySet<ActionObject> _ActionObject1;
-		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -245,8 +241,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		public ActionAndFilter()
 		{
-			this._ActionObject = new EntitySet<ActionObject>(new Action<ActionObject>(this.attach_ActionObject), new Action<ActionObject>(this.detach_ActionObject));
-			this._ActionObject1 = new EntitySet<ActionObject>(new Action<ActionObject>(this.attach_ActionObject1), new Action<ActionObject>(this.detach_ActionObject1));
 			OnCreated();
 		}
 		
@@ -330,32 +324,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionAndFilter_ActionObject", Storage="_ActionObject", ThisKey="Id", OtherKey="ActionId")]
-		public EntitySet<ActionObject> ActionObject
-		{
-			get
-			{
-				return this._ActionObject;
-			}
-			set
-			{
-				this._ActionObject.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionAndFilter_ActionObject1", Storage="_ActionObject1", ThisKey="Id", OtherKey="FilterId")]
-		public EntitySet<ActionObject> ActionObject1
-		{
-			get
-			{
-				return this._ActionObject1;
-			}
-			set
-			{
-				this._ActionObject1.Assign(value);
-			}
-		}
-		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -375,30 +343,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
-		
-		private void attach_ActionObject(ActionObject entity)
-		{
-			this.SendPropertyChanging();
-			entity.ActionAndFilter = this;
-		}
-		
-		private void detach_ActionObject(ActionObject entity)
-		{
-			this.SendPropertyChanging();
-			entity.ActionAndFilter = null;
-		}
-		
-		private void attach_ActionObject1(ActionObject entity)
-		{
-			this.SendPropertyChanging();
-			entity.ActionAndFilter1 = this;
-		}
-		
-		private void detach_ActionObject1(ActionObject entity)
-		{
-			this.SendPropertyChanging();
-			entity.ActionAndFilter1 = null;
-		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="ActionObjects")]
@@ -415,7 +359,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private string _Name;
 		
-		private EntitySet<ObjectParameter> _ObjectParameter1;
+		private EntitySet<ObjectParameter> _ObjectParameter;
 		
 		private EntityRef<ActionAndFilter> _ActionAndFilter;
 		
@@ -437,7 +381,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		public ActionObject()
 		{
-			this._ObjectParameter1 = new EntitySet<ObjectParameter>(new Action<ObjectParameter>(this.attach_ObjectParameter1), new Action<ObjectParameter>(this.detach_ObjectParameter1));
+			this._ObjectParameter = new EntitySet<ObjectParameter>(new Action<ObjectParameter>(this.attach_ObjectParameter), new Action<ObjectParameter>(this.detach_ObjectParameter));
 			this._ActionAndFilter = default(EntityRef<ActionAndFilter>);
 			this._ActionAndFilter1 = default(EntityRef<ActionAndFilter>);
 			OnCreated();
@@ -531,21 +475,21 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_ObjectParameter1", Storage="_ObjectParameter1", ThisKey="Id", OtherKey="LinkedAction")]
-		public EntitySet<ObjectParameter> ObjectParameter1
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_ObjectParameter", Storage="_ObjectParameter", ThisKey="Id", OtherKey="ObjectId")]
+		public EntitySet<ObjectParameter> ObjectParameter
 		{
 			get
 			{
-				return this._ObjectParameter1;
+				return this._ObjectParameter;
 			}
 			set
 			{
-				this._ObjectParameter1.Assign(value);
+				this._ObjectParameter.Assign(value);
 			}
 		}
 		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionAndFilter_ActionObject", Storage="_ActionAndFilter", ThisKey="ActionId", OtherKey="Id", IsForeignKey=true)]
-		public ActionAndFilter ActionAndFilter
+		public ActionAndFilter Action
 		{
 			get
 			{
@@ -553,33 +497,17 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 			set
 			{
-				ActionAndFilter previousValue = this._ActionAndFilter.Entity;
-				if (((previousValue != value) 
-							|| (this._ActionAndFilter.HasLoadedOrAssignedValue == false)))
+				if ((this._ActionAndFilter.Entity != value))
 				{
 					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ActionAndFilter.Entity = null;
-						previousValue.ActionObject.Remove(this);
-					}
 					this._ActionAndFilter.Entity = value;
-					if ((value != null))
-					{
-						value.ActionObject.Add(this);
-						this._ActionId = value.Id;
-					}
-					else
-					{
-						this._ActionId = default(int);
-					}
-					this.SendPropertyChanged("ActionAndFilter");
+					this.SendPropertyChanged("Action");
 				}
 			}
 		}
 		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionAndFilter_ActionObject1", Storage="_ActionAndFilter1", ThisKey="FilterId", OtherKey="Id", IsForeignKey=true)]
-		public ActionAndFilter ActionAndFilter1
+		public ActionAndFilter Filter
 		{
 			get
 			{
@@ -587,27 +515,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 			set
 			{
-				ActionAndFilter previousValue = this._ActionAndFilter1.Entity;
-				if (((previousValue != value) 
-							|| (this._ActionAndFilter1.HasLoadedOrAssignedValue == false)))
+				if ((this._ActionAndFilter1.Entity != value))
 				{
 					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ActionAndFilter1.Entity = null;
-						previousValue.ActionObject1.Remove(this);
-					}
 					this._ActionAndFilter1.Entity = value;
-					if ((value != null))
-					{
-						value.ActionObject1.Add(this);
-						this._FilterId = value.Id;
-					}
-					else
-					{
-						this._FilterId = default(int);
-					}
-					this.SendPropertyChanged("ActionAndFilter1");
+					this.SendPropertyChanged("Filter");
 				}
 			}
 		}
@@ -632,16 +544,16 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		private void attach_ObjectParameter1(ObjectParameter entity)
+		private void attach_ObjectParameter(ObjectParameter entity)
 		{
 			this.SendPropertyChanging();
-			entity.ActionObject1 = this;
+			entity.ActionObject = this;
 		}
 		
-		private void detach_ObjectParameter1(ObjectParameter entity)
+		private void detach_ObjectParameter(ObjectParameter entity)
 		{
 			this.SendPropertyChanging();
-			entity.ActionObject1 = null;
+			entity.ActionObject = null;
 		}
 	}
 	
@@ -664,6 +576,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		private bool _EnablePublicNotification;
 		
 		private bool _EnableWarMatchForm;
+		
+		private bool _WarMatchFormSaveFiles;
+		
+		private bool _PublicMatchFormSaveFiles;
 		
 		private EntitySet<MatchFormAction> _MatchFormAction;
 		
@@ -689,6 +605,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnEnablePublicNotificationChanged();
     partial void OnEnableWarMatchFormChanging(bool value);
     partial void OnEnableWarMatchFormChanged();
+    partial void OnWarMatchFormSaveFilesChanging(bool value);
+    partial void OnWarMatchFormSaveFilesChanged();
+    partial void OnPublicMatchFormSaveFilesChanging(bool value);
+    partial void OnPublicMatchFormSaveFilesChanged();
     #endregion
 		
 		public Game()
@@ -839,6 +759,46 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarMatchFormSaveFiles", DbType="Bit NOT NULL")]
+		public bool WarMatchFormSaveFiles
+		{
+			get
+			{
+				return this._WarMatchFormSaveFiles;
+			}
+			set
+			{
+				if ((this._WarMatchFormSaveFiles != value))
+				{
+					this.OnWarMatchFormSaveFilesChanging(value);
+					this.SendPropertyChanging();
+					this._WarMatchFormSaveFiles = value;
+					this.SendPropertyChanged("WarMatchFormSaveFiles");
+					this.OnWarMatchFormSaveFilesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PublicMatchFormSaveFiles", DbType="Bit NOT NULL")]
+		public bool PublicMatchFormSaveFiles
+		{
+			get
+			{
+				return this._PublicMatchFormSaveFiles;
+			}
+			set
+			{
+				if ((this._PublicMatchFormSaveFiles != value))
+				{
+					this.OnPublicMatchFormSaveFilesChanging(value);
+					this.SendPropertyChanging();
+					this._PublicMatchFormSaveFiles = value;
+					this.SendPropertyChanged("PublicMatchFormSaveFiles");
+					this.OnPublicMatchFormSaveFilesChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Game_MatchFormAction", Storage="_MatchFormAction", ThisKey="Id", OtherKey="GameId")]
 		public EntitySet<MatchFormAction> MatchFormAction
 		{
@@ -947,11 +907,9 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private int _ActionObjectId;
 		
-		private System.DateTime _LastUsed;
+		private bool _WarActivated;
 		
-		private bool _SetWarDefault;
-		
-		private bool _SetPublicDefault;
+		private bool _PublicActivated;
 		
 		private EntityRef<Game> _Game;
 		
@@ -967,12 +925,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnGameIdChanged();
     partial void OnActionObjectIdChanging(int value);
     partial void OnActionObjectIdChanged();
-    partial void OnLastUsedChanging(System.DateTime value);
-    partial void OnLastUsedChanged();
-    partial void OnSetWarDefaultChanging(bool value);
-    partial void OnSetWarDefaultChanged();
-    partial void OnSetPublicDefaultChanging(bool value);
-    partial void OnSetPublicDefaultChanged();
+    partial void OnWarActivatedChanging(bool value);
+    partial void OnWarActivatedChanged();
+    partial void OnPublicActivatedChanging(bool value);
+    partial void OnPublicActivatedChanged();
     #endregion
 		
 		public MatchFormAction()
@@ -1050,62 +1006,42 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastUsed", DbType="DateTime NOT NULL")]
-		public System.DateTime LastUsed
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarActivated", DbType="Bit NOT NULL")]
+		public bool WarActivated
 		{
 			get
 			{
-				return this._LastUsed;
+				return this._WarActivated;
 			}
 			set
 			{
-				if ((this._LastUsed != value))
+				if ((this._WarActivated != value))
 				{
-					this.OnLastUsedChanging(value);
+					this.OnWarActivatedChanging(value);
 					this.SendPropertyChanging();
-					this._LastUsed = value;
-					this.SendPropertyChanged("LastUsed");
-					this.OnLastUsedChanged();
+					this._WarActivated = value;
+					this.SendPropertyChanged("WarActivated");
+					this.OnWarActivatedChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SetWarDefault", DbType="Bit NOT NULL")]
-		public bool SetWarDefault
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PublicActivated", DbType="Bit NOT NULL")]
+		public bool PublicActivated
 		{
 			get
 			{
-				return this._SetWarDefault;
+				return this._PublicActivated;
 			}
 			set
 			{
-				if ((this._SetWarDefault != value))
+				if ((this._PublicActivated != value))
 				{
-					this.OnSetWarDefaultChanging(value);
+					this.OnPublicActivatedChanging(value);
 					this.SendPropertyChanging();
-					this._SetWarDefault = value;
-					this.SendPropertyChanged("SetWarDefault");
-					this.OnSetWarDefaultChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SetPublicDefault", DbType="Bit NOT NULL")]
-		public bool SetPublicDefault
-		{
-			get
-			{
-				return this._SetPublicDefault;
-			}
-			set
-			{
-				if ((this._SetPublicDefault != value))
-				{
-					this.OnSetPublicDefaultChanging(value);
-					this.SendPropertyChanging();
-					this._SetPublicDefault = value;
-					this.SendPropertyChanged("SetPublicDefault");
-					this.OnSetPublicDefaultChanged();
+					this._PublicActivated = value;
+					this.SendPropertyChanged("PublicActivated");
+					this.OnPublicActivatedChanged();
 				}
 			}
 		}
@@ -1201,6 +1137,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private string _Path;
 		
+		private System.DateTime _Created;
+		
 		private EntitySet<Matchmedia_Tag> _Matchmedia_Tag;
 		
 		private EntityRef<MatchSession> _MatchSession;
@@ -1221,6 +1159,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnMapChanged();
     partial void OnPathChanging(string value);
     partial void OnPathChanged();
+    partial void OnCreatedChanging(System.DateTime value);
+    partial void OnCreatedChanged();
     #endregion
 		
 		public Matchmedia()
@@ -1350,6 +1290,26 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 					this._Path = value;
 					this.SendPropertyChanged("Path");
 					this.OnPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Created", DbType="DateTime NOT NULL")]
+		public System.DateTime Created
+		{
+			get
+			{
+				return this._Created;
+			}
+			set
+			{
+				if ((this._Created != value))
+				{
+					this.OnCreatedChanging(value);
+					this.SendPropertyChanging();
+					this._Created = value;
+					this.SendPropertyChanged("Created");
+					this.OnCreatedChanged();
 				}
 			}
 		}
@@ -2501,17 +2461,33 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 			set
 			{
-				if ((this._ActionObject.Entity != value))
+				ActionObject previousValue = this._ActionObject.Entity;
+				if (((previousValue != value) 
+							|| (this._ActionObject.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ActionObject.Entity = null;
+						previousValue.ObjectParameter.Remove(this);
+					}
 					this._ActionObject.Entity = value;
+					if ((value != null))
+					{
+						value.ObjectParameter.Add(this);
+						this._ObjectId = value.Id;
+					}
+					else
+					{
+						this._ObjectId = default(int);
+					}
 					this.SendPropertyChanged("ActionObject");
 				}
 			}
 		}
 		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_ObjectParameter1", Storage="_ActionObject1", ThisKey="LinkedAction", OtherKey="Id", IsForeignKey=true)]
-		public ActionObject ActionObject1
+		public ActionObject LinkedActionObject
 		{
 			get
 			{
@@ -2519,27 +2495,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 			set
 			{
-				ActionObject previousValue = this._ActionObject1.Entity;
-				if (((previousValue != value) 
-							|| (this._ActionObject1.HasLoadedOrAssignedValue == false)))
+				if ((this._ActionObject1.Entity != value))
 				{
 					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ActionObject1.Entity = null;
-						previousValue.ObjectParameter1.Remove(this);
-					}
 					this._ActionObject1.Entity = value;
-					if ((value != null))
-					{
-						value.ObjectParameter1.Add(this);
-						this._LinkedAction = value.Id;
-					}
-					else
-					{
-						this._LinkedAction = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("ActionObject1");
+					this.SendPropertyChanged("LinkedActionObject");
 				}
 			}
 		}
@@ -2953,7 +2913,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
 		public string Name
 		{
 			get

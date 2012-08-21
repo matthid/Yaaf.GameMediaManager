@@ -58,7 +58,7 @@ type ReplayWirePlugin() as x =
     let mutable gameInterface = None 
 
     /// Starts the mediawatcher for the given game
-    let gameStarted (logger:ITracer) gameId gamePath = 
+    let sessionStarted (logger:ITracer) gameId gamePath = 
         startTime <- System.DateTime.Now
         let game = Database.getGame gameId
         watcher <- 
@@ -67,15 +67,21 @@ type ReplayWirePlugin() as x =
                 logger.logInfo "Ignoring unknown game: %d, %s" gameId gamePath
                 None
             | Some (game) ->
-                // Load data and create watcher
-                game.WatchFolder.Load()
-                let watchFolder = 
-                    game.WatchFolder 
-                    |> Seq.map (fun w -> w.Folder, w.Filter, if w.NotifyOnInativity.HasValue then Some w.NotifyOnInativity.Value else None)
-                    |> Seq.toList
-                new GenericMatchmediaWatcher(
-                    logger,
-                    watchFolder) |> Some  
+                
+                if (matchData.IsSome && not game.EnableWarMatchForm && not game.WarMatchFormSaveFiles) ||
+                   (not matchData.IsSome && not game.EnableMatchForm && not game.PublicMatchFormSaveFiles) then
+                    logger.logWarn "Not saving data becaue it is disabled for game: %d" gameId
+                    None
+                else
+                    // Load data and create watcher
+                    game.WatchFolder.Load()
+                    let watchFolder = 
+                        game.WatchFolder 
+                        |> Seq.map (fun w -> w.Folder, w.Filter, if w.NotifyOnInativity.HasValue then Some w.NotifyOnInativity.Value else None)
+                        |> Seq.toList
+                    new GenericMatchmediaWatcher(
+                        logger,
+                        watchFolder) |> Some  
                 
         match watcher with
         | Some (w) -> 
@@ -106,83 +112,100 @@ type ReplayWirePlugin() as x =
                     (Path.GetDirectoryName file),
                     sprintf "%s-%s%s" (Path.GetFileNameWithoutExtension file) (System.Guid.NewGuid().ToString()) (Path.GetExtension file))
             File.Move(file, rename)
-
-    /// Stops the watcher and renames the files properly
-    let gameStopped (logger:ITracer) gameId = 
+    
+    let executeAction (action:Database.ActionObject) (media:Database.Matchmedia seq) = 
+        let filter = Database.getFilter action
+        let action = Database.getAction action
+        try
+            media 
+                |> Seq.filter filter
+                |> Seq.iter action
+        finally
+            Database.db.SubmitChanges()
+            
+    /// Stops the watcher saves the matchmedia and starts the given actions
+    let sessionStopped (logger:ITracer) gameId = 
         let game = Database.getGame gameId
-        match watcher, game with
-        | Some(w), Some(game) ->
-            w.EndGame()
-            let game = 
-                match gameId with
-                | 43 -> "hl2" // HL2
-                | 59 -> "cscz" // CS:CZ
-                | 60 -> "css" // CSS
-                | 61 -> "cs16"// CS 1.6
-                | 64 -> "dod" // DoD
-                | 112 -> "dodsource" // DOD:Source
-                | 126 -> "tf2" // TF2
-                | 182 -> "hl2dm" // HL2:DM
-                | 687 -> "sc2"
-                | 5484 -> "cspromod" // CS Promod
-                | 6220 -> "csgo" // CS:GO
-                | _ -> "unknown_game"
-
+        if (match watcher, game with
+            | Some(w), Some(game) ->
+                false
+            | _ ->
+                true) then
+            logger.logInfo "unknown game or game without watcher closed: %d" gameId
+        else
+        let watcher, game = watcher.Value, game.Value
+        watcher.EndGame()
+        let session, sessionAdded = 
+            let elapsedTime = int (System.DateTime.Now - startTime).TotalSeconds
             match matchData with
             | Some (warId, matchMediaPath) ->
-                let info = x.GameInterface.matchInfo(warId)
-                let enemy = info.["name"] :?> string
-                let enemy =
-                    if enemy.StartsWith("vs. ") then
-                        enemy.Substring(4)
-                    else enemy
-
-                ///let gameTitle = info.["gameTitle"]
-                //let gameTime = info.["time"]
-                let warFormat = Settings.Default.WarFileFormat
-                if Settings.Default.WarSaveInWire then
-                    w.FoundMedia
-                    |> Seq.iteri 
-                        (fun i (lNum, mediaDate, m) ->
-                        let info = MediaAnalyser.analyseMedia m
-                        let oldParent = Path.GetDirectoryName(m)
-                        let newName = 
-                            System.String.Format(warFormat, startTime, mediaDate, info.Map, game, lNum, i, warId, enemy) + Path.GetExtension(m)
-                        let newName = newName |> escapeInvalidChars '_' 
-                        let oldRenamed = Path.Combine(oldParent, newName)
-                        
-                        backupFile(oldRenamed)
-                        File.Move(m, oldRenamed)
-                              
-                        x.GameInterface.moveToMatchMedia(
-                            oldRenamed, 
-                            warId) |> ignore)
-
+                // TODO: Check if this EslMatch already exisits and use the old session
+                new Database.MatchSession(
+                    Game = game,
+                    Startdate = startTime,
+                    Duration = elapsedTime,
+                    EslMatchId = new System.Nullable<int>(warId)), false       
             | None ->
-                let publicFormat = Settings.Default.PublicFileFormat
-                if Settings.Default.PublicSaveInWire then
-                    let publicWireFolderFormat = Settings.Default.PublicFolderFormat
+                new Database.MatchSession(
+                    Game = game,
+                    Startdate = startTime,
+                    Duration = elapsedTime), false
+        
+        let warId = 
+            match matchData with
+            | Some (warId, matchMediaPath) -> Some warId
+            | None -> None
 
-                    let newPath = Path.Combine(publicWireFolderFormat, publicFormat)
+        let showEndSessionWindow media = 
+            if (matchData.IsSome && not game.EnableWarMatchForm) || (matchData.IsNone && not game.EnableMatchForm) then
+                // Could be changed in the meantime
+                if (matchData.IsSome && not game.WarMatchFormSaveFiles) || (matchData.IsNone && not game.PublicMatchFormSaveFiles) then
+                    None
+                else
+                    Some media
+            else
 
-                    w.FoundMedia
-                    |> Seq.iteri 
-                        (fun i (lNum, mediaDate, m) ->
-                            let info = MediaAnalyser.analyseMedia m
-                            let gameInfo = x.GameInterface.gameInfo(gameId)
-                            let newFileName = 
-                                System.String.Format(newPath, startTime, mediaDate, info.Map, game, lNum, i) + Path.GetExtension(m)
-                            let newFileName = newFileName |> escapeInvalidChars '_' 
-                            let target = Path.Combine(Settings.Default.MatchMediaPath, newFileName)
-                            let parent = Path.GetDirectoryName(target)
-                            if not <| Directory.Exists parent then
-                                Directory.CreateDirectory parent |> ignore
-                                
-                            backupFile(target)
-                            File.Move(m, target))
+            let form = new MatchSessionEnd(session, media, if warId.IsSome then System.Nullable(warId.Value) else System.Nullable())
+            form.ShowDialog() |> ignore
+            if form.ResultMedia = null then None else Some form.ResultMedia
 
-        | _ ->
-            logger.logInfo "unknown game or game without watcher closed: %d" gameId
+        let preparedMatchmedia = 
+            watcher.FoundMedia
+                |> Seq.mapi  
+                    (fun i (lNum, mediaDate, m) -> 
+                        new Database.Matchmedia(
+                            Created = mediaDate, 
+                            Map = (MediaAnalyser.analyseMedia m).Map,
+                            Name = Path.GetFileNameWithoutExtension m,
+                            Type = Path.GetExtension m,
+                            Path = m))
+                |> showEndSessionWindow
+        match preparedMatchmedia with
+        | None -> ()
+        | Some (media) ->
+        // Copy to media path
+        for m in media do
+            let dbMediaPath = Database.mediaPath m
+            try
+                File.Move (m.Path, dbMediaPath)
+                m.Path <- dbMediaPath
+            with :? IOException as e ->
+                logger.logErr "Could not move Matchmedia from %s to Database! (Error: %O)" m.Path e   
+        
+        // Update Database
+        Database.db.Matchmedias.InsertAllOnSubmit(media)
+        if not sessionAdded then
+            Database.db.MatchSessions.InsertOnSubmit(session)
+
+        Database.db.SubmitChanges()
+
+        // Execute automatic actions for this game
+        for action in Database.getActivatedMatchFormActions matchData.IsSome game do
+            try
+                logger.logInfo "Executing Action %s on game %s" action.ActionObject.Name game.Name
+                executeAction action.ActionObject media
+            with exn ->
+                logger.logErr "Action %s on game %s failed! Error %O" action.ActionObject.Name game.Name exn
 
     do  logger.logVerb "Starting up Yaaf wire plugin"
     static do 
@@ -241,7 +264,7 @@ type ReplayWirePlugin() as x =
                 (fun gameId gamePath -> 
                     let logger = logger.childTracer ("GameStart" + string gameId)
                     try
-                        gameStarted logger gameId gamePath
+                        sessionStarted logger gameId gamePath
                     with exn ->
                         logger.logErr "Error: %O" exn)
             // Game stopped (before Match ended and always)
@@ -250,7 +273,7 @@ type ReplayWirePlugin() as x =
                 (fun gameId -> 
                     let logger = logger.childTracer  ("GameEnd" + string gameId)
                     try
-                        gameStopped logger gameId
+                        sessionStopped logger gameId
                     with exn ->
                         logger.logErr "Error: %O" exn)
 

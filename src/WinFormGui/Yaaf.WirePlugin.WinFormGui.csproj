@@ -56,6 +56,9 @@
     <Compile Include="InfoForm.Designer.cs">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="LocalDatabase.cs">
+      <DependentUpon>LocalDatabase.dbml</DependentUpon>
+    </Compile>
     <Compile Include="LocalDatabase.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
