@@ -61,8 +61,8 @@ module Database =
 
     let getActivatedMatchFormActions isWar (game : Database.Game) = 
         <@ seq {
-            for a in game.MatchFormAction do
-                if isWar && a.WarActivated || not isWar && a.PublicActivated then
+            for a in db.MatchFormActions do
+                if a.GameId = game.Id && (isWar && a.WarActivated || not isWar && a.PublicActivated) then
                     yield a } @> |> Query.query
 
     let matchmediaContainsTag (m:Database.Matchmedia) tag = 

@@ -33,10 +33,6 @@ type ReplayWirePlugin() as x =
              new ToolStripMenuItem(s, pic, (fun sender e -> f())) 
              :> ToolStripItem
         [
-            item Resources.Settings Resources.settingsPic
-                (fun () ->
-                    using (new OptionsForm(fun tr s -> logger.log tr "%s" s)) (fun o ->
-                        o.ShowDialog() |> ignore))
             item Resources.ReportBug Resources.mail
                 (fun () -> 
                     try 
@@ -179,6 +175,7 @@ type ReplayWirePlugin() as x =
                     (fun i (lNum, mediaDate, m) -> 
                         new Database.Matchmedia(
                             Created = mediaDate, 
+                            MatchSession = session,
                             Map = (MediaAnalyser.analyseMedia m).Map,
                             Name = Path.GetFileNameWithoutExtension m,
                             Type = Path.GetExtension m,
@@ -187,7 +184,15 @@ type ReplayWirePlugin() as x =
         match preparedMatchmedia with
         | None -> ()
         | Some (media) ->
-        // Copy to media path
+
+        logger.logInfo "Add Match to Database"   
+        Database.db.Matchmedias.InsertAllOnSubmit(media)
+        if not sessionAdded then
+            Database.db.MatchSessions.InsertOnSubmit(session)
+
+        Database.db.SubmitChanges()
+        
+        logger.logInfo "Move Media to MediaPath"   
         for m in media do
             let dbMediaPath = Database.mediaPath m
             try
@@ -196,11 +201,7 @@ type ReplayWirePlugin() as x =
             with :? IOException as e ->
                 logger.logErr "Could not move Matchmedia from %s to Database! (Error: %O)" m.Path e   
         
-        // Update Database
-        Database.db.Matchmedias.InsertAllOnSubmit(media)
-        if not sessionAdded then
-            Database.db.MatchSessions.InsertOnSubmit(session)
-
+        logger.logInfo "Change to MediaPath in Database"   
         Database.db.SubmitChanges()
 
         // Execute automatic actions for this game
@@ -261,43 +262,50 @@ type ReplayWirePlugin() as x =
         
             logger.logVerb "Setup Events"
             gameInterface <- Some (InterfaceFactory.gameInterface())
+                
+            let doInSta (logger:ITracer) f = 
+                let t = 
+                    new System.Threading.Thread(fun () ->
+                        try
+                            f()
+                        with exn ->
+                            logger.logErr "Error: %O" exn)
+                t.SetApartmentState(System.Threading.ApartmentState.STA)
+                t.Start()
+
+            let logEvent event f = 
+                let logger = logger.childTracer (event)
+                try
+                    doInSta logger f
+                with exn ->
+                    logger.logErr "Error: %O" exn
+
             // Match started (before Game started and only with wire)
             x.GameInterface.add_MatchStarted
                 (fun matchId matchMediaPath -> 
-                    let logger = logger.childTracer ("MatchStart" + string matchId)
-                    try
+                    logEvent ("MatchStart" + string matchId) (fun () ->
                         Settings.Default.MatchMediaPath <- matchMediaPath
                         Settings.Default.Save()
-                        matchData <- Some(matchId, matchMediaPath)
-                    with exn ->
-                        logger.logErr "Error: %O" exn)
+                        matchData <- Some(matchId, matchMediaPath)))
 
             // Game started (with or without wire)
             x.GameInterface.add_GameStarted
                 (fun gameId gamePath -> 
-                    let logger = logger.childTracer ("GameStart" + string gameId)
-                    try
-                        sessionStarted logger gameId gamePath
-                    with exn ->
-                        logger.logErr "Error: %O" exn)
+                    logEvent ("GameStart" + string gameId) (fun () ->
+                            sessionStarted logger gameId gamePath))
+
             // Game stopped (before Match ended and always)
             // On real matches we have time until Anticheat has finished (parallel) for copying our matchmedia
             x.GameInterface.add_GameStopped
                 (fun gameId -> 
-                    let logger = logger.childTracer  ("GameEnd" + string gameId)
-                    try
-                        sessionStopped logger gameId
-                    with exn ->
-                        logger.logErr "Error: %O" exn)
+                    logEvent ("GameEnd" + string gameId) (fun () ->
+                            sessionStopped logger gameId))
 
             // Match ended (the Matchmedia dialog is already opened)
             x.GameInterface.add_MatchEnded
                 (fun matchId -> 
-                    let logger = logger.childTracer  ("MatchEnd" + string matchId)
-                    try
-                        matchData <- None
-                    with exn ->
-                        logger.logErr "Error: %O" exn)
+                    logEvent ("MatchEnd" + string matchId) (fun () ->
+                            matchData <- None))
         
         with exn ->
             logger.logErr "Error: %O" exn

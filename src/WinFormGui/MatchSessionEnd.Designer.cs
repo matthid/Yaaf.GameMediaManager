@@ -41,8 +41,8 @@
             this.managePlayersButton = new System.Windows.Forms.Button();
             this.rememberCheckBox = new System.Windows.Forms.CheckBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Tags = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mapDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.createdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -98,6 +98,7 @@
             resources.ApplyResources(this.addMatchmediaButton, "addMatchmediaButton");
             this.addMatchmediaButton.Name = "addMatchmediaButton";
             this.addMatchmediaButton.UseVisualStyleBackColor = true;
+            this.addMatchmediaButton.Click += new System.EventHandler(this.addMatchmediaButton_Click);
             // 
             // managePlayersButton
             // 
@@ -125,16 +126,16 @@
             resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.Name = "dataGridView1";
             // 
+            // Tags
+            // 
+            resources.ApplyResources(this.Tags, "Tags");
+            this.Tags.Name = "Tags";
+            // 
             // nameDataGridViewTextBoxColumn
             // 
             this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
             resources.ApplyResources(this.nameDataGridViewTextBoxColumn, "nameDataGridViewTextBoxColumn");
             this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            // 
-            // Tags
-            // 
-            resources.ApplyResources(this.Tags, "Tags");
-            this.Tags.Name = "Tags";
             // 
             // typeDataGridViewTextBoxColumn
             // 

@@ -72,5 +72,10 @@ namespace Yaaf.WirePlugin.WinFormGui
             var form = new ManageWatchFolder(logger, wrapper, current);
             form.ShowDialog();
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

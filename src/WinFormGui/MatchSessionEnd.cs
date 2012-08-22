@@ -10,6 +10,7 @@ using System.Windows.Forms;
 namespace Yaaf.WirePlugin.WinFormGui
 {
     using System.Diagnostics;
+    using System.IO;
 
     using Yaaf.WirePlugin.WinFormGui.Database;
 
@@ -40,6 +41,7 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             matchmediaBindingSource.DataSource = mediaFiles;
             tagTextBox.Enabled = false;
+            managePlayersButton.Enabled = false;
             eslMatchCheckBox.Checked = session.EslMatchId != null;
             EslMatchIdTextBox.Text = session.EslMatchId != null ? session.EslMatchId.Value.ToString() : "";
             EslMatchIdTextBox.Enabled = session.EslMatchId != null;
@@ -57,7 +59,8 @@ namespace Yaaf.WirePlugin.WinFormGui
                 //    association.Tag = 
                 //    session.MatchSessions_Tag.Add();
                 //}
-                session.EslMatchId = eslMatchCheckBox.Checked ? null : (int?)int.Parse(EslMatchIdTextBox.Text);
+                this.session.EslMatchId = 
+                    this.eslMatchCheckBox.Checked ? (int?)int.Parse(this.EslMatchIdTextBox.Text) : null;
 
                 ResultMedia = new List<Matchmedia>(mediaFiles);
                 this.Close();
@@ -79,5 +82,27 @@ namespace Yaaf.WirePlugin.WinFormGui
             EslMatchIdTextBox.Enabled = eslMatchCheckBox.Checked;
         }
 
+        private void addMatchmediaButton_Click(object sender, EventArgs e)
+        {
+            var fod = new OpenFileDialog();
+            var res = fod.ShowDialog();
+            if (res == DialogResult.OK)
+            {
+                AddMatchMedia(fod.SafeFileName);
+            }
+        }
+
+
+        private void AddMatchMedia(string safeFileName)
+        {
+            var media = new Database.Matchmedia();
+            media.Path = safeFileName;
+            media.Map = Yaaf.WirePlugin.MediaAnalyser.analyseMedia(safeFileName).Map;
+            media.Name = Path.GetFileNameWithoutExtension(safeFileName);
+            media.Created = DateTime.Now;
+            media.Type = Path.GetExtension(safeFileName);
+            media.MatchSession = this.session;
+            matchmediaBindingSource.Add(media);
+        }
     }
 }
