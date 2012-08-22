@@ -263,27 +263,24 @@ type ReplayWirePlugin() as x =
             logger.logVerb "Setup Events"
             gameInterface <- Some (InterfaceFactory.gameInterface())
                 
-            let doInSta (logger:ITracer) f = 
-                let t = 
-                    new System.Threading.Thread(fun () ->
-                        try
-                            f()
-                        with exn ->
-                            logger.logErr "Error: %O" exn)
-                t.SetApartmentState(System.Threading.ApartmentState.STA)
-                t.Start()
-
             let logEvent event f = 
                 let logger = logger.childTracer (event)
                 try
-                    doInSta logger f
+                    let t = 
+                        new System.Threading.Thread(fun () ->
+                            try
+                                f logger
+                            with exn ->
+                                logger.logErr "Error: %O" exn)
+                    t.SetApartmentState(System.Threading.ApartmentState.STA)
+                    t.Start()
                 with exn ->
                     logger.logErr "Error: %O" exn
 
             // Match started (before Game started and only with wire)
             x.GameInterface.add_MatchStarted
                 (fun matchId matchMediaPath -> 
-                    logEvent ("MatchStart" + string matchId) (fun () ->
+                    logEvent ("MatchStart" + string matchId) (fun logger ->
                         Settings.Default.MatchMediaPath <- matchMediaPath
                         Settings.Default.Save()
                         matchData <- Some(matchId, matchMediaPath)))
@@ -291,20 +288,20 @@ type ReplayWirePlugin() as x =
             // Game started (with or without wire)
             x.GameInterface.add_GameStarted
                 (fun gameId gamePath -> 
-                    logEvent ("GameStart" + string gameId) (fun () ->
+                    logEvent ("GameStart" + string gameId) (fun logger ->
                             sessionStarted logger gameId gamePath))
 
             // Game stopped (before Match ended and always)
             // On real matches we have time until Anticheat has finished (parallel) for copying our matchmedia
             x.GameInterface.add_GameStopped
                 (fun gameId -> 
-                    logEvent ("GameEnd" + string gameId) (fun () ->
+                    logEvent ("GameEnd" + string gameId) (fun logger ->
                             sessionStopped logger gameId))
 
             // Match ended (the Matchmedia dialog is already opened)
             x.GameInterface.add_MatchEnded
                 (fun matchId -> 
-                    logEvent ("MatchEnd" + string matchId) (fun () ->
+                    logEvent ("MatchEnd" + string matchId) (fun logger ->
                             matchData <- None))
         
         with exn ->

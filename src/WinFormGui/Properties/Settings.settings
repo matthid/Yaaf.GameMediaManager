@@ -2,21 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Yaaf.WirePlugin.WinFormGui.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="WarFileFormat" Type="System.String" Scope="User">
-      <Value Profile="(Default)">{1:HH_mm_ss} on {2}</Value>
-    </Setting>
-    <Setting Name="PublicFileFormat" Type="System.String" Scope="User">
-      <Value Profile="(Default)">{1:HH_mm_ss} on {2}</Value>
-    </Setting>
-    <Setting Name="WarSaveInWire" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="PublicSaveInWire" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="PublicFolderFormat" Type="System.String" Scope="User">
-      <Value Profile="(Default)">PublicStuff\{1:yyyy-MM-dd}</Value>
-    </Setting>
     <Setting Name="upgradeSettings" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

@@ -25,66 +25,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("{1:HH_mm_ss} on {2}")]
-        public string WarFileFormat {
-            get {
-                return ((string)(this["WarFileFormat"]));
-            }
-            set {
-                this["WarFileFormat"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("{1:HH_mm_ss} on {2}")]
-        public string PublicFileFormat {
-            get {
-                return ((string)(this["PublicFileFormat"]));
-            }
-            set {
-                this["PublicFileFormat"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool WarSaveInWire {
-            get {
-                return ((bool)(this["WarSaveInWire"]));
-            }
-            set {
-                this["WarSaveInWire"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool PublicSaveInWire {
-            get {
-                return ((bool)(this["PublicSaveInWire"]));
-            }
-            set {
-                this["PublicSaveInWire"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("PublicStuff\\{1:yyyy-MM-dd}")]
-        public string PublicFolderFormat {
-            get {
-                return ((string)(this["PublicFolderFormat"]));
-            }
-            set {
-                this["PublicFolderFormat"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool upgradeSettings {
             get {

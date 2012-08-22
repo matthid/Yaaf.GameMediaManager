@@ -123,15 +123,21 @@ module Database =
                 let targetPath = 
                     System.String.Format(
                         rawTargetPath,
-                        m.MatchSession.Startdate,
+                        m.MatchSession.Startdate, 
                         m.Created,
                         m.Map,
                         m.MatchSession.Game.Shortname,
+                        m.Type,
+                        m.Name,
                         (if m.MatchSession.EslMatchId.HasValue then m.MatchSession.EslMatchId.Value else 0),
                         (if m.MatchSession.EslMatchId.HasValue then
                             let info = Wire.InterfaceFactory.gameInterface().matchInfo(m.MatchSession.EslMatchId.Value)
                             info.["name"] :?> string
-                         else "unknown"))
+                         else "unknown"),
+                        System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
+                        System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+                        System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
+                        Properties.Settings.Default.MatchMediaPath)
                 File.Copy(m.Path, targetPath))
         | "CopyToEslMatchmedia" ->
             (fun (m:Database.Matchmedia) ->
