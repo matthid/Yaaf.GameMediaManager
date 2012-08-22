@@ -1,8 +1,22 @@
 
-21.08.2012 Version 0.3
+
+Future - Version 1.0
+ - Read Enemies for (Versus) matches from the esl page
+ - Allow Custom Actions to be setup via GUI
+ - Add CustomTool actions for converting
+ - Allow Enemies to be setup via GUI
+ - Add default action to move to matchmedia path on esl matches (for new games)
+ - Full Tagging support for games/players/matchmedia
+ - Matchmedia View to manage your media
+
+22.08.2012 Version 0.5
+ - Support for any game with any matchdata (you can add your games and add the folder you'd like to watch manually)
+ - No need to setup renaming anymore as we save anything in our local database
+ - Custom Action support is implemented (to do such renaming/copying if you want)... No gui for this for now
+
+21.08.2012 Version 0.3 (not released)
  - Sc2 Replay support
  - Symlink support
- - Matchmedia Form (allows to discard media, save it in other place, tag it)
 
 20.08.2012 Version 0.2
  - Lots of Bugfixes
