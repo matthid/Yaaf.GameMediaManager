@@ -41,9 +41,12 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             matchmediaBindingSource.DataSource = mediaFiles;
             tagTextBox.Enabled = false;
-            eslMatchCheckBox.Checked = session.EslMatchId != null;
-            EslMatchIdTextBox.Text = session.EslMatchId != null ? session.EslMatchId.Value.ToString() : "";
-            EslMatchIdTextBox.Enabled = session.EslMatchId != null;
+            eslMatchCheckBox.Checked = session.EslMatchLink != null;
+            EslMatchIdTextBox.Text = 
+                string.IsNullOrEmpty(session.EslMatchLink)
+                ? "http://www.esl.eu/" : session.EslMatchLink;
+
+            EslMatchIdTextBox.Enabled = session.EslMatchLink != null;
         }
 
         private void saveMatchmediaButton_Click(object sender, EventArgs e)
@@ -73,7 +76,15 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void SetEslMatchId()
         {
-            this.session.EslMatchId = this.eslMatchCheckBox.Checked ? (int?)int.Parse(this.EslMatchIdTextBox.Text) : null;
+            if (this.eslMatchCheckBox.Checked)
+            {
+                var uri = new Uri(this.EslMatchIdTextBox.Text);
+                this.session.EslMatchLink = this.EslMatchIdTextBox.Text;
+            }
+            else
+            {
+                this.session.EslMatchLink = null;
+            }
         }
 
 
@@ -131,9 +142,9 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             this.SetEslMatchId();
             this.session.MatchSessions_Player.Load();
-            if (this.session.MatchSessions_Player.Count == 0 && this.session.EslMatchId != null)
+            if (this.session.EslMatchLink != null)
             {
-                // Load Enemies from ESL page
+                // Load Enemies from ESL page and see if we can add new infos
             }
         }
     }

@@ -70,9 +70,9 @@
     <Type Name="MatchSession">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="GameId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="EslMatchId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Startdate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="Duration" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="EslMatchLink" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Association Name="MatchSession_Matchmedia" Member="Matchmedia" ThisKey="Id" OtherKey="MatchSessionId" Type="Matchmedia" />
       <Association Name="MatchSession_MatchSessions_Player" Member="MatchSessions_Player" ThisKey="Id" OtherKey="MatchSessionId" Type="MatchSessions_Player" />
       <Association Name="MatchSession_MatchSessions_Tag" Member="MatchSessions_Tag" ThisKey="Id" OtherKey="MatchSessionId" Type="MatchSessions_Tag" />

@@ -107,6 +107,13 @@ module Database =
                 matchmediaContainsTag m tag)
         | _ as e -> invalidOp (sprintf "Unknown Filter: %s" e)
 
+    let getIdFromLink link = 
+        let uri = new System.Uri(link)
+        (uri.Segments
+            |> Seq.nth (uri.Segments.Length - 1))
+            .Trim([|'/'|])
+            |> System.Int32.Parse
+
     let rec getAction (action:Database.ActionObject) = 
         action.ObjectParameter.Load()
         let parameter = action.ObjectParameter |> Seq.toArray
@@ -129,9 +136,10 @@ module Database =
                         m.MatchSession.Game.Shortname,
                         m.Type,
                         m.Name,
-                        (if m.MatchSession.EslMatchId.HasValue then m.MatchSession.EslMatchId.Value else 0),
-                        (if m.MatchSession.EslMatchId.HasValue then
-                            let info = Wire.InterfaceFactory.gameInterface().matchInfo(m.MatchSession.EslMatchId.Value)
+                        (if m.MatchSession.EslMatchLink <> null then m.MatchSession.EslMatchLink else ""),
+                        (if m.MatchSession.EslMatchLink <> null then
+                            let eslId = getIdFromLink m.MatchSession.EslMatchLink
+                            let info = Wire.InterfaceFactory.gameInterface().matchInfo(eslId)
                             info.["name"] :?> string
                          else "unknown"),
                         System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
@@ -141,9 +149,10 @@ module Database =
                 File.Copy(m.Path, targetPath))
         | "CopyToEslMatchmedia" ->
             (fun (m:Database.Matchmedia) ->
-                if m.MatchSession.EslMatchId.HasValue then 
+                if m.MatchSession.EslMatchLink <> null then 
                     let gameInterface = Wire.InterfaceFactory.gameInterface()
-                    gameInterface.copyToMatchMedia(m.Path, m.MatchSession.EslMatchId.Value)
+                    let eslId = getIdFromLink m.MatchSession.EslMatchLink
+                    gameInterface.copyToMatchMedia(m.Path, eslId)
                         |> ignore
                 else invalidOp "Can't copy to matchmedia on public match")
         | "DeleteMedia" ->
@@ -166,6 +175,7 @@ module Database =
                 new Database.Player(
                     Name = "Me")
             db.Players.InsertOnSubmit(newIdentity)
+            db.SubmitChanges()
             Properties.Settings.Default.MyIdentity <- newIdentity.Id
             Properties.Settings.Default.Save()
             newIdentity

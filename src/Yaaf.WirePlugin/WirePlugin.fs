@@ -140,11 +140,13 @@ type ReplayWirePlugin() as x =
             match matchData with
             | Some (warId, matchMediaPath) ->
                 // TODO: Check if this EslMatch already exisits and use the old session
+                let info = x.GameInterface.matchInfo(warId)
+                
                 new Database.MatchSession(
                     Game = game,
                     Startdate = startTime,
                     Duration = elapsedTime,
-                    EslMatchId = new System.Nullable<int>(warId)), false       
+                    EslMatchLink = (info.["uri"] :?> string)), false       
             | None ->
                 new Database.MatchSession(
                     Game = game,
@@ -272,7 +274,7 @@ type ReplayWirePlugin() as x =
         
             logger.logVerb "Setup Events"
             gameInterface <- Some (InterfaceFactory.gameInterface())
-                
+        
             let logEvent event f = 
                 let logger = logger.childTracer (event)
                 try

@@ -1559,11 +1559,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private int _GameId;
 		
-		private System.Nullable<int> _EslMatchId;
-		
 		private System.DateTime _Startdate;
 		
 		private int _Duration;
+		
+		private string _EslMatchLink;
 		
 		private EntitySet<Matchmedia> _Matchmedia;
 		
@@ -1581,12 +1581,12 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnIdChanged();
     partial void OnGameIdChanging(int value);
     partial void OnGameIdChanged();
-    partial void OnEslMatchIdChanging(System.Nullable<int> value);
-    partial void OnEslMatchIdChanged();
     partial void OnStartdateChanging(System.DateTime value);
     partial void OnStartdateChanged();
     partial void OnDurationChanging(int value);
     partial void OnDurationChanged();
+    partial void OnEslMatchLinkChanging(string value);
+    partial void OnEslMatchLinkChanged();
     #endregion
 		
 		public MatchSession()
@@ -1642,26 +1642,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EslMatchId", DbType="Int")]
-		public System.Nullable<int> EslMatchId
-		{
-			get
-			{
-				return this._EslMatchId;
-			}
-			set
-			{
-				if ((this._EslMatchId != value))
-				{
-					this.OnEslMatchIdChanging(value);
-					this.SendPropertyChanging();
-					this._EslMatchId = value;
-					this.SendPropertyChanged("EslMatchId");
-					this.OnEslMatchIdChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Startdate", DbType="DateTime NOT NULL")]
 		public System.DateTime Startdate
 		{
@@ -1698,6 +1678,26 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 					this._Duration = value;
 					this.SendPropertyChanged("Duration");
 					this.OnDurationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EslMatchLink", DbType="NVarChar(1000)")]
+		public string EslMatchLink
+		{
+			get
+			{
+				return this._EslMatchLink;
+			}
+			set
+			{
+				if ((this._EslMatchLink != value))
+				{
+					this.OnEslMatchLinkChanging(value);
+					this.SendPropertyChanging();
+					this._EslMatchLink = value;
+					this.SendPropertyChanged("EslMatchLink");
+					this.OnEslMatchLinkChanged();
 				}
 			}
 		}

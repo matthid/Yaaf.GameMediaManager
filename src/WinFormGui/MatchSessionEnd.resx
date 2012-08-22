@@ -130,13 +130,13 @@
     <value>13, 13</value>
   </data>
   <data name="eslMatchCheckBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>127, 17</value>
+    <value>98, 17</value>
   </data>
   <data name="eslMatchCheckBox.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
   <data name="eslMatchCheckBox.Text" xml:space="preserve">
-    <value>ESL Match, MatchId:</value>
+    <value>ESL Match Uri:</value>
   </data>
   <data name="&gt;&gt;eslMatchCheckBox.Name" xml:space="preserve">
     <value>eslMatchCheckBox</value>
@@ -151,13 +151,16 @@
     <value>10</value>
   </data>
   <data name="EslMatchIdTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>163, 11</value>
+    <value>117, 11</value>
   </data>
   <data name="EslMatchIdTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>128, 20</value>
+    <value>293, 20</value>
   </data>
   <data name="EslMatchIdTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
+  </data>
+  <data name="EslMatchIdTextBox.Text" xml:space="preserve">
+    <value>http://</value>
   </data>
   <data name="&gt;&gt;EslMatchIdTextBox.Name" xml:space="preserve">
     <value>EslMatchIdTextBox</value>

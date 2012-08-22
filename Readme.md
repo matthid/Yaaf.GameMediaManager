@@ -11,6 +11,7 @@ WirePlugin goes even one step further and allows the same file management for an
 
 - https://github.com/fsharp/fsharp FSharp libraries required to use WirePlugin and fsc required to build the Project
   * install: http://www.microsoft.com/de-de/download/details.aspx?id=13450
+- http://fsharppowerpack.codeplex.com/ FSharp Powerpack
 - CLI Runtime (one of those)
   * .NET 3.5 (Included in > Windows Vista) http://www.microsoft.com/de-de/download/details.aspx?id=21
 - Wire http://www.esl.eu/de/wire/
@@ -18,7 +19,7 @@ WirePlugin goes even one step further and allows the same file management for an
 ## Using
 
 Download the binaries or build yourself and then copy the files to C:\Users\_\AppData\Local\ESL Wire Game Client\plugins\Yaaf.WirePlugin.
-Restart Wire.
+Restart Wire. Make sure to install all dependencies (see above).
 
 ## Contributing
 

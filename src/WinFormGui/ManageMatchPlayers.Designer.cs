@@ -34,6 +34,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.matchPlayersDataGridView = new System.Windows.Forms.DataGridView();
             this.matchSessionsPlayerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.PlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.EslPlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -63,6 +64,7 @@
             this.matchPlayersDataGridView.AutoGenerateColumns = false;
             this.matchPlayersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.matchPlayersDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.PlayerId,
             this.PlayerName,
             this.EslPlayerId,
             this.descriptionDataGridViewTextBoxColumn,
@@ -72,10 +74,17 @@
             this.matchPlayersDataGridView.DataSource = this.matchSessionsPlayerBindingSource;
             resources.ApplyResources(this.matchPlayersDataGridView, "matchPlayersDataGridView");
             this.matchPlayersDataGridView.Name = "matchPlayersDataGridView";
+            this.matchPlayersDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.matchPlayersDataGridView_DataError);
             // 
             // matchSessionsPlayerBindingSource
             // 
             this.matchSessionsPlayerBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.MatchSessions_Player);
+            // 
+            // PlayerId
+            // 
+            this.PlayerId.FillWeight = 50F;
+            resources.ApplyResources(this.PlayerId, "PlayerId");
+            this.PlayerId.Name = "PlayerId";
             // 
             // PlayerName
             // 
@@ -100,6 +109,7 @@
             this.teamDataGridViewTextBoxColumn.FillWeight = 50F;
             resources.ApplyResources(this.teamDataGridViewTextBoxColumn, "teamDataGridViewTextBoxColumn");
             this.teamDataGridViewTextBoxColumn.Items.AddRange(new object[] {
+            "",
             "1",
             "2",
             "3",
@@ -120,6 +130,7 @@
             this.skillDataGridViewTextBoxColumn.FillWeight = 50F;
             resources.ApplyResources(this.skillDataGridViewTextBoxColumn, "skillDataGridViewTextBoxColumn");
             this.skillDataGridViewTextBoxColumn.Items.AddRange(new object[] {
+            "",
             "0",
             "10",
             "20",
@@ -163,6 +174,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.DataGridView matchPlayersDataGridView;
         private System.Windows.Forms.BindingSource matchSessionsPlayerBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PlayerId;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerName;
         private System.Windows.Forms.DataGridViewTextBoxColumn EslPlayerId;
         private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
