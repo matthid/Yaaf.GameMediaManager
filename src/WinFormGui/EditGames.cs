@@ -60,7 +60,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             this.Close();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void OpenGameForm(Func<Game, Form> createForm)
         {
             var current = (Game)gameBindingSource.Current;
             if (current == null)
@@ -68,14 +68,38 @@ namespace Yaaf.WirePlugin.WinFormGui
                 MessageBox.Show("Bitte ein Game auswählen");
                 return;
             }
+            try
+            {
+                if (!old.Contains(current))
+                {
+                    context.Games.InsertOnSubmit(current);
+                    context.SubmitChanges();
+                    old.Add(current);
+                }
 
-            var form = new ManageWatchFolder(logger, wrapper, current);
-            form.ShowDialog();
+                var form = createForm(current);
+                if (form != null)
+                    form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                logger(TraceEventType.Error, "Can't open Game form: " + ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.OpenGameForm((current) => new ManageWatchFolder(logger, wrapper, current));
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-
+            this.OpenGameForm((current) =>
+                {
+                    MessageBox.Show("Not implemented");
+                    return null;
+                });
         }
     }
 }
