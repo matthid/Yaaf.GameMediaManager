@@ -333,9 +333,6 @@
   <data name="&gt;&gt;addMatchmediaButton.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="managePlayersButton.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="managePlayersButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -450,22 +447,19 @@
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>547, 396</value>
   </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Match Session End</value>
-  </data>
-  <data name="&gt;&gt;Tags.Name" xml:space="preserve">
-    <value>Tags</value>
-  </data>
-  <data name="&gt;&gt;Tags.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;nameDataGridViewTextBoxColumn.Name" xml:space="preserve">
     <value>nameDataGridViewTextBoxColumn</value>
   </data>
   <data name="&gt;&gt;nameDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Tags.Name" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="&gt;&gt;Tags.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;typeDataGridViewTextBoxColumn.Name" xml:space="preserve">

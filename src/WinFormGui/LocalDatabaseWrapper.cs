@@ -24,7 +24,6 @@
             }
         }
 
-
         public void UpdateDatabase<T>(Table<T> table, IEnumerable<T> changedItems, IList<T> originalItems) where T : class
         {
             foreach (var item in changedItems)

@@ -151,4 +151,22 @@ module Database =
                 File.Delete(m.Path)
                 m.Path <- null)
         | _ as e -> invalidOp (sprintf "Unknown Action: %s" e)
-        
+    
+    let getIdentityPlayer () = 
+        let id = Properties.Settings.Default.MyIdentity
+        let player =
+            getIdMaybe
+                <@ seq {
+                    for a in db.Players do
+                        if a.Id = id then
+                            yield a } @>
+        match player with
+        | None ->
+            let newIdentity = 
+                new Database.Player(
+                    Name = "Me")
+            db.Players.InsertOnSubmit(newIdentity)
+            Properties.Settings.Default.MyIdentity <- newIdentity.Id
+            Properties.Settings.Default.Save()
+            newIdentity
+        | Some (p) -> p

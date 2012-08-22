@@ -72,6 +72,12 @@
       <DependentUpon>LocalDatabase.dbml</DependentUpon>
     </Compile>
     <Compile Include="LocalDatabaseWrapper.cs" />
+    <Compile Include="ManageMatchPlayers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageMatchPlayers.Designer.cs">
+      <DependentUpon>ManageMatchPlayers.cs</DependentUpon>
+    </Compile>
     <Compile Include="ManageWatchFolder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,6 +101,9 @@
     <None Include="LocalDatabase.dbml.layout">
       <DependentUpon>LocalDatabase.dbml</DependentUpon>
     </None>
+    <EmbeddedResource Include="ManageMatchPlayers.resx">
+      <DependentUpon>ManageMatchPlayers.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ManageWatchFolder.resx">
       <DependentUpon>ManageWatchFolder.cs</DependentUpon>
     </EmbeddedResource>
@@ -119,6 +128,7 @@
     </None>
     <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.Game.datasource" />
     <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.Matchmedia.datasource" />
+    <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.MatchSessions_Player.datasource" />
     <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.WatchFolder.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>

@@ -150,7 +150,17 @@ type ReplayWirePlugin() as x =
                     Game = game,
                     Startdate = startTime,
                     Duration = elapsedTime), false
-        
+        if not sessionAdded then
+            // Add me...
+            let me = Database.getIdentityPlayer()
+            let newPlayerAssociation = 
+                new Database.MatchSessions_Player(
+                    Cheating = false,
+                    Player = me,
+                    Skill = System.Nullable(100uy),
+                    Team = 1uy)
+            session.MatchSessions_Player.Add(newPlayerAssociation)
+
         let warId = 
             match matchData with
             | Some (warId, matchMediaPath) -> Some warId

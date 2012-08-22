@@ -41,7 +41,6 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             matchmediaBindingSource.DataSource = mediaFiles;
             tagTextBox.Enabled = false;
-            managePlayersButton.Enabled = false;
             eslMatchCheckBox.Checked = session.EslMatchId != null;
             EslMatchIdTextBox.Text = session.EslMatchId != null ? session.EslMatchId.Value.ToString() : "";
             EslMatchIdTextBox.Enabled = session.EslMatchId != null;
@@ -59,8 +58,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                 //    association.Tag = 
                 //    session.MatchSessions_Tag.Add();
                 //}
-                this.session.EslMatchId = 
-                    this.eslMatchCheckBox.Checked ? (int?)int.Parse(this.EslMatchIdTextBox.Text) : null;
+                this.SetEslMatchId();
 
                 ResultMedia = new List<Matchmedia>(mediaFiles);
                 this.Close();
@@ -71,6 +69,13 @@ namespace Yaaf.WirePlugin.WinFormGui
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+        private void SetEslMatchId()
+        {
+            this.session.EslMatchId = this.eslMatchCheckBox.Checked ? (int?)int.Parse(this.EslMatchIdTextBox.Text) : null;
+        }
+
 
         private void deleteMatchmediaButton_Click(object sender, EventArgs e)
         {
@@ -103,6 +108,33 @@ namespace Yaaf.WirePlugin.WinFormGui
             media.Type = Path.GetExtension(safeFileName);
             media.MatchSession = this.session;
             matchmediaBindingSource.Add(media);
+        }
+
+        private void managePlayersButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                this.LoadAvailablePlayers();
+
+                var managePlayer = new ManageMatchPlayers(logger, context, session);
+                managePlayer.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                logger(TraceEventType.Error, "Could not open ManageMatchPlayers, Ex: " + ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void LoadAvailablePlayers()
+        {
+            this.SetEslMatchId();
+            this.session.MatchSessions_Player.Load();
+            if (this.session.MatchSessions_Player.Count == 0 && this.session.EslMatchId != null)
+            {
+                // Load Enemies from ESL page
+            }
         }
     }
 }
