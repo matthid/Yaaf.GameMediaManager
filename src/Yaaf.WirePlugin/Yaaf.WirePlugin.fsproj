@@ -39,10 +39,6 @@
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="HelperFunctions.fs" />
-    <Compile Include="Logging.fs" />
-    <Compile Include="MatchmediaWatcher.fs" />
-    <Compile Include="MediaAnalyser.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="WirePlugin.fs" />
     <None Include="Script.fsx" />
@@ -83,6 +79,11 @@
     <ProjectReference Include="..\WinFormGui\Yaaf.WirePlugin.WinFormGui.csproj">
       <Name>Yaaf.WirePlugin.WinFormGui</Name>
       <Project>{e138ffd4-1a33-458e-a93c-1d8373756c86}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Yaaf.WirePlugin.Primitives\Yaaf.WirePlugin.Primitives.fsproj">
+      <Name>Yaaf.WirePlugin.Primitives</Name>
+      <Project>{94a3c463-e692-450d-9fe6-8688610eccbc}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

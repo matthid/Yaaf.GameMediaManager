@@ -168,10 +168,10 @@
     <value>9</value>
   </data>
   <data name="tagTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>163, 304</value>
+    <value>201, 304</value>
   </data>
   <data name="tagTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>218, 20</value>
+    <value>328, 20</value>
   </data>
   <data name="tagTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -195,13 +195,13 @@
     <value>10, 307</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>127, 13</value>
+    <value>160, 13</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>Tags (Comma Seperated)</value>
+    <value>Match Tags (Comma Seperated)</value>
   </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>
@@ -214,79 +214,6 @@
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>7</value>
-  </data>
-  <data name="matchmediaListView.Items" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
-        LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkMAwAAAFFTeXN0
-        ZW0uRHJhd2luZywgVmVyc2lvbj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2Vu
-        PWIwM2Y1ZjdmMTFkNTBhM2EFAQAAACFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5MaXN0Vmlld0l0ZW0LAAAA
-        BFRleHQKSW1hZ2VJbmRleAxTdWJJdGVtQ291bnQIU3ViSXRlbTEIU3ViSXRlbTIIU3ViSXRlbTMJQmFj
-        a0NvbG9yB0NoZWNrZWQERm9udAlGb3JlQ29sb3IXVXNlSXRlbVN0eWxlRm9yU3ViSXRlbXMBAAAEBAQE
-        AAQEAAgIMVN5c3RlbS5XaW5kb3dzLkZvcm1zLkxpc3RWaWV3SXRlbStMaXN0Vmlld1N1Ykl0ZW0CAAAA
-        MVN5c3RlbS5XaW5kb3dzLkZvcm1zLkxpc3RWaWV3SXRlbStMaXN0Vmlld1N1Ykl0ZW0CAAAAMVN5c3Rl
-        bS5XaW5kb3dzLkZvcm1zLkxpc3RWaWV3SXRlbStMaXN0Vmlld1N1Ykl0ZW0CAAAAFFN5c3RlbS5EcmF3
-        aW5nLkNvbG9yAwAAAAETU3lzdGVtLkRyYXdpbmcuRm9udAMAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3ID
-        AAAAAQIAAAAGBAAAAAR0ZXN0/////wQAAAAJBQAAAAkGAAAACQcAAAAF+P///xRTeXN0ZW0uRHJhd2lu
-        Zy5Db2xvcgQAAAAEbmFtZQV2YWx1ZQprbm93bkNvbG9yBXN0YXRlAQAAAAkHBwMAAAAKAAAAAAAAAAAY
-        AAEAAAkJAAAAAfb////4////CgAAAAAAAAAAGgABAAEFBQAAADFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5M
-        aXN0Vmlld0l0ZW0rTGlzdFZpZXdTdWJJdGVtBAAAAAR0ZXh0BG5hbWUFc3R5bGUIdXNlckRhdGEBAQQC
-        PlN5c3RlbS5XaW5kb3dzLkZvcm1zLkxpc3RWaWV3SXRlbStMaXN0Vmlld1N1Ykl0ZW0rU3ViSXRlbVN0
-        eWxlAgAAAAIAAAAGCwAAAAExBgwAAAAQTGlzdFZpZXdTdWJJdGVtMgoKAQYAAAAFAAAABg0AAAABMgYO
-        AAAAEExpc3RWaWV3U3ViSXRlbTMKCgEHAAAABQAAAAYPAAAAATMGEAAAABBMaXN0Vmlld1N1Ykl0ZW00
-        CgoFCQAAABNTeXN0ZW0uRHJhd2luZy5Gb250BAAAAAROYW1lBFNpemUFU3R5bGUEVW5pdAEABAQLGFN5
-        c3RlbS5EcmF3aW5nLkZvbnRTdHlsZQMAAAAbU3lzdGVtLkRyYXdpbmcuR3JhcGhpY3NVbml0AwAAAAMA
-        AAAGEQAAABRNaWNyb3NvZnQgU2FucyBTZXJpZgAABEEF7v///xhTeXN0ZW0uRHJhd2luZy5Gb250U3R5
-        bGUBAAAAB3ZhbHVlX18ACAMAAAAAAAAABe3///8bU3lzdGVtLkRyYXdpbmcuR3JhcGhpY3NVbml0AQAA
-        AAd2YWx1ZV9fAAgDAAAAAwAAAAs=
-</value>
-  </data>
-  <data name="matchmediaListView.Items1" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
-        LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkMAwAAAFFTeXN0
-        ZW0uRHJhd2luZywgVmVyc2lvbj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2Vu
-        PWIwM2Y1ZjdmMTFkNTBhM2EFAQAAACFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5MaXN0Vmlld0l0ZW0LAAAA
-        BFRleHQKSW1hZ2VJbmRleAxTdWJJdGVtQ291bnQIU3ViSXRlbTEIU3ViSXRlbTIIU3ViSXRlbTMJQmFj
-        a0NvbG9yB0NoZWNrZWQERm9udAlGb3JlQ29sb3IXVXNlSXRlbVN0eWxlRm9yU3ViSXRlbXMBAAAEBAQE
-        AAQEAAgIMVN5c3RlbS5XaW5kb3dzLkZvcm1zLkxpc3RWaWV3SXRlbStMaXN0Vmlld1N1Ykl0ZW0CAAAA
-        MVN5c3RlbS5XaW5kb3dzLkZvcm1zLkxpc3RWaWV3SXRlbStMaXN0Vmlld1N1Ykl0ZW0CAAAAMVN5c3Rl
-        bS5XaW5kb3dzLkZvcm1zLkxpc3RWaWV3SXRlbStMaXN0Vmlld1N1Ykl0ZW0CAAAAFFN5c3RlbS5EcmF3
-        aW5nLkNvbG9yAwAAAAETU3lzdGVtLkRyYXdpbmcuRm9udAMAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3ID
-        AAAAAQIAAAAGBAAAAAV0ZXN0Mv////8EAAAACQUAAAAJBgAAAAkHAAAABfj///8UU3lzdGVtLkRyYXdp
-        bmcuQ29sb3IEAAAABG5hbWUFdmFsdWUKa25vd25Db2xvcgVzdGF0ZQEAAAAJBwcDAAAACgAAAAAAAAAA
-        GAABAAAJCQAAAAH2////+P///woAAAAAAAAAABoAAQABBQUAAAAxU3lzdGVtLldpbmRvd3MuRm9ybXMu
-        TGlzdFZpZXdJdGVtK0xpc3RWaWV3U3ViSXRlbQQAAAAEdGV4dARuYW1lBXN0eWxlCHVzZXJEYXRhAQEE
-        Aj5TeXN0ZW0uV2luZG93cy5Gb3Jtcy5MaXN0Vmlld0l0ZW0rTGlzdFZpZXdTdWJJdGVtK1N1Ykl0ZW1T
-        dHlsZQIAAAACAAAABgsAAAABNAYMAAAAEExpc3RWaWV3U3ViSXRlbTUKCgEGAAAABQAAAAYNAAAAATUG
-        DgAAABBMaXN0Vmlld1N1Ykl0ZW02CgoBBwAAAAUAAAAGDwAAAAE2BhAAAAAQTGlzdFZpZXdTdWJJdGVt
-        NwoKBQkAAAATU3lzdGVtLkRyYXdpbmcuRm9udAQAAAAETmFtZQRTaXplBVN0eWxlBFVuaXQBAAQECxhT
-        eXN0ZW0uRHJhd2luZy5Gb250U3R5bGUDAAAAG1N5c3RlbS5EcmF3aW5nLkdyYXBoaWNzVW5pdAMAAAAD
-        AAAABhEAAAAUTWljcm9zb2Z0IFNhbnMgU2VyaWYAAARBBe7///8YU3lzdGVtLkRyYXdpbmcuRm9udFN0
-        eWxlAQAAAAd2YWx1ZV9fAAgDAAAAAAAAAAXt////G1N5c3RlbS5EcmF3aW5nLkdyYXBoaWNzVW5pdAEA
-        AAAHdmFsdWVfXwAIAwAAAAMAAAAL
-</value>
-  </data>
-  <data name="matchmediaListView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 61</value>
-  </data>
-  <data name="matchmediaListView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>518, 201</value>
-  </data>
-  <data name="matchmediaListView.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;matchmediaListView.Name" xml:space="preserve">
-    <value>matchmediaListView</value>
-  </data>
-  <data name="&gt;&gt;matchmediaListView.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;matchmediaListView.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;matchmediaListView.ZOrder" xml:space="preserve">
-    <value>6</value>
   </data>
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -313,7 +240,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="saveMatchmediaButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>339, 357</value>
@@ -337,7 +264,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;saveMatchmediaButton.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="deleteMatchmediaButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 364</value>
@@ -361,28 +288,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;deleteMatchmediaButton.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="Name.Text" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="Name.Width" type="System.Int32, mscorlib">
-    <value>200</value>
-  </data>
-  <data name="Tags.Text" xml:space="preserve">
-    <value>Tags</value>
-  </data>
-  <data name="Tags.Width" type="System.Int32, mscorlib">
-    <value>150</value>
-  </data>
-  <data name="Type.Text" xml:space="preserve">
-    <value>Type</value>
-  </data>
-  <data name="Map.Text" xml:space="preserve">
-    <value>Map</value>
-  </data>
-  <data name="Map.Width" type="System.Int32, mscorlib">
-    <value>100</value>
+    <value>4</value>
   </data>
   <data name="addMatchmediaButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 268</value>
@@ -406,7 +312,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;addMatchmediaButton.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="managePlayersButton.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -433,35 +339,86 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;managePlayersButton.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
-  <data name="checkBox1.AutoSize" type="System.Boolean, mscorlib">
+  <data name="rememberCheckBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="checkBox1.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="rememberCheckBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 338</value>
   </data>
-  <data name="checkBox1.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="rememberCheckBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>121, 17</value>
   </data>
-  <data name="checkBox1.TabIndex" type="System.Int32, mscorlib">
+  <data name="rememberCheckBox.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
   </data>
-  <data name="checkBox1.Text" xml:space="preserve">
+  <data name="rememberCheckBox.Text" xml:space="preserve">
     <value>Remember Decision</value>
   </data>
-  <data name="&gt;&gt;checkBox1.Name" xml:space="preserve">
-    <value>checkBox1</value>
+  <data name="&gt;&gt;rememberCheckBox.Name" xml:space="preserve">
+    <value>rememberCheckBox</value>
   </data>
-  <data name="&gt;&gt;checkBox1.Type" xml:space="preserve">
+  <data name="&gt;&gt;rememberCheckBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;checkBox1.Parent" xml:space="preserve">
+  <data name="&gt;&gt;rememberCheckBox.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;checkBox1.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;rememberCheckBox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <metadata name="Tags.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="matchmediaBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="dataGridView1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 58</value>
+  </data>
+  <data name="dataGridView1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>516, 204</value>
+  </data>
+  <data name="dataGridView1.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;dataGridView1.Name" xml:space="preserve">
+    <value>dataGridView1</value>
+  </data>
+  <data name="&gt;&gt;dataGridView1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;dataGridView1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;dataGridView1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="nameDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <metadata name="Tags.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="Tags.HeaderText" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="typeDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="typeDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>50</value>
+  </data>
+  <data name="mapDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Map</value>
+  </data>
+  <data name="createdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <metadata name="matchmediaBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -474,29 +431,41 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Match Session End</value>
   </data>
-  <data name="&gt;&gt;Name.Name" xml:space="preserve">
-    <value>Name</value>
+  <data name="&gt;&gt;nameDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>nameDataGridViewTextBoxColumn</value>
   </data>
-  <data name="&gt;&gt;Name.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;nameDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;Tags.Name" xml:space="preserve">
     <value>Tags</value>
   </data>
   <data name="&gt;&gt;Tags.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;Type.Name" xml:space="preserve">
-    <value>Type</value>
+  <data name="&gt;&gt;typeDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>typeDataGridViewTextBoxColumn</value>
   </data>
-  <data name="&gt;&gt;Type.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;typeDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;Map.Name" xml:space="preserve">
-    <value>Map</value>
+  <data name="&gt;&gt;mapDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>mapDataGridViewTextBoxColumn</value>
   </data>
-  <data name="&gt;&gt;Map.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;mapDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;createdDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>createdDataGridViewTextBoxColumn</value>
+  </data>
+  <data name="&gt;&gt;createdDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;matchmediaBindingSource.Name" xml:space="preserve">
+    <value>matchmediaBindingSource</value>
+  </data>
+  <data name="&gt;&gt;matchmediaBindingSource.Type" xml:space="preserve">
+    <value>System.Windows.Forms.BindingSource, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>MatchSessionEnd</value>

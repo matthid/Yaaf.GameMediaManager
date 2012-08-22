@@ -28,22 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MatchSessionEnd));
             this.eslMatchCheckBox = new System.Windows.Forms.CheckBox();
             this.EslMatchIdTextBox = new System.Windows.Forms.TextBox();
             this.tagTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.matchmediaListView = new System.Windows.Forms.ListView();
             this.label2 = new System.Windows.Forms.Label();
             this.saveMatchmediaButton = new System.Windows.Forms.Button();
             this.deleteMatchmediaButton = new System.Windows.Forms.Button();
-            this.Name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Tags = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Map = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.addMatchmediaButton = new System.Windows.Forms.Button();
             this.managePlayersButton = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.rememberCheckBox = new System.Windows.Forms.CheckBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tags = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.mapDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.createdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.matchmediaBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // eslMatchCheckBox
@@ -51,6 +56,7 @@
             resources.ApplyResources(this.eslMatchCheckBox, "eslMatchCheckBox");
             this.eslMatchCheckBox.Name = "eslMatchCheckBox";
             this.eslMatchCheckBox.UseVisualStyleBackColor = true;
+            this.eslMatchCheckBox.CheckedChanged += new System.EventHandler(this.eslMatchCheckBox_CheckedChanged);
             // 
             // EslMatchIdTextBox
             // 
@@ -67,23 +73,6 @@
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
             // 
-            // matchmediaListView
-            // 
-            this.matchmediaListView.CheckBoxes = true;
-            this.matchmediaListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Name,
-            this.Tags,
-            this.Type,
-            this.Map});
-            this.matchmediaListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            ((System.Windows.Forms.ListViewItem)(resources.GetObject("matchmediaListView.Items"))),
-            ((System.Windows.Forms.ListViewItem)(resources.GetObject("matchmediaListView.Items1")))});
-            this.matchmediaListView.LabelEdit = true;
-            resources.ApplyResources(this.matchmediaListView, "matchmediaListView");
-            this.matchmediaListView.Name = "matchmediaListView";
-            this.matchmediaListView.UseCompatibleStateImageBehavior = false;
-            this.matchmediaListView.View = System.Windows.Forms.View.Details;
-            // 
             // label2
             // 
             resources.ApplyResources(this.label2, "label2");
@@ -94,6 +83,7 @@
             resources.ApplyResources(this.saveMatchmediaButton, "saveMatchmediaButton");
             this.saveMatchmediaButton.Name = "saveMatchmediaButton";
             this.saveMatchmediaButton.UseVisualStyleBackColor = true;
+            this.saveMatchmediaButton.Click += new System.EventHandler(this.saveMatchmediaButton_Click);
             // 
             // deleteMatchmediaButton
             // 
@@ -101,22 +91,7 @@
             resources.ApplyResources(this.deleteMatchmediaButton, "deleteMatchmediaButton");
             this.deleteMatchmediaButton.Name = "deleteMatchmediaButton";
             this.deleteMatchmediaButton.UseVisualStyleBackColor = true;
-            // 
-            // Name
-            // 
-            resources.ApplyResources(this.Name, "Name");
-            // 
-            // Tags
-            // 
-            resources.ApplyResources(this.Tags, "Tags");
-            // 
-            // Type
-            // 
-            resources.ApplyResources(this.Type, "Type");
-            // 
-            // Map
-            // 
-            resources.ApplyResources(this.Map, "Map");
+            this.deleteMatchmediaButton.Click += new System.EventHandler(this.deleteMatchmediaButton_Click);
             // 
             // addMatchmediaButton
             // 
@@ -129,11 +104,60 @@
             resources.ApplyResources(this.managePlayersButton, "managePlayersButton");
             this.managePlayersButton.Name = "managePlayersButton";
             // 
-            // checkBox1
+            // rememberCheckBox
             // 
-            resources.ApplyResources(this.checkBox1, "checkBox1");
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.rememberCheckBox, "rememberCheckBox");
+            this.rememberCheckBox.Name = "rememberCheckBox";
+            this.rememberCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AutoGenerateColumns = false;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.nameDataGridViewTextBoxColumn,
+            this.Tags,
+            this.typeDataGridViewTextBoxColumn,
+            this.mapDataGridViewTextBoxColumn,
+            this.createdDataGridViewTextBoxColumn});
+            this.dataGridView1.DataSource = this.matchmediaBindingSource;
+            resources.ApplyResources(this.dataGridView1, "dataGridView1");
+            this.dataGridView1.Name = "dataGridView1";
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            resources.ApplyResources(this.nameDataGridViewTextBoxColumn, "nameDataGridViewTextBoxColumn");
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            // 
+            // Tags
+            // 
+            resources.ApplyResources(this.Tags, "Tags");
+            this.Tags.Name = "Tags";
+            // 
+            // typeDataGridViewTextBoxColumn
+            // 
+            this.typeDataGridViewTextBoxColumn.DataPropertyName = "Type";
+            this.typeDataGridViewTextBoxColumn.FillWeight = 50F;
+            resources.ApplyResources(this.typeDataGridViewTextBoxColumn, "typeDataGridViewTextBoxColumn");
+            this.typeDataGridViewTextBoxColumn.Name = "typeDataGridViewTextBoxColumn";
+            // 
+            // mapDataGridViewTextBoxColumn
+            // 
+            this.mapDataGridViewTextBoxColumn.DataPropertyName = "Map";
+            resources.ApplyResources(this.mapDataGridViewTextBoxColumn, "mapDataGridViewTextBoxColumn");
+            this.mapDataGridViewTextBoxColumn.Name = "mapDataGridViewTextBoxColumn";
+            // 
+            // createdDataGridViewTextBoxColumn
+            // 
+            this.createdDataGridViewTextBoxColumn.DataPropertyName = "Created";
+            resources.ApplyResources(this.createdDataGridViewTextBoxColumn, "createdDataGridViewTextBoxColumn");
+            this.createdDataGridViewTextBoxColumn.Name = "createdDataGridViewTextBoxColumn";
+            // 
+            // matchmediaBindingSource
+            // 
+            this.matchmediaBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.Matchmedia);
             // 
             // MatchSessionEnd
             // 
@@ -141,17 +165,21 @@
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.deleteMatchmediaButton;
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.rememberCheckBox);
             this.Controls.Add(this.managePlayersButton);
             this.Controls.Add(this.addMatchmediaButton);
             this.Controls.Add(this.deleteMatchmediaButton);
             this.Controls.Add(this.saveMatchmediaButton);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.matchmediaListView);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tagTextBox);
             this.Controls.Add(this.EslMatchIdTextBox);
             this.Controls.Add(this.eslMatchCheckBox);
+            this.Name = "MatchSessionEnd";
+            this.Load += new System.EventHandler(this.MatchSessionEnd_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.matchmediaBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -163,16 +191,18 @@
         private System.Windows.Forms.TextBox EslMatchIdTextBox;
         private System.Windows.Forms.TextBox tagTextBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListView matchmediaListView;
-        private System.Windows.Forms.ColumnHeader Name;
-        private System.Windows.Forms.ColumnHeader Tags;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button saveMatchmediaButton;
         private System.Windows.Forms.Button deleteMatchmediaButton;
-        private System.Windows.Forms.ColumnHeader Type;
-        private System.Windows.Forms.ColumnHeader Map;
         private System.Windows.Forms.Button addMatchmediaButton;
         private System.Windows.Forms.Button managePlayersButton;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox rememberCheckBox;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tags;
+        private System.Windows.Forms.DataGridViewTextBoxColumn typeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn mapDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn createdDataGridViewTextBoxColumn;
+        private System.Windows.Forms.BindingSource matchmediaBindingSource;
     }
 }

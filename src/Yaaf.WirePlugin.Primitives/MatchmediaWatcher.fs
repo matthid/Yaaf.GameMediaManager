@@ -4,7 +4,6 @@
 // ----------------------------------------------------------------------------
 namespace Yaaf.WirePlugin
 
-open Yaaf.WirePlugin.WinFormGui.Properties
 open Yaaf.Logging
 open System.IO
 type RecursiveFileSystemWatcher(path, filter) as x = 
@@ -53,20 +52,16 @@ type RecursiveFileSystemWatcher(path, filter) as x =
 /// This class provides observation functionality which can used in subclasses
 [<AbstractClass>]
 type MatchmediaWatcher(logger : ITracer) =
-    let settings = new Settings()
     let notifyEvent = new Event<unit>()
     let foundMedia = new System.Collections.Generic.List<int * System.DateTime * System.String>()
     let watcher = new System.Collections.Generic.List<FileSystemWatcher>()
     let mutable started = false
-    do
-        settings.Reload()
 
     [<CLIEventAttribute>]
     member x.NotifyRecord = notifyEvent.Publish
 
     member x.NotifyRecordMissing () = notifyEvent.Trigger()
 
-    member x.Settings with get() = settings
     member x.FoundMedia with get() = new System.Collections.Generic.List<int * System.DateTime * System.String>(foundMedia)
     member x.BasicWatchFolder path filter notify = 
         let localNr = ref 0
@@ -111,17 +106,4 @@ type GenericMatchmediaWatcher (logger : ITracer, folders : List<string * string 
 
     override x.EndGameAbstract() = ()
 
-    
-/// Observator for a source powered game (and old hl mods)
-type SourceMatchmediaWatcher (logger : ITracer, modPath:string, sourceGame:bool) = 
-    inherit GenericMatchmediaWatcher(
-        logger, 
-        [modPath, "*.dem", None; modPath, (if sourceGame then "*.jpg" else "*.bmp"), None])
-    
-type Starcraft2MediaWatcher(logger: ITracer) = 
-    inherit GenericMatchmediaWatcher(
-        logger, 
-        [ Path.Combine(
-                System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
-                "StarCraft II"), "*.SC2Replay", None ])
 

@@ -140,6 +140,15 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die add or edit Games ähnelt.
+        /// </summary>
+        public static string EditGames {
+            get {
+                return ResourceManager.GetString("EditGames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Example: {0} ähnelt.
         /// </summary>
         public static string Example {

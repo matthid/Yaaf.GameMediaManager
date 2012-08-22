@@ -9,26 +9,75 @@ using System.Windows.Forms;
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
+    using System.Diagnostics;
+
     using Yaaf.WirePlugin.WinFormGui.Database;
 
     public partial class MatchSessionEnd : Form
     {
+        private readonly Action<TraceEventType, string> logger;
+
+        private readonly LocalDatabaseWrapper context;
+
         private readonly MatchSession session;
 
         private readonly IEnumerable<Matchmedia> mediaFiles;
+        
 
-        private readonly int? eslWarId;
-
-
-        public MatchSessionEnd(Database.MatchSession session, IEnumerable<Database.Matchmedia> mediaFiles, int? eslWarId)
+        public MatchSessionEnd(Action<TraceEventType, string> logger, LocalDatabaseWrapper context, Database.MatchSession session, IEnumerable<Database.Matchmedia> mediaFiles)
         {
+            this.logger = logger;
+            this.context = context;
             this.session = session;
-            this.mediaFiles = mediaFiles;
-            this.eslWarId = eslWarId;
+            this.mediaFiles = new List<Matchmedia>( mediaFiles );
             InitializeComponent();
         }
 
 
-        public IEnumerable<Database.Matchmedia> ResultMedia { get; private set; } 
+        public IEnumerable<Database.Matchmedia> ResultMedia { get; private set; }
+
+        private void MatchSessionEnd_Load(object sender, EventArgs e)
+        {
+            matchmediaBindingSource.DataSource = mediaFiles;
+            tagTextBox.Enabled = false;
+            eslMatchCheckBox.Checked = session.EslMatchId != null;
+            EslMatchIdTextBox.Text = session.EslMatchId != null ? session.EslMatchId.Value.ToString() : "";
+            EslMatchIdTextBox.Enabled = session.EslMatchId != null;
+        }
+
+        private void saveMatchmediaButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //var tags = tagTextBox.Text.Split(',');
+                //foreach (var tag in tags)
+                //{
+                //    var association = new MatchSessions_Tag();
+                //    association.MatchSession = session;
+                //    association.Tag = 
+                //    session.MatchSessions_Tag.Add();
+                //}
+                session.EslMatchId = eslMatchCheckBox.Checked ? null : (int?)int.Parse(EslMatchIdTextBox.Text);
+
+                ResultMedia = new List<Matchmedia>(mediaFiles);
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                logger(TraceEventType.Error, "Could not save Matchmedia, Ex: " + ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void deleteMatchmediaButton_Click(object sender, EventArgs e)
+        {
+            ResultMedia = null;
+        }
+
+        private void eslMatchCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            EslMatchIdTextBox.Enabled = eslMatchCheckBox.Checked;
+        }
+
     }
 }

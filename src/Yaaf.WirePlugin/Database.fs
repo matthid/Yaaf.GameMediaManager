@@ -24,8 +24,8 @@ module Database =
 
         let connectString = sprintf "Data Source=%s" dbFile
         new Database.LocalDatabaseDataContext(connectString)
-    //let wrapper = 
-        //new LocalDatabaseWrapper(db)
+    let wrapper = 
+        new LocalDatabaseWrapper(db)
 
     let getIdMaybe s = 
         let result = 

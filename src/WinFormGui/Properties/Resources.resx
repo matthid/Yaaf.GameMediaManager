@@ -259,4 +259,7 @@
   <data name="InfoForm_TryStart_Could_not_start_browser" xml:space="preserve">
     <value>Could not start browser</value>
   </data>
+  <data name="EditGames" xml:space="preserve">
+    <value>add or edit Games</value>
+  </data>
 </root>

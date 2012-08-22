@@ -46,6 +46,10 @@ type ReplayWirePlugin() as x =
                 (fun () ->
                     using (new InfoForm(fun tr s -> logger.log tr "%s" s)) (fun o ->
                         o.ShowDialog() |> ignore))
+            item Resources.EditGames Resources.add
+                (fun () ->
+                    using (new EditGames((fun tr s -> logger.log tr "%s" s), Database.wrapper)) (fun o ->
+                        o.ShowDialog() |> ignore))
             new ToolStripSeparator() :> ToolStripItem
             item Resources.CloseMenu Resources.cancel id
         ]
@@ -77,7 +81,7 @@ type ReplayWirePlugin() as x =
                     game.WatchFolder.Load()
                     let watchFolder = 
                         game.WatchFolder 
-                        |> Seq.map (fun w -> w.Folder, w.Filter, if w.NotifyOnInativity.HasValue then Some w.NotifyOnInativity.Value else None)
+                        |> Seq.map (fun w -> w.Folder, w.Filter, if w.NotifyOnInactivity.HasValue then Some w.NotifyOnInactivity.Value else None)
                         |> Seq.toList
                     new GenericMatchmediaWatcher(
                         logger,
@@ -165,7 +169,7 @@ type ReplayWirePlugin() as x =
                     Some media
             else
 
-            let form = new MatchSessionEnd(session, media, if warId.IsSome then System.Nullable(warId.Value) else System.Nullable())
+            let form = new MatchSessionEnd((fun tr l -> logger.log tr "%s" l), Database.wrapper, session, media)
             form.ShowDialog() |> ignore
             if form.ResultMedia = null then None else Some form.ResultMedia
 

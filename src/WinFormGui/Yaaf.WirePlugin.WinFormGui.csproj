@@ -50,6 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditGames.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditGames.Designer.cs">
+      <DependentUpon>EditGames.cs</DependentUpon>
+    </Compile>
     <Compile Include="InfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,6 +71,12 @@
       <DependentUpon>LocalDatabase.dbml</DependentUpon>
     </Compile>
     <Compile Include="LocalDatabaseWrapper.cs" />
+    <Compile Include="ManageWatchFolder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageWatchFolder.Designer.cs">
+      <DependentUpon>ManageWatchFolder.cs</DependentUpon>
+    </Compile>
     <Compile Include="MatchSessionEnd.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,7 +90,9 @@
       <DependentUpon>OptionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReparsePoint.cs" />
+    <EmbeddedResource Include="EditGames.resx">
+      <DependentUpon>EditGames.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -86,6 +100,9 @@
     <None Include="LocalDatabase.dbml.layout">
       <DependentUpon>LocalDatabase.dbml</DependentUpon>
     </None>
+    <EmbeddedResource Include="ManageWatchFolder.resx">
+      <DependentUpon>ManageWatchFolder.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MatchSessionEnd.resx">
       <DependentUpon>MatchSessionEnd.cs</DependentUpon>
     </EmbeddedResource>
@@ -108,6 +125,9 @@
       <LastGenOutput>LocalDatabase.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.Game.datasource" />
+    <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.Matchmedia.datasource" />
+    <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.WatchFolder.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -230,6 +250,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Yaaf.WirePlugin.Primitives\Yaaf.WirePlugin.Primitives.fsproj">
+      <Project>{94A3C463-E692-450D-9FE6-8688610ECCBC}</Project>
+      <Name>Yaaf.WirePlugin.Primitives</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,5 +1,8 @@
 ﻿namespace Yaaf.WirePlugin.WinFormGui
 {
+    using System.Collections.Generic;
+    using System.Data.Linq;
+
     using Yaaf.WirePlugin.WinFormGui.Database;
 
     public class LocalDatabaseWrapper
@@ -12,9 +15,33 @@
             this.context = context;
         }
 
-        public Game GetGame(int id)
+
+        public LocalDatabaseDataContext Context
         {
-            return null;
+            get
+            {
+                return this.context;
+            }
         }
+
+
+        public void UpdateDatabase<T>(Table<T> table, IEnumerable<T> changedItems, IList<T> originalItems) where T : class
+        {
+            foreach (var item in changedItems)
+            {
+                if (!originalItems.Contains(item))
+                {
+                    table.InsertOnSubmit(item);
+                }
+                else
+                {
+                    originalItems.Remove(item);
+                }
+            }
+
+            table.DeleteAllOnSubmit(originalItems);
+            this.Context.SubmitChanges();
+        }
+
     }
 }

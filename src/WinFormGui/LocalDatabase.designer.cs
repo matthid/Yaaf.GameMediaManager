@@ -3059,8 +3059,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnFolderChanged();
     partial void OnFilterChanging(string value);
     partial void OnFilterChanged();
-    partial void OnNotifyOnInativityChanging(System.Nullable<int> value);
-    partial void OnNotifyOnInativityChanged();
+    partial void OnNotifyOnInactivityChanging(System.Nullable<int> value);
+    partial void OnNotifyOnInactivityChanged();
     #endregion
 		
 		public WatchFolder()
@@ -3069,7 +3069,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int Id
 		{
 			get
@@ -3154,7 +3154,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NotifyOnInativity", DbType="Int")]
-		public System.Nullable<int> NotifyOnInativity
+		public System.Nullable<int> NotifyOnInactivity
 		{
 			get
 			{
@@ -3164,11 +3164,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				if ((this._NotifyOnInativity != value))
 				{
-					this.OnNotifyOnInativityChanging(value);
+					this.OnNotifyOnInactivityChanging(value);
 					this.SendPropertyChanging();
 					this._NotifyOnInativity = value;
-					this.SendPropertyChanged("NotifyOnInativity");
-					this.OnNotifyOnInativityChanged();
+					this.SendPropertyChanged("NotifyOnInactivity");
+					this.OnNotifyOnInactivityChanged();
 				}
 			}
 		}
