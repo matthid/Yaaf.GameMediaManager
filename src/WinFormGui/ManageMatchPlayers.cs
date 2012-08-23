@@ -16,7 +16,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
     public partial class ManageMatchPlayers : Form
     {
-        private readonly Action<TraceEventType, string> logger;
+        private readonly Logging.LoggingInterfaces.ITracer logger;
 
         private readonly LocalDatabaseWrapper context;
 
@@ -24,7 +24,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private List<MatchSessions_Player> old;
         
-        public ManageMatchPlayers(Action<TraceEventType, string> logger, LocalDatabaseWrapper context, MatchSession session)
+        public ManageMatchPlayers(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, MatchSession session)
         {
             this.logger = logger;
             this.context = context;
@@ -34,6 +34,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void ManageMatchPlayers_Load(object sender, EventArgs e)
         {
+            Logging.setupLogging(logger); 
             try
             {
                 session.MatchSessions_Player.Load();
@@ -84,7 +85,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
             catch (Exception ex)
             {
-                logger(TraceEventType.Error, "Can't load player matchdata: " + ex);
+                logger.LogError("{0}", "Can't load player matchdata: " + ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 this.Close();
             }
@@ -174,7 +175,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
             catch (Exception ex)
             {
-                logger(TraceEventType.Error, "Can't save player matchdata: " + ex);
+                logger.LogError("{0}", "Can't save player matchdata: " + ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -186,7 +187,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void matchPlayersDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            logger(TraceEventType.Warning, "DataError: " + e.Exception);
+            logger.LogWarning("{0}", "DataError: " + e.Exception);
             //e.ThrowException = false;
         }
 

@@ -40,11 +40,11 @@ type ReplayWirePlugin() as x =
                     with exn -> logger.logErr "Error: %O" exn)
             item Resources.Info Resources.i
                 (fun () ->
-                    using (new InfoForm(fun tr s -> logger.log tr "%s" s)) (fun o ->
+                    using (new InfoForm(logger)) (fun o ->
                         o.ShowDialog() |> ignore))
             item Resources.EditGames Resources.add
                 (fun () ->
-                    using (new EditGames((fun tr s -> logger.log tr "%s" s), Database.getContext())) (fun o ->
+                    using (new EditGames(logger, Database.getContext())) (fun o ->
                         o.ShowDialog() |> ignore))
             new ToolStripSeparator() :> ToolStripItem
             item Resources.CloseMenu Resources.cancel id
@@ -159,7 +159,7 @@ type ReplayWirePlugin() as x =
                     Some media
             else
 
-            let form = new MatchSessionEnd((fun tr l -> logger.log tr "%s" l), localContext, session, media)
+            let form = new MatchSessionEnd(logger, localContext, session, media)
             form.ShowDialog() |> ignore
             if form.ResultMedia = null then None else Some form.ResultMedia
 
@@ -176,15 +176,18 @@ type ReplayWirePlugin() as x =
                             Path = m))
                 |> showEndSessionWindow
         match preparedMatchmedia with
-        | None -> ()
+        | None -> 
+            if sessionAdded then
+                db.MatchSessions.DeleteOnSubmit(session)
+            localContext.MySubmitChanges()
         | Some (media) ->
 
         logger.logInfo "Add Match to Database"   
-        db.Matchmedias.InsertAllOnSubmit(media)
+        // db.Matchmedias.InsertAllOnSubmit(media)
+        session.Matchmedia.AddRange(media)
         if not sessionAdded then
             db.MatchSessions.InsertOnSubmit(session)
-
-        db.SubmitChanges()
+        localContext.MySubmitChanges()
         
         logger.logInfo "Move Media to MediaPath"   
         for m in media do
@@ -195,8 +198,8 @@ type ReplayWirePlugin() as x =
             with :? IOException as e ->
                 logger.logErr "Could not move Matchmedia from %s to Database! (Error: %O)" m.Path e   
         
-        logger.logInfo "Change to MediaPath in Database"   
-        db.SubmitChanges()
+        logger.logInfo "Change to MediaPath in Database"  
+        localContext.MySubmitChanges() 
 
         // Execute automatic actions for this game
         for action in Database.getActivatedMatchFormActions db matchData.IsSome game do
@@ -253,7 +256,6 @@ type ReplayWirePlugin() as x =
         try 
             logger.logVerb "Setup Icon"
             x.setIcon(Resources.bluedragon)
-        
             logger.logVerb "Setup Events"
             gameInterface <- Some (InterfaceFactory.gameInterface())
         
@@ -297,7 +299,6 @@ type ReplayWirePlugin() as x =
                 (fun matchId -> 
                     logEvent ("MatchEnd" + string matchId) (fun logger ->
                             matchData <- None))
-        
         with exn ->
             logger.logErr "Error: %O" exn
 

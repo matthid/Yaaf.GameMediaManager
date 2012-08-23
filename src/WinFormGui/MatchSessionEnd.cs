@@ -16,7 +16,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
     public partial class MatchSessionEnd : Form
     {
-        private readonly Action<TraceEventType, string> logger;
+        private readonly Logging.LoggingInterfaces.ITracer logger;
 
         private readonly LocalDatabaseWrapper context;
 
@@ -25,7 +25,7 @@ namespace Yaaf.WirePlugin.WinFormGui
         private readonly List<Matchmedia> mediaFiles;
         
 
-        public MatchSessionEnd(Action<TraceEventType, string> logger, LocalDatabaseWrapper context, Database.MatchSession session, IEnumerable<Database.Matchmedia> mediaFiles)
+        public MatchSessionEnd(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, Database.MatchSession session, IEnumerable<Database.Matchmedia> mediaFiles)
         {
             this.logger = logger;
             this.context = context;
@@ -39,6 +39,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void MatchSessionEnd_Load(object sender, EventArgs e)
         {
+            Logging.setupLogging(logger); 
             session.MatchSessions_Tag.Load();
 
             tagTextBox.Text = string.Join(
@@ -97,7 +98,6 @@ namespace Yaaf.WirePlugin.WinFormGui
                             var association = new Matchmedia_Tag();
                             association.Matchmedia = file;
                             association.Tag = context.GetTag(tag);
-                            context.Context.Matchmedia_Tags.InsertOnSubmit(association);
                             file.Matchmedia_Tag.Add(association);
                         }
                     }
@@ -109,7 +109,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
             catch (Exception ex)
             {
-                logger(TraceEventType.Error, "Could not save Matchmedia, Ex: " + ex);
+                logger.LogError("{0}", "Could not save Matchmedia, Ex: " + ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -133,6 +133,14 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             this.SetupRemember(false);
             ResultMedia = null;
+
+            foreach (var matchmedia in mediaFiles)
+            {
+                if (File.Exists(matchmedia.Path))
+                {
+                    File.Delete(matchmedia.Path);
+                }
+            }
         }
 
         private void SetupRemember(bool saveData)
@@ -194,7 +202,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
             catch (Exception ex)
             {
-                logger(TraceEventType.Error, "Could not open ManageMatchPlayers, Ex: " + ex);
+                logger.LogError("{0}", "Could not open ManageMatchPlayers, Ex: " + ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

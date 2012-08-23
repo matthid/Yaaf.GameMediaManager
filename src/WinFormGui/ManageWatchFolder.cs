@@ -15,7 +15,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
     public partial class ManageWatchFolder : Form
     {
-        private readonly Action<TraceEventType, string> logger;
+        private readonly Logging.LoggingInterfaces.ITracer logger;
 
         private readonly LocalDatabaseWrapper context;
 
@@ -24,7 +24,7 @@ namespace Yaaf.WirePlugin.WinFormGui
         private List<WatchFolder> old;
 
 
-        public ManageWatchFolder(Action<TraceEventType, string> logger, LocalDatabaseWrapper context, Game game)
+        public ManageWatchFolder(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, Game game)
         {
             this.logger = logger;
             this.context = context;
@@ -34,6 +34,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void ManageWatchFolder_Load(object sender, EventArgs e)
         {
+            Logging.setupLogging(logger); 
             try
             {
                 var folders = (from g in this.context.Context.WatchFolders
@@ -48,7 +49,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
             catch (Exception ex)
             {
-                logger(TraceEventType.Error, "Can't load watchfolder data: " + ex);
+                logger.LogError("{0}", "Can't load watchfolder data: " + ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 this.Close();
             }
@@ -69,7 +70,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
             catch (Exception ex)
             {
-                logger(TraceEventType.Error, "Can't change watchfolder changes: " + ex);
+                logger.LogError("{0}", "Can't change watchfolder changes: " + ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }

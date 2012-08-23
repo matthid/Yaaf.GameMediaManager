@@ -4,13 +4,17 @@ Future - Version 1.0
  - Read Enemies for (Versus) matches from the esl page
  - Allow Custom Actions to be setup via GUI
  - Add CustomTool actions for converting
- - Add default action to move to matchmedia path on esl matches (for new games)
  - Matchmedia View to manage your media
 
-23.08.2012 Version 0.5.1
+
+23.08.2012 Version 0.6
  - Allow Enemies to be setup via GUI
  - Full Tagging support for games/players/matchmedia
+ - Add default action to move to matchmedia path on esl matches (for new games, 1-click media upload)
  * Changed "EditGames" Window semantics
+ ! This version requires that you delete your old database file 
+   delete C:\Users\_\AppData\Local\Yaaf\WirePlugin\LocalDatabase.sdf
+   and the C:\Users\_\AppData\Local\Yaaf\WirePlugin\media folder
 
 22.08.2012 Version 0.5
  - Support for any game with any matchdata (you can add your games and add the folder you'd like to watch manually)

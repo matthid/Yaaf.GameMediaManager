@@ -93,3 +93,7 @@ module Logging =
                 (fun () -> 
                     x.TraceSource.TraceTransfer(0, "Switching to " + newActivity, tracer.ActivityId))
             tracer
+
+    let setupLogging (logger:ITracer) =
+        System.Windows.Forms.Application.ThreadException
+            |> Event.add (fun e -> logger.logErr "Unhandled Exception: %O" e.Exception)

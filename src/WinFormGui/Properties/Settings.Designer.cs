@@ -58,5 +58,17 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
                 this["MyIdentity"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int DefaultEslWarAction {
+            get {
+                return ((int)(this["DefaultEslWarAction"]));
+            }
+            set {
+                this["DefaultEslWarAction"] = value;
+            }
+        }
     }
 }

@@ -15,9 +15,9 @@ namespace Yaaf.WirePlugin.WinFormGui
 
     public partial class InfoForm : Form
     {
-        private readonly Action<TraceEventType, string> logger;
+        private readonly Logging.LoggingInterfaces.ITracer logger;
 
-        public InfoForm(Action<System.Diagnostics.TraceEventType, string> logger)
+        public InfoForm(Logging.LoggingInterfaces.ITracer logger)
         {
             this.logger = logger;
             InitializeComponent();
@@ -38,7 +38,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, Resources.InfoForm_TryStart_Could_not_start_browser);
-                logger(TraceEventType.Error, e.ToString());
+                logger.LogError("{0}", e.ToString());
             }
         }
 
@@ -50,9 +50,11 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void InfoForm_Load(object sender, EventArgs e)
         {
+            Logging.setupLogging(logger);
             linkLabel2.Text = string.Format(
                 Resources.InfoForm_InfoForm_Load_VersionString___0_,
                 System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
         }
+
     }
 }

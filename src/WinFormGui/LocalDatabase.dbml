@@ -47,7 +47,7 @@
   </Table>
   <Table Name="Matchmedia" Member="Matchmedias">
     <Type Name="Matchmedia">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" />
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Type" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="MatchSessionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />

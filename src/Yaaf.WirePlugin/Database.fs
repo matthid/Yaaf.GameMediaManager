@@ -35,7 +35,10 @@ module Database =
         if result |> Seq.isEmpty then
             None
         else Some (result |> Seq.head)
-        
+
+    let getId s = 
+        s |> Query.query |> Seq.head
+   
     /// Finds a game in database
     let getGame (db:Database.LocalDatabaseDataContext) id = 
         getIdMaybe
@@ -73,16 +76,31 @@ module Database =
                 if a.Tag.Name = tag then
                     yield tag } @> |> Query.query |> Seq.isEmpty |> not
 
-    let rec getFilter (action:Database.ActionObject) = 
+    let getParameterForAction actionType (action:Database.ActionObject)  = 
         action.ObjectParameter.Load()
-        let parameter = action.ObjectParameter |> Seq.toArray
-        if (parameter.Length <> int action.Filter.Parameters) then
-            invalidOp "Database is broken invalid parameter count for filter in actionobject %d" action.Id
+        let parameter = 
+            action.ObjectParameter
+                |> Seq.filter (fun o -> o.Type = actionType)
+                |> Seq.sortBy (fun o -> o.ParamNum)
+                |> Seq.toArray
+        parameter
+            |> Seq.iteri 
+                (fun i o -> 
+                    if int o.ParamNum <> i then 
+                        invalidOp "Database is broken: Invalid parameter number for type %d in actionobject %d" actionType action.Id)
+        if (parameter.Length <> int action.Action.Parameters) then
+            invalidOp "Database is broken: Invalid parameter count for type %d in actionobject %d" actionType action.Id
+        parameter 
+
+    let rec getFilter (action:Database.ActionObject) = 
+        let parameter = getParameterForAction 1uy action
         match action.Filter.Name with
         | "Merge" ->
             (fun (m:Database.Matchmedia) ->
                 getFilter parameter.[0].ActionObject m &&
-                getFilter parameter.[1].ActionObject m)
+                getFilter parameter.[1].ActionObject m) 
+        | "None" ->
+            (fun (m:Database.Matchmedia) -> true)
         | "OrFilter" ->
             (fun (m:Database.Matchmedia) ->
                 getFilter parameter.[0].ActionObject m ||
@@ -142,15 +160,14 @@ module Database =
         ).ToString()
 
     let rec getAction (action:Database.ActionObject) = 
-        action.ObjectParameter.Load()
-        let parameter = action.ObjectParameter |> Seq.toArray
-        if (parameter.Length <> int action.Action.Parameters) then
-            invalidOp "Database is broken invalid parameter count for action in actionobject %d" action.Id
+        let parameter = getParameterForAction 2uy action
         match action.Action.Name with
         | "Merge" ->
             (fun (m:Database.Matchmedia) ->
                 getAction parameter.[0].ActionObject m 
                 getAction parameter.[1].ActionObject m)
+        | "None" ->
+            (fun (m:Database.Matchmedia) -> ())
         | "CopyMedia" ->
             (fun (m:Database.Matchmedia) ->
                 let rawTargetPath = parameter.[0].Parameter
@@ -192,20 +209,22 @@ module Database =
     
     let getIdentityPlayer (db:Database.LocalDatabaseDataContext) = 
         let id = Properties.Settings.Default.MyIdentity
+        let myQuery = 
+            <@ seq {
+                for a in db.Players do
+                    if a.Id = id then
+                        yield a } @>
         let player =
-            getIdMaybe
-                <@ seq {
-                    for a in db.Players do
-                        if a.Id = id then
-                            yield a } @>
+            getIdMaybe myQuery
         match player with
         | None ->
+            let dbCopy = wrapper.Copy().Context
             let newIdentity = 
                 new Database.Player(
                     Name = "Me")
-            db.Players.InsertOnSubmit(newIdentity)
-            db.SubmitChanges()
+            dbCopy.Players.InsertOnSubmit(newIdentity)
+            dbCopy.SubmitChanges()
             Properties.Settings.Default.MyIdentity <- newIdentity.Id
             Properties.Settings.Default.Save()
-            newIdentity
+            getId myQuery
         | Some (p) -> p

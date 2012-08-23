@@ -16,7 +16,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
     public partial class EditGames : Form
     {
-        private readonly Action<TraceEventType, string> logger;
+        private readonly Logging.LoggingInterfaces.ITracer logger;
 
         private readonly LocalDatabaseDataContext context;
 
@@ -26,7 +26,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private bool saveData = false;
 
-        public EditGames(Action<System.Diagnostics.TraceEventType, string> logger, LocalDatabaseWrapper context)
+        public EditGames(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context)
         {
             this.logger = logger;
             
@@ -39,6 +39,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void EditGames_Load(object sender, EventArgs e)
         {
+            Logging.setupLogging(logger); 
             var games = from g in this.context.Games select g;
             old = new System.Collections.Generic.List<Database.Game>(games);
             gameBindingSource.DataSource = new System.Collections.Generic.List<Database.Game>(old);
@@ -59,11 +60,11 @@ namespace Yaaf.WirePlugin.WinFormGui
                 
                 // TODO: Check for invalid WatchFolder Entries (well they are not critical)
 
-                this.context.SubmitChanges();
+                this.wrapper.MySubmitChanges();
             }
             catch (Exception ex)
             {
-                this.logger(TraceEventType.Error, "Can't change game changes: " + ex);
+                logger.LogError("{0}", "Can't change game changes: " + ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -97,7 +98,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
             catch (Exception ex)
             {
-                logger(TraceEventType.Error, "Can't open Game form: " + ex);
+                logger.LogError("{0}", "Can't open Game form: " + ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -122,45 +123,38 @@ namespace Yaaf.WirePlugin.WinFormGui
             {
                 this.SaveData();
             }
-            else
-            {
-                // Revert all WatchFolter changes that are invalid now
-                //var changes = this.context.GetChangeSet();
-                //Func<object, bool> selector = d =>
-                //    {
-                //        var w = d as WatchFolder;
-                //        if (w == null)
-                //        {
-                //            return false;
-                //        }
+        }
 
-                //        // Select those which are not valid (they have to be inserted, but are not as we are canceling)
-                //        return !old.Contains(w.Game);
-                //    };
-                //foreach (var insert in changes.Inserts.Where(selector))
-                //{
-                //    this.context.GetTable(insert.GetType()).DeleteOnSubmit(insert);
-                //}
-                //foreach (var deletion in changes.Deletes.Where(selector))
-                //{
-                //    this.context.GetTable(deletion.GetType()).InsertOnSubmit(deletion);
-                //}
-                //var updatedTables = new List<ITable>();
-                //foreach (var update in changes.Updates.Where(selector))
-                //{
-                //    var tbl = context.GetTable(update.GetType());
-                //    // Make sure not to refresh the same table twice
-                //    if (updatedTables.Contains(tbl))
-                //    {
-                //        continue;
-                //    }
-                //    else
-                //    {
-                //        updatedTables.Add(tbl);
-                //        context.Refresh(RefreshMode.OverwriteCurrentValues, tbl);
-                //    }
-                //}
+        private void dataGridView1_UserAddedRow(object sender, DataGridViewRowEventArgs e)
+        {
+            try
+            {
+                var item = (Game)e.Row.DataBoundItem;
+                if (item == null) item = (Game)gameBindingSource.Current;
+                // Setup default action for this game (add to matchmedia path)
+                var copyAction = wrapper.GetMoveToMatchmediaActionObject();
+
+                var assoc = new MatchFormAction();
+                assoc.ActionObject = copyAction;
+                assoc.Game = item;
+                assoc.PublicActivated = false;
+                assoc.WarActivated = true;
+                item.MatchFormAction.Add(assoc);
+                // context.MatchFormActions.InsertOnSubmit(assoc);
             }
+            catch (Exception ex)
+            {
+                logger.LogError("{0}", "Can't add defaults for new game: " + ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void dataGridView1_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
+        {
+            // TODO: Should we really delete all related Actions?
+            var item = (Game)e.Row.DataBoundItem;
+            item.MatchFormAction.Load();
+            context.MatchFormActions.DeleteAllOnSubmit(item.MatchFormAction);
         }
     }
 }

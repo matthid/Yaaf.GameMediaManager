@@ -14,10 +14,10 @@
         <elementListCompartment Id="6da428ba-5ac7-48f1-a77a-0c520d006679" absoluteBounds="0.64000000000000012, 6.96, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="a50cde4b-e1ec-4693-bac5-dff1d5907368" absoluteBounds="3.375, 4.875, 2, 1.7708968098958327">
+    <classShape Id="a50cde4b-e1ec-4693-bac5-dff1d5907368" absoluteBounds="3.375, 5, 2, 1.7708968098958327">
       <DataClassMoniker Name="/LocalDatabaseDataContext/MatchFormAction" />
       <nestedChildShapes>
-        <elementListCompartment Id="994aba31-2ff4-4207-b40a-aac25de130e2" absoluteBounds="3.3900000000000006, 5.335, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="994aba31-2ff4-4207-b40a-aac25de130e2" absoluteBounds="3.3900000000000006, 5.46, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <classShape Id="0dbecca0-abce-4f6d-82ef-b50eb92f58db" absoluteBounds="4, 0.625, 2, 1.9631982421874996">
@@ -94,14 +94,14 @@
         <classShapeMoniker Id="0dbecca0-abce-4f6d-82ef-b50eb92f58db" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.625 : 7.57534962109375); (3.96875 : 7.57534962109375); (3.96875 : 6.8381982421875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(2.625 : 7.54169890494792); (3.96875 : 7.54169890494792); (3.96875 : 6.77089680989583)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LocalDatabaseDataContext/Game/Game_MatchFormAction" />
       <nodes>
         <classShapeMoniker Id="0203e8c3-ea48-4f92-99ee-4c229c593f65" />
         <classShapeMoniker Id="a50cde4b-e1ec-4693-bac5-dff1d5907368" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.375 : 4.57859537760417); (4.375 : 4.875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(4.375 : 4.57859537760417); (4.375 : 5)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LocalDatabaseDataContext/ActionObject/ActionObject_MatchFormAction" />
       <nodes>
         <classShapeMoniker Id="0487cab6-4d43-4df3-8acd-a7f08570c314" />
