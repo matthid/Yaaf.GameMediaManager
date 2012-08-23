@@ -22,7 +22,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private readonly MatchSession session;
 
-        private readonly IEnumerable<Matchmedia> mediaFiles;
+        private readonly List<Matchmedia> mediaFiles;
         
 
         public MatchSessionEnd(Action<TraceEventType, string> logger, LocalDatabaseWrapper context, Database.MatchSession session, IEnumerable<Database.Matchmedia> mediaFiles)
@@ -39,29 +39,69 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void MatchSessionEnd_Load(object sender, EventArgs e)
         {
+            session.MatchSessions_Tag.Load();
+
+            tagTextBox.Text = string.Join(
+                ",", (from assoc in session.MatchSessions_Tag select assoc.Tag.Name).ToArray());
             matchmediaBindingSource.DataSource = mediaFiles;
-            tagTextBox.Enabled = false;
             eslMatchCheckBox.Checked = session.EslMatchLink != null;
             EslMatchIdTextBox.Text = 
                 string.IsNullOrEmpty(session.EslMatchLink)
                 ? "http://www.esl.eu/" : session.EslMatchLink;
 
             EslMatchIdTextBox.Enabled = session.EslMatchLink != null;
+            int i = -1;
+            foreach (var file in mediaFiles)
+            {
+                i++;
+                file.Matchmedia_Tag.Load();
+                var row = matchmediaDataGridView.Rows[i];
+                row.Cells["Tags"].Value = String.Join(
+                    ",", (from assoc in file.Matchmedia_Tag select assoc.Tag.Name).ToArray());
+            }
         }
 
         private void saveMatchmediaButton_Click(object sender, EventArgs e)
         {
             try
             {
-                //var tags = tagTextBox.Text.Split(',');
-                //foreach (var tag in tags)
-                //{
-                //    var association = new MatchSessions_Tag();
-                //    association.MatchSession = session;
-                //    association.Tag = 
-                //    session.MatchSessions_Tag.Add();
-                //}
                 this.SetEslMatchId();
+
+                var tags = tagTextBox.Text.Split(',');
+                foreach (var tag in tags)
+                {
+                    if (!(from assoc in session.MatchSessions_Tag
+                          where assoc.Tag.Name == tag
+                          select assoc).Any())
+                    {
+                        var association = new MatchSessions_Tag();
+                        association.MatchSession = session;
+                        association.Tag = context.GetTag(tag);
+                        context.Context.MatchSessions_Tags.InsertOnSubmit(association);
+                        session.MatchSessions_Tag.Add(association);
+                    }
+                }
+
+                int i = -1;
+                foreach (var file in mediaFiles)
+                {
+                    i++;
+                    var row = matchmediaDataGridView.Rows[i];
+                    var media_tags = row.Cells["Tags"].Value.ToString().Split(',');
+                    foreach (var tag in media_tags)
+                    {
+                        if (!(from assoc in file.Matchmedia_Tag
+                              where assoc.Tag.Name == tag
+                              select assoc).Any())
+                        {
+                            var association = new Matchmedia_Tag();
+                            association.Matchmedia = file;
+                            association.Tag = context.GetTag(tag);
+                            context.Context.Matchmedia_Tags.InsertOnSubmit(association);
+                            file.Matchmedia_Tag.Add(association);
+                        }
+                    }
+                }
 
                 ResultMedia = new List<Matchmedia>(mediaFiles);
                 this.Close();
@@ -78,7 +118,7 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             if (this.eslMatchCheckBox.Checked)
             {
-                var uri = new Uri(this.EslMatchIdTextBox.Text);
+                new Uri(this.EslMatchIdTextBox.Text);
                 this.session.EslMatchLink = this.EslMatchIdTextBox.Text;
             }
             else

@@ -36,9 +36,13 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             try
             {
-                var folders = from g in this.context.Context.WatchFolders
+                var folders = (from g in this.context.Context.WatchFolders
                               where g.Game == this.game
-                              select g;
+                              select g)
+                        .AsEnumerable()
+                        .Union(this.context.Context.GetChangeSet().Inserts.Where(d => d is WatchFolder).Select(d => (WatchFolder)d))
+                        .Except(this.context.Context.GetChangeSet().Deletes.Where(d => d is WatchFolder).Select(d => (WatchFolder)d));
+
                 old = new System.Collections.Generic.List<Database.WatchFolder>(folders);
                 watchFolderBindingSource.DataSource = new System.Collections.Generic.List<Database.WatchFolder>(old);
             }

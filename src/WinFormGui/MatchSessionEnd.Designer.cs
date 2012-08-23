@@ -40,14 +40,14 @@
             this.addMatchmediaButton = new System.Windows.Forms.Button();
             this.managePlayersButton = new System.Windows.Forms.Button();
             this.rememberCheckBox = new System.Windows.Forms.CheckBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.matchmediaDataGridView = new System.Windows.Forms.DataGridView();
+            this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Tags = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mapDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.createdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.matchmediaDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -112,24 +112,29 @@
             this.rememberCheckBox.Name = "rememberCheckBox";
             this.rememberCheckBox.UseVisualStyleBackColor = true;
             // 
-            // dataGridView1
+            // matchmediaDataGridView
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AutoGenerateColumns = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.matchmediaDataGridView.AllowUserToAddRows = false;
+            this.matchmediaDataGridView.AutoGenerateColumns = false;
+            this.matchmediaDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.matchmediaDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameDataGridViewTextBoxColumn,
             this.Tags,
             this.typeDataGridViewTextBoxColumn,
             this.mapDataGridViewTextBoxColumn,
             this.createdDataGridViewTextBoxColumn});
-            this.dataGridView1.DataSource = this.matchmediaBindingSource;
-            resources.ApplyResources(this.dataGridView1, "dataGridView1");
-            this.dataGridView1.Name = "dataGridView1";
+            this.matchmediaDataGridView.DataSource = this.matchmediaBindingSource;
+            resources.ApplyResources(this.matchmediaDataGridView, "matchmediaDataGridView");
+            this.matchmediaDataGridView.Name = "matchmediaDataGridView";
+            // 
+            // matchmediaBindingSource
+            // 
+            this.matchmediaBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.Matchmedia);
             // 
             // nameDataGridViewTextBoxColumn
             // 
             this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.FillWeight = 150F;
             resources.ApplyResources(this.nameDataGridViewTextBoxColumn, "nameDataGridViewTextBoxColumn");
             this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
             // 
@@ -148,6 +153,7 @@
             // mapDataGridViewTextBoxColumn
             // 
             this.mapDataGridViewTextBoxColumn.DataPropertyName = "Map";
+            this.mapDataGridViewTextBoxColumn.FillWeight = 70F;
             resources.ApplyResources(this.mapDataGridViewTextBoxColumn, "mapDataGridViewTextBoxColumn");
             this.mapDataGridViewTextBoxColumn.Name = "mapDataGridViewTextBoxColumn";
             // 
@@ -157,17 +163,13 @@
             resources.ApplyResources(this.createdDataGridViewTextBoxColumn, "createdDataGridViewTextBoxColumn");
             this.createdDataGridViewTextBoxColumn.Name = "createdDataGridViewTextBoxColumn";
             // 
-            // matchmediaBindingSource
-            // 
-            this.matchmediaBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.Matchmedia);
-            // 
             // MatchSessionEnd
             // 
             this.AcceptButton = this.saveMatchmediaButton;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.deleteMatchmediaButton;
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.matchmediaDataGridView);
             this.Controls.Add(this.rememberCheckBox);
             this.Controls.Add(this.managePlayersButton);
             this.Controls.Add(this.addMatchmediaButton);
@@ -180,7 +182,7 @@
             this.Controls.Add(this.eslMatchCheckBox);
             this.Name = "MatchSessionEnd";
             this.Load += new System.EventHandler(this.MatchSessionEnd_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.matchmediaDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -199,12 +201,12 @@
         private System.Windows.Forms.Button addMatchmediaButton;
         private System.Windows.Forms.Button managePlayersButton;
         private System.Windows.Forms.CheckBox rememberCheckBox;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView matchmediaDataGridView;
+        private System.Windows.Forms.BindingSource matchmediaBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn Tags;
         private System.Windows.Forms.DataGridViewTextBoxColumn typeDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn mapDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn createdDataGridViewTextBoxColumn;
-        private System.Windows.Forms.BindingSource matchmediaBindingSource;
     }
 }

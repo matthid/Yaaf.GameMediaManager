@@ -57,6 +57,7 @@
     <Compile Include="EditGames.Designer.cs">
       <DependentUpon>EditGames.cs</DependentUpon>
     </Compile>
+    <Compile Include="FSharpInterop.cs" />
     <Compile Include="InfoForm.cs">
       <SubType>Form</SubType>
     </Compile>

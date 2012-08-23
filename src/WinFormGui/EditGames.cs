@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
+    using System.Data.Linq;
     using System.Diagnostics;
 
     using Yaaf.WirePlugin.WinFormGui.Database;
@@ -23,11 +24,14 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private LocalDatabaseWrapper wrapper;
 
+        private bool saveData = false;
 
         public EditGames(Action<System.Diagnostics.TraceEventType, string> logger, LocalDatabaseWrapper context)
         {
             this.logger = logger;
-            this.wrapper = context;
+            
+            // copy.. this way we can discard everything at the end, if we need to
+            this.wrapper = context.Copy(); 
             this.context = wrapper.Context;
             InitializeComponent();
         }
@@ -42,21 +46,31 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void button1_Click(object sender, EventArgs e)
         {
+            this.saveData = true;
+            this.Close();
+        }
+
+        private void SaveData()
+        {
             try
             {
                 // Add all new, delete all deleted and update all changed games.
-                wrapper.UpdateDatabase(context.Games, gameBindingSource.Cast<Game>(), old);
-                this.Close();
+                this.wrapper.UpdateDatabase(this.context.Games, this.gameBindingSource.Cast<Game>(), this.old);
+                
+                // TODO: Check for invalid WatchFolder Entries (well they are not critical)
+
+                this.context.SubmitChanges();
             }
             catch (Exception ex)
             {
-                logger(TraceEventType.Error, "Can't change game changes: " + ex);
+                this.logger(TraceEventType.Error, "Can't change game changes: " + ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            this.saveData = false;
             this.Close();
         }
 
@@ -70,12 +84,12 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
             try
             {
-                if (!old.Contains(current))
-                {
-                    context.Games.InsertOnSubmit(current);
-                    context.SubmitChanges();
-                    old.Add(current);
-                }
+                //if (!old.Contains(current))
+                //{
+                    //context.Games.InsertOnSubmit(current);
+                    //context.SubmitChanges();
+                    //old.Add(current);
+                //}
 
                 var form = createForm(current);
                 if (form != null)
@@ -100,6 +114,53 @@ namespace Yaaf.WirePlugin.WinFormGui
                     MessageBox.Show("Not implemented");
                     return null;
                 });
+        }
+
+        private void EditGames_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.saveData)
+            {
+                this.SaveData();
+            }
+            else
+            {
+                // Revert all WatchFolter changes that are invalid now
+                //var changes = this.context.GetChangeSet();
+                //Func<object, bool> selector = d =>
+                //    {
+                //        var w = d as WatchFolder;
+                //        if (w == null)
+                //        {
+                //            return false;
+                //        }
+
+                //        // Select those which are not valid (they have to be inserted, but are not as we are canceling)
+                //        return !old.Contains(w.Game);
+                //    };
+                //foreach (var insert in changes.Inserts.Where(selector))
+                //{
+                //    this.context.GetTable(insert.GetType()).DeleteOnSubmit(insert);
+                //}
+                //foreach (var deletion in changes.Deletes.Where(selector))
+                //{
+                //    this.context.GetTable(deletion.GetType()).InsertOnSubmit(deletion);
+                //}
+                //var updatedTables = new List<ITable>();
+                //foreach (var update in changes.Updates.Where(selector))
+                //{
+                //    var tbl = context.GetTable(update.GetType());
+                //    // Make sure not to refresh the same table twice
+                //    if (updatedTables.Contains(tbl))
+                //    {
+                //        continue;
+                //    }
+                //    else
+                //    {
+                //        updatedTables.Add(tbl);
+                //        context.Refresh(RefreshMode.OverwriteCurrentValues, tbl);
+                //    }
+                //}
+            }
         }
     }
 }

@@ -37,6 +37,7 @@
             this.PlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.EslPlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tags = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.teamDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.skillDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -67,6 +68,7 @@
             this.PlayerId,
             this.PlayerName,
             this.EslPlayerId,
+            this.Tags,
             this.descriptionDataGridViewTextBoxColumn,
             this.teamDataGridViewTextBoxColumn,
             this.skillDataGridViewTextBoxColumn,
@@ -95,6 +97,11 @@
             // 
             resources.ApplyResources(this.EslPlayerId, "EslPlayerId");
             this.EslPlayerId.Name = "EslPlayerId";
+            // 
+            // Tags
+            // 
+            resources.ApplyResources(this.Tags, "Tags");
+            this.Tags.Name = "Tags";
             // 
             // descriptionDataGridViewTextBoxColumn
             // 
@@ -177,6 +184,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerId;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerName;
         private System.Windows.Forms.DataGridViewTextBoxColumn EslPlayerId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tags;
         private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewComboBoxColumn teamDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewComboBoxColumn skillDataGridViewTextBoxColumn;

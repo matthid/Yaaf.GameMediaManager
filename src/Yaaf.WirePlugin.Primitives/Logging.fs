@@ -42,6 +42,8 @@ module Logging =
         member x.logCrit fmt = x.log System.Diagnostics.TraceEventType.Critical fmt
         member x.logErr fmt =  x.log System.Diagnostics.TraceEventType.Error fmt
         member x.logInfo fmt = x.log System.Diagnostics.TraceEventType.Information fmt
+
+    let CSharpInteropLog (tracer:ITracer) ty s = tracer.log ty "%s" s
     /// Simple state tracer
     type DefaultStateTracer(traceSource:TraceSource, activityName:string) as x = 
         let trace = traceSource

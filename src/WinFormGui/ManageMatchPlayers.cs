@@ -70,12 +70,15 @@ namespace Yaaf.WirePlugin.WinFormGui
                     i++;
                     var row = matchPlayersDataGridView.Rows[i];
 
+                    row.Cells["Tags"].Value = String.Join(
+                        ",", (from assoc in player.Player.Player_Tag select assoc.Tag.Name).ToArray());
                     row.Cells["EslPlayerId"].Value =
                         player.Player.EslPlayerId == null
                             ? ""
                             : player.Player.EslPlayerId.ToString();
                     row.Cells["PlayerName"].Value = player.Player.Name;
                     row.Cells["PlayerId"].Value = player.Player.Id.ToString();
+                    player.Player.Player_Tag.Load();
                 }
                 //matchPlayersDataGridView.DataError
             }
@@ -128,7 +131,23 @@ namespace Yaaf.WirePlugin.WinFormGui
                         player.EslPlayerId = eslId;
                         item.Player = player;
                     }
-                        
+
+                    var tags = row.Cells["Tags"].Value.ToString().Split(',');
+                    item.Player.Player_Tag.Load();
+                    foreach (var tag in tags)
+                    {
+                        if (!(from assoc in item.Player.Player_Tag
+                              where assoc.Tag.Name == tag
+                              select assoc).Any())
+                        {
+                            var association = new Player_Tag();
+                            association.Player = item.Player;
+                            association.Tag = context.GetTag(tag);
+                            context.Context.Player_Tags.InsertOnSubmit(association);
+                            item.Player.Player_Tag.Add(association);
+                        }
+                    }
+
                     if (!old.Contains(item))
                     {
                         toAdd.Add(item);
