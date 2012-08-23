@@ -30,8 +30,8 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             this.logger = logger;
             
-            // copy.. this way we can discard everything at the end, if we need to
-            this.wrapper = context.Copy(); 
+            // this is a copy.. this way we can discard everything at the end, if we need to
+            this.wrapper = context; 
             this.context = wrapper.Context;
             InitializeComponent();
         }

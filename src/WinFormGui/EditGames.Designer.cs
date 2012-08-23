@@ -163,6 +163,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.dataGridView1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "EditGames";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditGames_FormClosing);
             this.Load += new System.EventHandler(this.EditGames_Load);

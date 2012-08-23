@@ -41,12 +41,12 @@
             this.managePlayersButton = new System.Windows.Forms.Button();
             this.rememberCheckBox = new System.Windows.Forms.CheckBox();
             this.matchmediaDataGridView = new System.Windows.Forms.DataGridView();
-            this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Tags = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mapDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.createdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -127,10 +127,6 @@
             resources.ApplyResources(this.matchmediaDataGridView, "matchmediaDataGridView");
             this.matchmediaDataGridView.Name = "matchmediaDataGridView";
             // 
-            // matchmediaBindingSource
-            // 
-            this.matchmediaBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.Matchmedia);
-            // 
             // nameDataGridViewTextBoxColumn
             // 
             this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
@@ -163,6 +159,10 @@
             resources.ApplyResources(this.createdDataGridViewTextBoxColumn, "createdDataGridViewTextBoxColumn");
             this.createdDataGridViewTextBoxColumn.Name = "createdDataGridViewTextBoxColumn";
             // 
+            // matchmediaBindingSource
+            // 
+            this.matchmediaBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.Matchmedia);
+            // 
             // MatchSessionEnd
             // 
             this.AcceptButton = this.saveMatchmediaButton;
@@ -180,6 +180,7 @@
             this.Controls.Add(this.tagTextBox);
             this.Controls.Add(this.EslMatchIdTextBox);
             this.Controls.Add(this.eslMatchCheckBox);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "MatchSessionEnd";
             this.Load += new System.EventHandler(this.MatchSessionEnd_Load);
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaDataGridView)).EndInit();

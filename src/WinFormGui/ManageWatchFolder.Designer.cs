@@ -97,6 +97,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.dataGridView1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ManageWatchFolder";
             this.Load += new System.EventHandler(this.ManageWatchFolder_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

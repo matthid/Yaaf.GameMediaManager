@@ -44,7 +44,7 @@ type ReplayWirePlugin() as x =
                         o.ShowDialog() |> ignore))
             item Resources.EditGames Resources.add
                 (fun () ->
-                    using (new EditGames((fun tr s -> logger.log tr "%s" s), Database.wrapper)) (fun o ->
+                    using (new EditGames((fun tr s -> logger.log tr "%s" s), Database.getContext())) (fun o ->
                         o.ShowDialog() |> ignore))
             new ToolStripSeparator() :> ToolStripItem
             item Resources.CloseMenu Resources.cancel id
@@ -60,7 +60,10 @@ type ReplayWirePlugin() as x =
     /// Starts the mediawatcher for the given game
     let sessionStarted (logger:ITracer) gameId gamePath = 
         startTime <- System.DateTime.Now
-        let game = Database.getGame gameId
+        
+        let localContext = Database.getContext()
+        let db = localContext.Context
+        let game = Database.getGame db gameId
         watcher <- 
             match game with
             | None ->
@@ -88,32 +91,7 @@ type ReplayWirePlugin() as x =
             w.StartGame()
         | None -> ()
 
-    let escapeInvalidChars escChar (path:string)  = 
-        let invalid = 
-            Path.GetInvalidFileNameChars() 
-            |> Seq.append (Path.GetInvalidPathChars())   
-            |> Seq.filter (fun c -> c <> Path.DirectorySeparatorChar)
-
-        (
-        path 
-            |> Seq.fold 
-                (fun (builder:System.Text.StringBuilder) char -> 
-                    builder.Append(
-                        if invalid |> Seq.exists (fun i -> i = char) 
-                        then escChar
-                        else char))
-                (new System.Text.StringBuilder(path.Length))
-        ).ToString()
-
-    let backupFile file = 
-        if (File.Exists file) then
-            let rename = 
-                Path.Combine(
-                    (Path.GetDirectoryName file),
-                    sprintf "%s-%s%s" (Path.GetFileNameWithoutExtension file) (System.Guid.NewGuid().ToString()) (Path.GetExtension file))
-            File.Move(file, rename)
-    
-    let executeAction (action:Database.ActionObject) (media:Database.Matchmedia seq) = 
+    let executeAction (context:Database.LocalDatabaseDataContext) (action:Database.ActionObject) (media:Database.Matchmedia seq) = 
         let filter = Database.getFilter action
         let action = Database.getAction action
         try
@@ -121,11 +99,15 @@ type ReplayWirePlugin() as x =
                 |> Seq.filter filter
                 |> Seq.iter action
         finally
-            Database.db.SubmitChanges()
+            context.SubmitChanges()
             
     /// Stops the watcher saves the matchmedia and starts the given actions
     let sessionStopped (logger:ITracer) gameId = 
-        let game = Database.getGame gameId
+        
+        let localContext = Database.getContext()
+        let db = localContext.Context
+
+        let game = Database.getGame db gameId
         if (match watcher, game with
             | Some(w), Some(game) ->
                 false
@@ -154,7 +136,7 @@ type ReplayWirePlugin() as x =
                     Duration = elapsedTime), false
         if not sessionAdded then
             // Add me...
-            let me = Database.getIdentityPlayer()
+            let me = Database.getIdentityPlayer db
             let newPlayerAssociation = 
                 new Database.MatchSessions_Player(
                     Cheating = false,
@@ -167,7 +149,7 @@ type ReplayWirePlugin() as x =
             match matchData with
             | Some (warId, matchMediaPath) -> Some warId
             | None -> None
-
+            
         let showEndSessionWindow media = 
             if (matchData.IsSome && not game.EnableWarMatchForm) || (matchData.IsNone && not game.EnableMatchForm) then
                 // Could be changed in the meantime
@@ -177,7 +159,7 @@ type ReplayWirePlugin() as x =
                     Some media
             else
 
-            let form = new MatchSessionEnd((fun tr l -> logger.log tr "%s" l), Database.wrapper, session, media)
+            let form = new MatchSessionEnd((fun tr l -> logger.log tr "%s" l), localContext, session, media)
             form.ShowDialog() |> ignore
             if form.ResultMedia = null then None else Some form.ResultMedia
 
@@ -198,11 +180,11 @@ type ReplayWirePlugin() as x =
         | Some (media) ->
 
         logger.logInfo "Add Match to Database"   
-        Database.db.Matchmedias.InsertAllOnSubmit(media)
+        db.Matchmedias.InsertAllOnSubmit(media)
         if not sessionAdded then
-            Database.db.MatchSessions.InsertOnSubmit(session)
+            db.MatchSessions.InsertOnSubmit(session)
 
-        Database.db.SubmitChanges()
+        db.SubmitChanges()
         
         logger.logInfo "Move Media to MediaPath"   
         for m in media do
@@ -214,13 +196,13 @@ type ReplayWirePlugin() as x =
                 logger.logErr "Could not move Matchmedia from %s to Database! (Error: %O)" m.Path e   
         
         logger.logInfo "Change to MediaPath in Database"   
-        Database.db.SubmitChanges()
+        db.SubmitChanges()
 
         // Execute automatic actions for this game
-        for action in Database.getActivatedMatchFormActions matchData.IsSome game do
+        for action in Database.getActivatedMatchFormActions db matchData.IsSome game do
             try
                 logger.logInfo "Executing Action %s on game %s" action.ActionObject.Name game.Name
-                executeAction action.ActionObject media
+                executeAction db action.ActionObject media
             with exn ->
                 logger.logErr "Action %s on game %s failed! Error %O" action.ActionObject.Name game.Name exn
 

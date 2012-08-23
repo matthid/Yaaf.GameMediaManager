@@ -167,6 +167,7 @@
             this.Controls.Add(this.matchPlayersDataGridView);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ManageMatchPlayers";
             this.Load += new System.EventHandler(this.ManageMatchPlayers_Load);
             ((System.ComponentModel.ISupportInitialize)(this.matchPlayersDataGridView)).EndInit();

@@ -10,6 +10,7 @@ Future - Version 1.0
 23.08.2012 Version 0.5.1
  - Allow Enemies to be setup via GUI
  - Full Tagging support for games/players/matchmedia
+ * Changed "EditGames" Window semantics
 
 22.08.2012 Version 0.5
  - Support for any game with any matchdata (you can add your games and add the folder you'd like to watch manually)

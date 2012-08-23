@@ -103,6 +103,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                     }
                 }
 
+                this.SetupRemember(true);
                 ResultMedia = new List<Matchmedia>(mediaFiles);
                 this.Close();
             }
@@ -130,7 +131,28 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void deleteMatchmediaButton_Click(object sender, EventArgs e)
         {
+            this.SetupRemember(false);
             ResultMedia = null;
+        }
+
+        private void SetupRemember(bool saveData)
+        {
+            if (!this.rememberCheckBox.Checked)
+            {
+                return;
+            }
+
+            var game = this.session.Game;
+            if (string.IsNullOrEmpty(this.session.EslMatchLink))
+            { // Public Mode
+                game.EnableMatchForm = false;
+                game.PublicMatchFormSaveFiles = saveData;
+            }
+            else
+            {
+                game.EnableWarMatchForm = false;
+                game.WarMatchFormSaveFiles = saveData;
+            }
         }
 
         private void eslMatchCheckBox_CheckedChanged(object sender, EventArgs e)

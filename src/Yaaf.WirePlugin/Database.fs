@@ -11,7 +11,7 @@ module Database =
     let pluginFolder =
             [ System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
                 "Yaaf"; "WirePlugin" ] |> pathCombine
-    let db = 
+    let private db = 
         let dbFileName = "LocalDatabase.sdf"
         let dbFile =
             [ pluginFolder; dbFileName ] |> pathCombine
@@ -24,8 +24,10 @@ module Database =
 
         let connectString = sprintf "Data Source=%s" dbFile
         new Database.LocalDatabaseDataContext(connectString)
-    let wrapper = 
+    let private wrapper = 
         new LocalDatabaseWrapper(db)
+
+    let getContext () = wrapper.Copy()
 
     let getIdMaybe s = 
         let result = 
@@ -35,7 +37,7 @@ module Database =
         else Some (result |> Seq.head)
         
     /// Finds a game in database
-    let getGame id = 
+    let getGame (db:Database.LocalDatabaseDataContext) id = 
         getIdMaybe
             <@ seq {
                 for a in db.Games do
@@ -59,7 +61,7 @@ module Database =
             Directory.CreateDirectory dir |> ignore
         mediaPath
 
-    let getActivatedMatchFormActions isWar (game : Database.Game) = 
+    let getActivatedMatchFormActions (db:Database.LocalDatabaseDataContext) isWar (game : Database.Game) = 
         <@ seq {
             for a in db.MatchFormActions do
                 if a.GameId = game.Id && (isWar && a.WarActivated || not isWar && a.PublicActivated) then
@@ -114,6 +116,31 @@ module Database =
             .Trim([|'/'|])
             |> System.Int32.Parse
 
+    let backupFile file = 
+        if (File.Exists file) then
+            let rename = 
+                Path.Combine(
+                    (Path.GetDirectoryName file),
+                    sprintf "%s-%s%s" (Path.GetFileNameWithoutExtension file) (System.Guid.NewGuid().ToString()) (Path.GetExtension file))
+            File.Move(file, rename)
+    
+    let escapeInvalidChars escChar (path:string)  = 
+        let invalid = 
+            Path.GetInvalidFileNameChars() 
+            |> Seq.append (Path.GetInvalidPathChars())   
+            |> Seq.filter (fun c -> c <> Path.DirectorySeparatorChar)
+
+        (
+        path 
+            |> Seq.fold 
+                (fun (builder:System.Text.StringBuilder) char -> 
+                    builder.Append(
+                        if invalid |> Seq.exists (fun i -> i = char) 
+                        then escChar
+                        else char))
+                (new System.Text.StringBuilder(path.Length))
+        ).ToString()
+
     let rec getAction (action:Database.ActionObject) = 
         action.ObjectParameter.Load()
         let parameter = action.ObjectParameter |> Seq.toArray
@@ -146,7 +173,9 @@ module Database =
                         System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
                         System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
                         Properties.Settings.Default.MatchMediaPath)
+                    |> escapeInvalidChars '_'
                 File.Copy(m.Path, targetPath))
+
         | "CopyToEslMatchmedia" ->
             (fun (m:Database.Matchmedia) ->
                 if m.MatchSession.EslMatchLink <> null then 
@@ -161,7 +190,7 @@ module Database =
                 m.Path <- null)
         | _ as e -> invalidOp (sprintf "Unknown Action: %s" e)
     
-    let getIdentityPlayer () = 
+    let getIdentityPlayer (db:Database.LocalDatabaseDataContext) = 
         let id = Properties.Settings.Default.MyIdentity
         let player =
             getIdMaybe

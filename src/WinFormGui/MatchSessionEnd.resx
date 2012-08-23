@@ -366,9 +366,6 @@
   <data name="rememberCheckBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="rememberCheckBox.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="rememberCheckBox.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -376,13 +373,13 @@
     <value>13, 338</value>
   </data>
   <data name="rememberCheckBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>121, 17</value>
+    <value>227, 17</value>
   </data>
   <data name="rememberCheckBox.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
   </data>
   <data name="rememberCheckBox.Text" xml:space="preserve">
-    <value>Remember Decision</value>
+    <value>Remember Decision (For this Game/Mode)</value>
   </data>
   <data name="&gt;&gt;rememberCheckBox.Name" xml:space="preserve">
     <value>rememberCheckBox</value>
@@ -396,36 +393,6 @@
   <data name="&gt;&gt;rememberCheckBox.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <metadata name="Tags.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="matchmediaBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <data name="matchmediaDataGridView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 58</value>
-  </data>
-  <data name="matchmediaDataGridView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>516, 204</value>
-  </data>
-  <data name="matchmediaDataGridView.TabIndex" type="System.Int32, mscorlib">
-    <value>11</value>
-  </data>
-  <data name="&gt;&gt;matchmediaDataGridView.Name" xml:space="preserve">
-    <value>matchmediaDataGridView</value>
-  </data>
-  <data name="&gt;&gt;matchmediaDataGridView.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;matchmediaDataGridView.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;matchmediaDataGridView.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <metadata name="matchmediaBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <data name="nameDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Name</value>
   </data>
@@ -453,10 +420,31 @@
   <data name="createdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Created</value>
   </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
+  <metadata name="matchmediaBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
   </metadata>
-  <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="matchmediaDataGridView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 58</value>
+  </data>
+  <data name="matchmediaDataGridView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>516, 204</value>
+  </data>
+  <data name="matchmediaDataGridView.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;matchmediaDataGridView.Name" xml:space="preserve">
+    <value>matchmediaDataGridView</value>
+  </data>
+  <data name="&gt;&gt;matchmediaDataGridView.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;matchmediaDataGridView.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;matchmediaDataGridView.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
@@ -1838,12 +1826,6 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Match Session End</value>
   </data>
-  <data name="&gt;&gt;matchmediaBindingSource.Name" xml:space="preserve">
-    <value>matchmediaBindingSource</value>
-  </data>
-  <data name="&gt;&gt;matchmediaBindingSource.Type" xml:space="preserve">
-    <value>System.Windows.Forms.BindingSource, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="&gt;&gt;nameDataGridViewTextBoxColumn.Name" xml:space="preserve">
     <value>nameDataGridViewTextBoxColumn</value>
   </data>
@@ -1873,6 +1855,12 @@
   </data>
   <data name="&gt;&gt;createdDataGridViewTextBoxColumn.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;matchmediaBindingSource.Name" xml:space="preserve">
+    <value>matchmediaBindingSource</value>
+  </data>
+  <data name="&gt;&gt;matchmediaBindingSource.Type" xml:space="preserve">
+    <value>System.Windows.Forms.BindingSource, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>MatchSessionEnd</value>
