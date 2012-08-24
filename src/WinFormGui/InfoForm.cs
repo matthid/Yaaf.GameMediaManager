@@ -53,7 +53,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             Logging.setupLogging(logger);
             linkLabel2.Text = string.Format(
                 Resources.InfoForm_InfoForm_Load_VersionString___0_,
-                System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+                ProjectConstants.ProjektVersion);
         }
 
     }

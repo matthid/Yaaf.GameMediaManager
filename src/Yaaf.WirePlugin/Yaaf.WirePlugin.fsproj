@@ -85,6 +85,11 @@
       <Project>{e138ffd4-1a33-458e-a93c-1d8373756c86}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Yaaf.WirePlugin.Primitives.CSharp\Yaaf.WirePlugin.Primitives.CSharp.csproj">
+      <Name>Yaaf.WirePlugin.Primitives.CSharp</Name>
+      <Project>{ce3e2ac2-3e44-46c5-9539-cb201ec19b94}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Yaaf.WirePlugin.Primitives\Yaaf.WirePlugin.Primitives.fsproj">
       <Name>Yaaf.WirePlugin.Primitives</Name>
       <Project>{94a3c463-e692-450d-9fe6-8688610eccbc}</Project>

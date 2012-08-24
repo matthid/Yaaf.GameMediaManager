@@ -255,6 +255,10 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Yaaf.WirePlugin.Primitives.CSharp\Yaaf.WirePlugin.Primitives.CSharp.csproj">
+      <Project>{CE3E2AC2-3E44-46C5-9539-CB201EC19B94}</Project>
+      <Name>Yaaf.WirePlugin.Primitives.CSharp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Yaaf.WirePlugin.Primitives\Yaaf.WirePlugin.Primitives.fsproj">
       <Project>{94A3C463-E692-450D-9FE6-8688610ECCBC}</Project>
       <Name>Yaaf.WirePlugin.Primitives</Name>
