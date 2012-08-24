@@ -55,6 +55,5 @@ namespace Yaaf.WirePlugin.WinFormGui
                 Resources.InfoForm_InfoForm_Load_VersionString___0_,
                 ProjectConstants.ProjektVersion);
         }
-
     }
 }

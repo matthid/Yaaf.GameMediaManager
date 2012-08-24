@@ -33,6 +33,9 @@
     <DocumentationFile>bin\Release\Yaaf.WirePlugin.Primitives.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\..\lib\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" />
     <Reference Include="System" />
@@ -45,6 +48,7 @@
     <Compile Include="Logging.fs" />
     <Compile Include="MatchmediaWatcher.fs" />
     <Compile Include="MediaAnalyser.fs" />
+    <Compile Include="EslGrapper.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>
   <ItemGroup>
