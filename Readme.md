@@ -16,6 +16,9 @@ WirePlugin goes even one step further and allows the same file management for an
   * .NET 3.5 (Included in > Windows Vista) http://www.microsoft.com/de-de/download/details.aspx?id=21
 - Wire http://www.esl.eu/de/wire/
 
+Code Dependencies (no need to install, shipped)
+- http://htmlagilitypack.codeplex.com/ Html Agility Pack
+
 ## Using
 
 Download the binaries or build yourself and then copy the files to C:\Users\_\AppData\Local\ESL Wire Game Client\plugins\Yaaf.WirePlugin.
