@@ -1,11 +1,27 @@
 # Yaaf.WirePlugin 
 
-
 WirePlugin makes uploading Matchmedia in ESL-Matches very simple. 
-Whenever you record anything in any supported game or make a screenshot WirePlugin will rename and move these files however you like.
+Whenever you record anything in any (needs wire support) game or make a screenshot WirePlugin will manage these files for you.
 The idea is basically to play a game and after playing already have the "Matchmedia upload Window" perfectly filled with all your data.
+You can tag matches, players and files. 
+You can also add some info to your enemies or mates, for example set their skill level, flag as cheater or save a description how they played in this game.
 
-WirePlugin goes even one step further and allows the same file management for any gaming you do besides ESL-Matches.
+All this data can be searched and exported (not implemented jet).
+
+WirePlugin goes even one step further and allows the same file/player/media management for any gaming you do besides ESL-Matches.
+
+Features:
+- Manages your matchmedia
+- Automatically detects new matchmedia from games (after setup)
+- tag players/matches/media
+- save a short description to players
+- save additional player info to matches (skill/cheater/team)
+- link to your esl matches
+- fills your enemies for Esl-VERSUS Matches (if you provide Versus match-link)
+- automatically fills your enemies for normal Esl Matches (not implemented)
+- integrated in Wire so no additional program has to be opened (besides Wire)
+- automatic actions based on tags/names/games/... (not implemented)
+
 
 ## Dependencies
 

@@ -1,5 +1,7 @@
 namespace Yaaf.WirePlugin.WinFormGui.Database
 {
+    using System;
+
     partial class Game
     {
         partial void OnCreated()
@@ -13,8 +15,22 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
         }
     }
 
-    partial class MatchSessions_Player
+    partial class MatchSessions_Player : IComparable<MatchSessions_Player>, IComparable
     {
+        public int CompareTo(MatchSessions_Player other)
+        {
+            return this.PlayerId.CompareTo(other.PlayerId);
+        }
+
+        public int CompareTo(object obj)
+        {
+            var other = (MatchSessions_Player)obj;
+            if (other == null)
+            {
+                throw new ArgumentException("Not a MatchSession_Player object");
+            }
+            return CompareTo(other);
+        }
     }
 
     partial class WatchFolder

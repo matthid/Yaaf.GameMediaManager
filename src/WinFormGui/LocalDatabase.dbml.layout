@@ -20,10 +20,10 @@
         <elementListCompartment Id="994aba31-2ff4-4207-b40a-aac25de130e2" absoluteBounds="3.3900000000000006, 5.46, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="0dbecca0-abce-4f6d-82ef-b50eb92f58db" absoluteBounds="4, 0.625, 2, 1.9631982421874996">
+    <classShape Id="0dbecca0-abce-4f6d-82ef-b50eb92f58db" absoluteBounds="3.375, 0.5, 2, 1.9631982421874996">
       <DataClassMoniker Name="/LocalDatabaseDataContext/ObjectParameter" />
       <nestedChildShapes>
-        <elementListCompartment Id="b78a4df3-e837-4b97-9647-213ba2137d4e" absoluteBounds="4.0150000000000006, 1.085, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="b78a4df3-e837-4b97-9647-213ba2137d4e" absoluteBounds="3.3900000000000006, 0.96, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <classShape Id="6696cde1-a7eb-49a3-9bc3-390fb15aa27b" absoluteBounds="0.75, 4.375, 2, 1.7708968098958327">
@@ -87,21 +87,21 @@
         <classShapeMoniker Id="6696cde1-a7eb-49a3-9bc3-390fb15aa27b" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.6875 : 3); (4.6875 : 2.5881982421875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(4.375 : 3); (4.375 : 2.4631982421875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LocalDatabaseDataContext/ActionObject/ActionObject_ObjectParameter" />
       <nodes>
         <classShapeMoniker Id="0487cab6-4d43-4df3-8acd-a7f08570c314" />
         <classShapeMoniker Id="0dbecca0-abce-4f6d-82ef-b50eb92f58db" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.625 : 7.54169890494792); (3.96875 : 7.54169890494792); (3.96875 : 6.77089680989583)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.625 : 7.54169890494792); (3.96875 : 7.54169890494792); (3.96875 : 6.77089680989583)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/LocalDatabaseDataContext/Game/Game_MatchFormAction" />
       <nodes>
         <classShapeMoniker Id="0203e8c3-ea48-4f92-99ee-4c229c593f65" />
         <classShapeMoniker Id="a50cde4b-e1ec-4693-bac5-dff1d5907368" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.375 : 4.57859537760417); (4.375 : 5)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.375 : 4.57859537760417); (4.375 : 5)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/LocalDatabaseDataContext/ActionObject/ActionObject_MatchFormAction" />
       <nodes>
         <classShapeMoniker Id="0487cab6-4d43-4df3-8acd-a7f08570c314" />
@@ -191,14 +191,14 @@
         <classShapeMoniker Id="0487cab6-4d43-4df3-8acd-a7f08570c314" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.5 : 3.14464884440104); (3.375 : 3.14464884440104)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(2.5 : 3.14464884440104); (3.375 : 3.14464884440104)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LocalDatabaseDataContext/ActionAndFilter/ActionAndFilter_ActionObject1" />
       <nodes>
         <classShapeMoniker Id="b7c152c1-8518-4d54-8240-4e92a326ff51" />
         <classShapeMoniker Id="0487cab6-4d43-4df3-8acd-a7f08570c314" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.09375 : 3); (5.09375 : 2.5881982421875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(4.9375 : 3); (4.9375 : 2.4631982421875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LocalDatabaseDataContext/ActionObject/ActionObject_ObjectParameter1" />
       <nodes>
         <classShapeMoniker Id="0487cab6-4d43-4df3-8acd-a7f08570c314" />

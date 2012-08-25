@@ -257,27 +257,39 @@ module Database =
             getSingle myQuery)
 
     let fillPlayers (db:Database.LocalDatabaseDataContext) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
-        for p in players do
-            let player = getPlayerByEslId db p.Id p.Nick
+        let addedPlayers =
+            seq {
+                for p in players do
+                    let player = getPlayerByEslId db p.Id p.Nick
 
-            player.Name <- p.Nick
-            let availableSessionPlayer = 
-                match
-                    (matchSession.MatchSessions_Player 
-                        |> Seq.filter
-                            (fun sessionPlayer ->
-                                sessionPlayer.Player.EslPlayerId = System.Nullable(p.Id))
-                        |> Seq.tryHead) with
-                | Some (s) -> s
-                | None ->
-                    let s = 
-                        new Database.MatchSessions_Player(
-                            Cheating = false,
-                            MatchSession = matchSession,
-                            Skill = System.Nullable(50uy))
-                    matchSession.MatchSessions_Player.Add(s)
-                    s
-            availableSessionPlayer.Team <- byte p.Team
-            player.MatchSessions_Player.Load()
-            player.MatchSessions_Player.Add(availableSessionPlayer)
-            availableSessionPlayer.Player <- player
+                    player.Name <- p.Nick
+                    let availableSessionPlayer = 
+                        match
+                            (matchSession.MatchSessions_Player 
+                                |> Seq.filter
+                                    (fun sessionPlayer ->
+                                        sessionPlayer.Player.EslPlayerId = System.Nullable(p.Id))
+                                |> Seq.tryHead) with
+                        | Some (s) -> s
+                        | None ->
+                            let s = 
+                                new Database.MatchSessions_Player(
+                                    Cheating = false,
+                                    MatchSession = matchSession,
+                                    Skill = System.Nullable(50uy))
+                            matchSession.MatchSessions_Player.Add(s)
+                            s
+
+                    availableSessionPlayer.Team <- byte p.Team
+                    player.MatchSessions_Player.Load()
+                    player.MatchSessions_Player.Add(availableSessionPlayer)
+                    availableSessionPlayer.Player <- player 
+                    yield availableSessionPlayer }
+                |> Set.ofSeq
+        let allPlayers = (matchSession.MatchSessions_Player |> Set.ofSeq)
+        (allPlayers - addedPlayers)
+            |> Seq.iter
+                (fun s -> 
+                    s.Player.MatchSessions_Player.Remove s |> ignore
+                    matchSession.MatchSessions_Player.Remove s |> ignore)
+

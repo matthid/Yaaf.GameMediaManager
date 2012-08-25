@@ -6,6 +6,9 @@ Future - Version 1.0
  - Add CustomTool actions for converting
  - Matchmedia View to manage your media
 
+25.08.2012 Version 0.7.1
+ - Remove old Players after link-analyse 
+
 25.08.2012 Version 0.7
  - Read Enemies for Versus-matches from the esl page
  - Set yourself via ManagePlayers Form
