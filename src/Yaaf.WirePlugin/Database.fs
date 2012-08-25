@@ -29,24 +29,31 @@ module Database =
 
     let getContext () = wrapper.Copy()
 
-    let getIdMaybe s = 
+    let tryGetSingle s = 
         let result = 
             s |> Query.query |> Seq.tryTake 1
         if result |> Seq.isEmpty then
             None
         else Some (result |> Seq.head)
 
-    let getId s = 
+    let getSingle s = 
         s |> Query.query |> Seq.head
    
     /// Finds a game in database
     let getGame (db:Database.LocalDatabaseDataContext) id = 
-        getIdMaybe
+        tryGetSingle
             <@ seq {
                 for a in db.Games do
                     if a.Id = id then
                         yield a } @>
     
+    let findEslMatch (db:Database.LocalDatabaseDataContext) link = 
+        tryGetSingle
+            <@ seq {
+                for m in db.MatchSessions do
+                    if m.EslMatchLink = link then
+                        yield m } @>
+
     let mediaPath (m:Database.Matchmedia) = 
         let innerPath = 
             System.String.Format(
@@ -215,7 +222,7 @@ module Database =
                     if a.Id = id then
                         yield a } @>
         let player =
-            getIdMaybe myQuery
+            tryGetSingle myQuery
         match player with
         | None ->
             let dbCopy = wrapper.Copy().Context
@@ -226,5 +233,5 @@ module Database =
             dbCopy.SubmitChanges()
             Properties.Settings.Default.MyIdentity <- newIdentity.Id
             Properties.Settings.Default.Save()
-            getId myQuery
+            getSingle myQuery
         | Some (p) -> p

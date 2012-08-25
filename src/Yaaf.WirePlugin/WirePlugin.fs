@@ -123,12 +123,15 @@ type ReplayWirePlugin() as x =
             | Some (warId, matchMediaPath) ->
                 // TODO: Check if this EslMatch already exisits and use the old session
                 let info = x.GameInterface.matchInfo(warId)
-                
+                let eslMatchLink = info.["uri"] :?> string
+                match Database.findEslMatch db eslMatchLink with
+                | Some (availableMatch) -> availableMatch, true
+                | None ->
                 new Database.MatchSession(
                     Game = game,
                     Startdate = startTime,
                     Duration = elapsedTime,
-                    EslMatchLink = (info.["uri"] :?> string)), false       
+                    EslMatchLink = eslMatchLink), false       
             | None ->
                 new Database.MatchSession(
                     Game = game,

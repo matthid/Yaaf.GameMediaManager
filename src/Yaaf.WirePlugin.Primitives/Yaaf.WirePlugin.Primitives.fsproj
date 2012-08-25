@@ -52,7 +52,7 @@
     <Compile Include="Logging.fs" />
     <Compile Include="MatchmediaWatcher.fs" />
     <Compile Include="MediaAnalyser.fs" />
-    <Compile Include="EslGrapper.fs" />
+    <Compile Include="EslGrabber.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>
   <ItemGroup>
