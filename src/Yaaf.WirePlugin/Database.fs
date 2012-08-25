@@ -54,13 +54,6 @@ module Database =
                     if m.EslMatchLink = link then
                         yield m } @>
 
-    let getPlayerByEslId (db:Database.LocalDatabaseDataContext) id = 
-        let mid = System.Nullable(id)
-        tryGetSingle
-            <@ seq {
-                for m in db.Players do
-                    if m.EslPlayerId = mid then
-                        yield m } @>
 
     let mediaPath (m:Database.Matchmedia) = 
         let innerPath = 
@@ -221,18 +214,21 @@ module Database =
                 File.Delete(m.Path)
                 m.Path <- null)
         | _ as e -> invalidOp (sprintf "Unknown Action: %s" e)
-    
+    let getOrCreateItem query f = 
+        let item =
+            tryGetSingle query
+        match item with
+        | None -> f()
+        | Some (s) -> s
+
     let getIdentityPlayer (db:Database.LocalDatabaseDataContext) = 
         let id = Properties.Settings.Default.MyIdentity
-        let myQuery = 
+        let myQuery id = 
             <@ seq {
                 for a in db.Players do
                     if a.Id = id then
                         yield a } @>
-        let player =
-            tryGetSingle myQuery
-        match player with
-        | None ->
+        getOrCreateItem (myQuery id) (fun _ ->
             let dbCopy = wrapper.Copy().Context
             let newIdentity = 
                 new Database.Player(
@@ -241,16 +237,29 @@ module Database =
             dbCopy.SubmitChanges()
             Properties.Settings.Default.MyIdentity <- newIdentity.Id
             Properties.Settings.Default.Save()
-            getSingle myQuery
-        | Some (p) -> p
+            getSingle (myQuery newIdentity.Id))
 
+    let getPlayerByEslId (db:Database.LocalDatabaseDataContext) id nick = 
+        let mid = System.Nullable(id)
+        let myQuery = 
+            <@ seq {
+                for m in db.Players do
+                    if m.EslPlayerId = mid then
+                        yield m } @>
+        getOrCreateItem myQuery (fun _ ->
+            let dbCopy = wrapper.Copy().Context
+            let newIdentity = 
+                new Database.Player(
+                    EslPlayerId = System.Nullable(id),
+                    Name = nick)
+            dbCopy.Players.InsertOnSubmit(newIdentity)
+            dbCopy.SubmitChanges()
+            getSingle myQuery)
 
     let fillPlayers (db:Database.LocalDatabaseDataContext) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
         for p in players do
-            let player = 
-                match getPlayerByEslId db p.Id with
-                | Some (p) -> p
-                | None -> Database.Player(EslPlayerId = System.Nullable(p.Id))
+            let player = getPlayerByEslId db p.Id p.Nick
+
             player.Name <- p.Nick
             let availableSessionPlayer = 
                 match

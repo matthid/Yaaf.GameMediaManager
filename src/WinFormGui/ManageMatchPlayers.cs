@@ -168,6 +168,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
                 foreach (var matchSessionsPlayer in old)
                 {
+                    matchSessionsPlayer.Player.MatchSessions_Player.Remove(matchSessionsPlayer);
                     session.MatchSessions_Player.Remove(matchSessionsPlayer);
                 }
 

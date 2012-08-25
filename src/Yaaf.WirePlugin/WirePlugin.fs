@@ -211,7 +211,7 @@ type ReplayWirePlugin() as x =
             |> Seq.iter (fun s -> matchSession.Matchmedia.Add(s))
 
         let deleteData =
-            if (session.IsEslMatch && game.EnableWarMatchForm) || (session.IsEslMatch && game.EnableMatchForm) then
+            if (session.IsEslMatch && game.EnableWarMatchForm) || (not session.IsEslMatch && game.EnableMatchForm) then
                 let formSession = 
                     { new IMatchSession with
                         member x.LoadEslPlayers link = 
@@ -224,7 +224,7 @@ type ReplayWirePlugin() as x =
                 form.DeleteMatchmedia
             else
                 // Could be changed in the meantime
-                (session.IsEslMatch && not game.WarMatchFormSaveFiles) || (session.IsEslMatch && not game.PublicMatchFormSaveFiles)
+                (session.IsEslMatch && not game.WarMatchFormSaveFiles) || (not session.IsEslMatch && not game.PublicMatchFormSaveFiles)
 
         if (deleteData) then
             for matchmedia in matchSession.Matchmedia do

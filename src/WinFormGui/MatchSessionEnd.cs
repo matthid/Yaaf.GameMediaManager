@@ -173,11 +173,19 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void addMatchmediaButton_Click(object sender, EventArgs e)
         {
-            var fod = new OpenFileDialog();
-            var res = fod.ShowDialog();
-            if (res == DialogResult.OK)
+            try
             {
-                AddMatchMedia(fod.SafeFileName);
+                var fod = new OpenFileDialog();
+                var res = fod.ShowDialog();
+                if (res == DialogResult.OK)
+                {
+                    AddMatchMedia(fod.SafeFileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("{0}", "Could not add Matchmedia, Ex: " + ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -207,25 +215,25 @@ namespace Yaaf.WirePlugin.WinFormGui
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        
-        void task_Finished(object sender, Unit args)
-        {
-            logger.LogInformation("Task finished!");
-        }
-
-        void task_Error(object sender, Exception args)
-        {
-            logger.LogError("Task finished with error: {0}", args);
-        }
 
         private void EslMatchIdTextBox_Leave(object sender, EventArgs e)
         {
-            // Load Enemies from ESL page and see if we can add new infos
-            var async = this.myMatchSession.LoadEslPlayers(this.session.EslMatchLink);
-            var task = new Task<Unit>(async);
-            task.Error += this.task_Error;
-            task.Finished += this.task_Finished;
-            task.WaitForFinished();
+            try
+            {
+                // Load Enemies from ESL page and see if we can add new infos
+                this.SetEslMatchId();
+                var async = this.myMatchSession.LoadEslPlayers(this.session.EslMatchLink);
+                var task = new Task<Unit>(async);
+                task.Error += (senderTask, eTask) =>
+                    MessageBox.Show(eTask.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                WaitingForm.StartTask(logger, task, "Loading Players...");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("{0}", "Could not start player grabbing task, Ex: " + ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
     }
 }
