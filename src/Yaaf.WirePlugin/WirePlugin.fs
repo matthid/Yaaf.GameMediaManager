@@ -70,6 +70,11 @@ type ReplayWirePlugin() as x =
                 (fun () ->
                     using (new EditGames(logger, Database.getContext())) (fun o ->
                         o.ShowDialog() |> ignore))
+            item Resources.EditPlayers Resources.edit
+                (fun () ->
+                    let dbContext = Database.getContext()
+                    using (new ManagePlayers(logger, dbContext, Database.getIdentityPlayer dbContext.Context)) (fun o ->
+                        o.ShowDialog() |> ignore))
             seperator()
             item Resources.CloseMenu Resources.cancel id
         ]

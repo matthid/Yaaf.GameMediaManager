@@ -110,7 +110,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Close Menu ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die close menu ähnelt.
         /// </summary>
         public static string CloseMenu {
             get {
@@ -140,11 +140,20 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die add or edit Games ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die add or edit games ähnelt.
         /// </summary>
         public static string EditGames {
             get {
                 return ResourceManager.GetString("EditGames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die edit players ähnelt.
+        /// </summary>
+        public static string EditPlayers {
+            get {
+                return ResourceManager.GetString("EditPlayers", resourceCulture);
             }
         }
         
@@ -246,6 +255,15 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
             get {
                 object obj = ResourceManager.GetObject("mail", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please select a player! ähnelt.
+        /// </summary>
+        public static string ManagePlayers_setAsMeButton_Click_Please_select_a_player_ {
+            get {
+                return ResourceManager.GetString("ManagePlayers_setAsMeButton_Click_Please_select_a_player_", resourceCulture);
             }
         }
         

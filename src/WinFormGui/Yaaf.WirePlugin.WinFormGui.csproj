@@ -79,6 +79,12 @@
     <Compile Include="ManageMatchPlayers.Designer.cs">
       <DependentUpon>ManageMatchPlayers.cs</DependentUpon>
     </Compile>
+    <Compile Include="ManagePlayers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManagePlayers.Designer.cs">
+      <DependentUpon>ManagePlayers.cs</DependentUpon>
+    </Compile>
     <Compile Include="ManageWatchFolder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,6 +109,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManagePlayers.resx">
+      <DependentUpon>ManagePlayers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WaitingForm.resx">
       <DependentUpon>WaitingForm.cs</DependentUpon>
@@ -139,6 +148,7 @@
     <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.Game.datasource" />
     <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.Matchmedia.datasource" />
     <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.MatchSessions_Player.datasource" />
+    <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.Player.datasource" />
     <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.WatchFolder.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
