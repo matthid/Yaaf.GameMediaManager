@@ -8,6 +8,7 @@ Future - Version 1.0
 
 25.08.2012 Version 0.7
  - Read Enemies for Versus-matches from the esl page
+ - Set yourself via ManagePlayers Form
 
 23.08.2012 Version 0.6
  - Allow Enemies to be setup via GUI
