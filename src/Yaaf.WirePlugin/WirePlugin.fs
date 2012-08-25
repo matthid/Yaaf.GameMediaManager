@@ -5,6 +5,7 @@
 namespace Yaaf.WirePlugin
 
 open Wire
+open System
 open System.Windows.Forms
 open System.IO
 open System.Drawing
@@ -12,6 +13,28 @@ open System.Diagnostics
 open Yaaf.Logging
 open Yaaf.WirePlugin.WinFormGui
 open Yaaf.WirePlugin.WinFormGui.Properties
+type GameData = {
+        Game : Database.Game
+        Watcher : MatchmediaWatcher
+        MatchSession : Database.MatchSession
+    }
+type Session = {
+        GameData : GameData option
+        StartTime : DateTime
+        EslMatch : int option
+        Context : LocalDatabaseWrapper
+    } with
+        member x.IsEslMatch =
+            match x.EslMatch with
+            | Some(_) -> true
+            | None -> false
+        member x.EslMatchId 
+            with get () = 
+                match x.EslMatch with
+                | Some(id) -> id
+                | None -> invalidOp "this is no esl match"
+        member x.DB = 
+            x.Context.Context
 
 /// The Wire Plugin implementation
 type ReplayWirePlugin() as x = 
@@ -32,6 +55,7 @@ type ReplayWirePlugin() as x =
         let item s pic f = 
              new ToolStripMenuItem(s, pic, (fun sender e -> f())) 
              :> ToolStripItem
+        let seperator () = new ToolStripSeparator() :> ToolStripItem
         [
             item Resources.ReportBug Resources.mail
                 (fun () -> 
@@ -46,33 +70,36 @@ type ReplayWirePlugin() as x =
                 (fun () ->
                     using (new EditGames(logger, Database.getContext())) (fun o ->
                         o.ShowDialog() |> ignore))
-            new ToolStripSeparator() :> ToolStripItem
+            seperator()
             item Resources.CloseMenu Resources.cancel id
         ]
             |> List.iter (fun t -> cm.Items.Add(t) |> ignore)
         cm
-    let mutable matchData = None
-    let mutable watcher = None
-    let mutable startTime = System.DateTime.Now
-    
+
     let mutable gameInterface = None 
 
-    /// Starts the mediawatcher for the given game
-    let sessionStarted (logger:ITracer) gameId gamePath = 
-        startTime <- System.DateTime.Now
-        
+    let mutable session = None : Session option
+
+    let sessionMatchStarted logger matchId = 
         let localContext = Database.getContext()
-        let db = localContext.Context
+        {
+            Context = localContext
+            GameData = None
+            StartTime = DateTime.Now
+            EslMatch = matchId }
+
+    /// Starts the mediawatcher for the given game
+    let sessionGameStarted (logger:ITracer) (session:Session) gameId gamePath = 
+        let db = session.DB
         let game = Database.getGame db gameId
-        watcher <- 
+        let watcher = 
             match game with
             | None ->
                 logger.logInfo "Ignoring unknown game: %d, %s" gameId gamePath
                 None
             | Some (game) ->
-                
-                if (matchData.IsSome && not game.EnableWarMatchForm && not game.WarMatchFormSaveFiles) ||
-                   (not matchData.IsSome && not game.EnableMatchForm && not game.PublicMatchFormSaveFiles) then
+                if (session.IsEslMatch && not game.EnableWarMatchForm && not game.WarMatchFormSaveFiles) ||
+                   (not session.IsEslMatch && not game.EnableMatchForm && not game.PublicMatchFormSaveFiles) then
                     logger.logWarn "Not saving data becaue it is disabled for game: %d" gameId
                     None
                 else
@@ -84,12 +111,58 @@ type ReplayWirePlugin() as x =
                         |> Seq.toList
                     new GenericMatchmediaWatcher(
                         logger,
-                        watchFolder) |> Some  
+                        watchFolder) :> MatchmediaWatcher |> Some  
+        let gameData = 
+            match watcher with
+            | Some (w) -> 
+                w.StartGameWatching()
+                let game = match game with | Some (g) -> g | None -> failwith "game should not be None when watcher is not!"
+                let matchSession, sessionAdded = 
+                    let elapsedTime = int (System.DateTime.Now - session.StartTime).TotalSeconds
+                    match session.EslMatch with
+                    | Some (warId) ->
+                        // Check if this EslMatch already exisits and use the old session
+                        let info = x.GameInterface.matchInfo(warId)
+                        let eslMatchLink = info.["uri"] :?> string
+                        match Database.findEslMatch db eslMatchLink with
+                        | Some (availableMatch) -> availableMatch, true
+                        | None ->
+                        new Database.MatchSession(
+                            Game = game,
+                            Startdate = session.StartTime,
+                            Duration = elapsedTime,
+                            EslMatchLink = eslMatchLink), false       
+                    | None ->
+                        new Database.MatchSession(
+                            Game = game,
+                            Startdate = session.StartTime,
+                            Duration = elapsedTime), false
                 
-        match watcher with
-        | Some (w) -> 
-            w.StartGame()
-        | None -> ()
+                if not sessionAdded then
+                    // Add me to the session...
+                    let me = Database.getIdentityPlayer db
+                    let newPlayerAssociation = 
+                        new Database.MatchSessions_Player(
+                            Cheating = false,
+                            Player = me,
+                            Skill = System.Nullable(100uy),
+                            Team = 1uy)
+                    matchSession.MatchSessions_Player.Add(newPlayerAssociation)
+                    db.MatchSessions.InsertOnSubmit matchSession
+
+                if (session.IsEslMatch) then
+                    async  {
+                        //let! players = EslGrabber.getMatchMembers matchSession.EslMatchLink
+                        //players 
+                        //    |> Seq.map 
+                        //        (fun p -> 
+                                    
+                        return ()
+                    } |> Async.Start
+                Some { Watcher = w; Game = game; MatchSession = matchSession }
+            | None -> None
+
+        { session with GameData = gameData }
 
     let executeAction (context:Database.LocalDatabaseDataContext) (action:Database.ActionObject) (media:Database.Matchmedia seq) = 
         let filter = Database.getFilter action
@@ -102,67 +175,31 @@ type ReplayWirePlugin() as x =
             context.SubmitChanges()
             
     /// Stops the watcher saves the matchmedia and starts the given actions
-    let sessionStopped (logger:ITracer) gameId = 
-        
-        let localContext = Database.getContext()
-        let db = localContext.Context
+    let sessionEnd (logger:ITracer) (session:Session) = 
+        let db = session.DB
 
-        let game = Database.getGame db gameId
-        if (match watcher, game with
-            | Some(w), Some(game) ->
+        
+        if (match session.GameData with
+            | Some(data) ->
                 false
             | _ ->
                 true) then
-            logger.logInfo "unknown game or game without watcher closed: %d" gameId
+            logger.logInfo "unknown game or game without watcher closed!"
         else
-        let watcher, game = watcher.Value, game.Value
-        watcher.EndGame()
-        let session, sessionAdded = 
-            let elapsedTime = int (System.DateTime.Now - startTime).TotalSeconds
-            match matchData with
-            | Some (warId, matchMediaPath) ->
-                // TODO: Check if this EslMatch already exisits and use the old session
-                let info = x.GameInterface.matchInfo(warId)
-                let eslMatchLink = info.["uri"] :?> string
-                match Database.findEslMatch db eslMatchLink with
-                | Some (availableMatch) -> availableMatch, true
-                | None ->
-                new Database.MatchSession(
-                    Game = game,
-                    Startdate = startTime,
-                    Duration = elapsedTime,
-                    EslMatchLink = eslMatchLink), false       
-            | None ->
-                new Database.MatchSession(
-                    Game = game,
-                    Startdate = startTime,
-                    Duration = elapsedTime), false
-        if not sessionAdded then
-            // Add me...
-            let me = Database.getIdentityPlayer db
-            let newPlayerAssociation = 
-                new Database.MatchSessions_Player(
-                    Cheating = false,
-                    Player = me,
-                    Skill = System.Nullable(100uy),
-                    Team = 1uy)
-            session.MatchSessions_Player.Add(newPlayerAssociation)
-
-        let warId = 
-            match matchData with
-            | Some (warId, matchMediaPath) -> Some warId
-            | None -> None
-            
+        let data = session.GameData.Value
+        let watcher, game = data.Watcher, data.Game
+        watcher.EndGameWatching()
+        let matchSession = data.MatchSession 
         let showEndSessionWindow media = 
-            if (matchData.IsSome && not game.EnableWarMatchForm) || (matchData.IsNone && not game.EnableMatchForm) then
+            if (session.IsEslMatch && not game.EnableWarMatchForm) || (session.IsEslMatch && not game.EnableMatchForm) then
                 // Could be changed in the meantime
-                if (matchData.IsSome && not game.WarMatchFormSaveFiles) || (matchData.IsNone && not game.PublicMatchFormSaveFiles) then
+                if (session.IsEslMatch && not game.WarMatchFormSaveFiles) || (session.IsEslMatch && not game.PublicMatchFormSaveFiles) then
                     None
                 else
                     Some media
             else
 
-            let form = new MatchSessionEnd(logger, localContext, session, media)
+            let form = new MatchSessionEnd(logger, session.Context, matchSession, media)
             form.ShowDialog() |> ignore
             if form.ResultMedia = null then None else Some form.ResultMedia
 
@@ -172,7 +209,7 @@ type ReplayWirePlugin() as x =
                     (fun i (lNum, mediaDate, m) -> 
                         new Database.Matchmedia(
                             Created = mediaDate, 
-                            MatchSession = session,
+                            MatchSession = matchSession,
                             Map = (MediaAnalyser.analyseMedia m).Map,
                             Name = Path.GetFileNameWithoutExtension m,
                             Type = Path.GetExtension m,
@@ -180,17 +217,13 @@ type ReplayWirePlugin() as x =
                 |> showEndSessionWindow
         match preparedMatchmedia with
         | None -> 
-            if sessionAdded then
-                db.MatchSessions.DeleteOnSubmit(session)
-            localContext.MySubmitChanges()
+            db.MatchSessions.DeleteOnSubmit(matchSession)
+            session.Context.MySubmitChanges()
         | Some (media) ->
 
         logger.logInfo "Add Match to Database"   
-        // db.Matchmedias.InsertAllOnSubmit(media)
-        session.Matchmedia.AddRange(media)
-        if not sessionAdded then
-            db.MatchSessions.InsertOnSubmit(session)
-        localContext.MySubmitChanges()
+        matchSession.Matchmedia.AddRange(media)
+        session.Context.MySubmitChanges()
         
         logger.logInfo "Move Media to MediaPath"   
         for m in media do
@@ -202,10 +235,10 @@ type ReplayWirePlugin() as x =
                 logger.logErr "Could not move Matchmedia from %s to Database! (Error: %O)" m.Path e   
         
         logger.logInfo "Change to MediaPath in Database"  
-        localContext.MySubmitChanges() 
+        session.Context.MySubmitChanges() 
 
         // Execute automatic actions for this game
-        for action in Database.getActivatedMatchFormActions db matchData.IsSome game do
+        for action in Database.getActivatedMatchFormActions db session.IsEslMatch game do
             try
                 logger.logInfo "Executing Action %s on game %s" action.ActionObject.Name game.Name
                 executeAction db action.ActionObject media
@@ -282,26 +315,48 @@ type ReplayWirePlugin() as x =
                     logEvent ("MatchStart" + string matchId) (fun logger ->
                         Settings.Default.MatchMediaPath <- matchMediaPath
                         Settings.Default.Save()
-                        matchData <- Some(matchId, matchMediaPath)))
+                        match session with
+                        | Some (s) -> 
+                            failwith "a previous session was not closed properly!"
+                        | None ->
+                            session <-
+                                Some (sessionMatchStarted logger (Some matchId))))
 
             // Game started (with or without wire)
             x.GameInterface.add_GameStarted
                 (fun gameId gamePath -> 
                     logEvent ("GameStart" + string gameId) (fun logger ->
-                            sessionStarted logger gameId gamePath))
+                        let currS = 
+                            match session with
+                            | Some (s) -> s // Use this session as it was created in MatchStart
+                            | None -> sessionMatchStarted logger None
+                        session <-
+                            sessionGameStarted logger currS gameId gamePath |> Some))
 
             // Game stopped (before Match ended and always)
             // On real matches we have time until Anticheat has finished (parallel) for copying our matchmedia
             x.GameInterface.add_GameStopped
                 (fun gameId -> 
                     logEvent ("GameEnd" + string gameId) (fun logger ->
-                            sessionStopped logger gameId))
+                        match session with
+                        | Some (s) -> 
+                            // Use this session as it was created in MatchStart
+                            sessionEnd logger s
+                            session <- None
+                        | None -> 
+                            failwith "No session found on GameEnd!"))
 
             // Match ended (the Matchmedia dialog is already opened)
+            // This event brings no additional information...
             x.GameInterface.add_MatchEnded
                 (fun matchId -> 
                     logEvent ("MatchEnd" + string matchId) (fun logger ->
-                            matchData <- None))
+                        match session with
+                        | Some (s) -> 
+                            sessionEnd logger s
+                            session <- None
+                            failwith "Session not already closed on MatchEnd!"
+                        | None -> ()))
         with exn ->
             logger.logErr "Error: %O" exn
 

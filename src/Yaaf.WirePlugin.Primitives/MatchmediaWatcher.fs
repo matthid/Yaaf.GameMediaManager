@@ -79,19 +79,19 @@ type MatchmediaWatcher(logger : ITracer) =
             |> Event.add (fun e -> x.FileChanged(e.FullPath))
         watcher.Add(w)
 
-    member x.StartGame () = 
+    member x.StartGameWatching () = 
         if started then
             invalidOp "Can't start twice"
         started <- true
-        x.StartGameAbstract()
-    abstract member StartGameAbstract : unit -> unit
+        x.StartGameWatchingAbstract()
+    abstract member StartGameWatchingAbstract : unit -> unit
     abstract member FileChanged : string -> unit
-    member x.EndGame() = 
+    member x.EndGameWatching() = 
         for w in watcher do
             w.Dispose()
         watcher.Clear()
-        x.EndGameAbstract()
-    abstract member EndGameAbstract : unit -> unit
+        x.EndGameWatchingAbstract()
+    abstract member EndGameWatchingAbstract : unit -> unit
 
 type GenericMatchmediaWatcher (logger : ITracer, folders : List<string * string * int option>) = 
     inherit MatchmediaWatcher(logger)
@@ -99,11 +99,11 @@ type GenericMatchmediaWatcher (logger : ITracer, folders : List<string * string 
     override x.FileChanged path = 
         logger.logVerb "Media %s changed" path
 
-    override x.StartGameAbstract() = 
+    override x.StartGameWatchingAbstract() = 
         for path, filter, notify in folders do
             logger.logVerb "Starting watching in %s (with filter: %s, %A)" path filter notify
             x.BasicWatchFolder path filter notify
 
-    override x.EndGameAbstract() = ()
+    override x.EndGameWatchingAbstract() = ()
 
 
