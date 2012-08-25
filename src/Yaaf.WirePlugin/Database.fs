@@ -54,6 +54,14 @@ module Database =
                     if m.EslMatchLink = link then
                         yield m } @>
 
+    let getPlayerByEslId (db:Database.LocalDatabaseDataContext) id = 
+        let mid = System.Nullable(id)
+        tryGetSingle
+            <@ seq {
+                for m in db.Players do
+                    if m.EslPlayerId = mid then
+                        yield m } @>
+
     let mediaPath (m:Database.Matchmedia) = 
         let innerPath = 
             System.String.Format(
@@ -235,3 +243,32 @@ module Database =
             Properties.Settings.Default.Save()
             getSingle myQuery
         | Some (p) -> p
+
+
+    let fillPlayers (db:Database.LocalDatabaseDataContext) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
+        for p in players do
+            let player = 
+                match getPlayerByEslId db p.Id with
+                | Some (p) -> p
+                | None -> Database.Player(EslPlayerId = System.Nullable(p.Id))
+            player.Name <- p.Nick
+            let availableSessionPlayer = 
+                match
+                    (matchSession.MatchSessions_Player 
+                        |> Seq.filter
+                            (fun sessionPlayer ->
+                                sessionPlayer.Player.EslPlayerId = System.Nullable(p.Id))
+                        |> Seq.tryHead) with
+                | Some (s) -> s
+                | None ->
+                    let s = 
+                        new Database.MatchSessions_Player(
+                            Cheating = false,
+                            MatchSession = matchSession,
+                            Skill = System.Nullable(50uy))
+                    matchSession.MatchSessions_Player.Add(s)
+                    s
+            availableSessionPlayer.Team <- byte p.Team
+            player.MatchSessions_Player.Load()
+            player.MatchSessions_Player.Add(availableSessionPlayer)
+            availableSessionPlayer.Player <- player

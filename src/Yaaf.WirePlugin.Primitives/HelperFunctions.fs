@@ -12,7 +12,12 @@ module HelperFunctions
                 |> Seq.mapi (fun i t -> i < n, t)
                 |> Seq.takeWhile (fun (shouldTake, t) -> shouldTake)
                 |> Seq.map (fun (shouldTake, t) -> t)
-    
+        let tryHead (s : _ seq) = 
+            let newSeq =
+                s
+                    |> tryTake 1
+            if newSeq |> Seq.isEmpty then None else newSeq |> Seq.head |> Some
+
     let curry f a b = f (a,b)
     let uncurry f (a,b) = f a b
 

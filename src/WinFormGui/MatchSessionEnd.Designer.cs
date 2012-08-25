@@ -62,6 +62,7 @@
             // 
             resources.ApplyResources(this.EslMatchIdTextBox, "EslMatchIdTextBox");
             this.EslMatchIdTextBox.Name = "EslMatchIdTextBox";
+            this.EslMatchIdTextBox.Leave += new System.EventHandler(this.EslMatchIdTextBox_Leave);
             // 
             // tagTextBox
             // 

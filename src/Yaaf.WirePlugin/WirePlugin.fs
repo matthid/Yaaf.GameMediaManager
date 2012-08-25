@@ -87,6 +87,16 @@ type ReplayWirePlugin() as x =
             GameData = None
             StartTime = DateTime.Now
             EslMatch = matchId }
+    
+    let getGrabAction db matchSession link = 
+        async  {
+            try
+                let! players = EslGrabber.getMatchMembers link
+                Database.fillPlayers db matchSession players
+            with exn ->
+                logger.logErr "Could not grab esl-infos: %O" exn        
+            return ()
+        }
 
     /// Starts the mediawatcher for the given game
     let sessionGameStarted (logger:ITracer) (session:Session) gameId gamePath = 
@@ -138,6 +148,8 @@ type ReplayWirePlugin() as x =
                             Startdate = session.StartTime,
                             Duration = elapsedTime), false
                 
+                matchSession.MatchSessions_Player.Load()
+                matchSession.Matchmedia.Load()
                 if not sessionAdded then
                     // Add me to the session...
                     let me = Database.getIdentityPlayer db
@@ -149,16 +161,11 @@ type ReplayWirePlugin() as x =
                             Team = 1uy)
                     matchSession.MatchSessions_Player.Add(newPlayerAssociation)
                     db.MatchSessions.InsertOnSubmit matchSession
-
+                
                 if (session.IsEslMatch) then
-                    async  {
-                        //let! players = EslGrabber.getMatchMembers matchSession.EslMatchLink
-                        //players 
-                        //    |> Seq.map 
-                        //        (fun p -> 
-                                    
-                        return ()
-                    } |> Async.Start
+                    getGrabAction db matchSession matchSession.EslMatchLink
+                    |> Async.Start
+
                 Some { Watcher = w; Game = game; MatchSession = matchSession }
             | None -> None
 
@@ -190,43 +197,49 @@ type ReplayWirePlugin() as x =
         let watcher, game = data.Watcher, data.Game
         watcher.EndGameWatching()
         let matchSession = data.MatchSession 
-        let showEndSessionWindow media = 
-            if (session.IsEslMatch && not game.EnableWarMatchForm) || (session.IsEslMatch && not game.EnableMatchForm) then
-                // Could be changed in the meantime
-                if (session.IsEslMatch && not game.WarMatchFormSaveFiles) || (session.IsEslMatch && not game.PublicMatchFormSaveFiles) then
-                    None
-                else
-                    Some media
+           
+        watcher.FoundMedia
+            |> Seq.mapi  
+                (fun i (lNum, mediaDate, m) -> 
+                    new Database.Matchmedia(
+                        Created = mediaDate, 
+                        MatchSession = matchSession,
+                        Map = (MediaAnalyser.analyseMedia m).Map,
+                        Name = Path.GetFileNameWithoutExtension m,
+                        Type = Path.GetExtension m,
+                        Path = m))
+            |> Seq.iter (fun s -> matchSession.Matchmedia.Add(s))
+
+        let deleteData =
+            if (session.IsEslMatch && game.EnableWarMatchForm) || (session.IsEslMatch && game.EnableMatchForm) then
+                let formSession = 
+                    { new IMatchSession with
+                        member x.LoadEslPlayers link = 
+                            getGrabAction db matchSession link
+                        member x.Session 
+                            with get() = matchSession
+                        }
+                let form = new MatchSessionEnd(logger, session.Context, formSession)
+                form.ShowDialog() |> ignore
+                form.DeleteMatchmedia
             else
+                // Could be changed in the meantime
+                (session.IsEslMatch && not game.WarMatchFormSaveFiles) || (session.IsEslMatch && not game.PublicMatchFormSaveFiles)
 
-            let form = new MatchSessionEnd(logger, session.Context, matchSession, media)
-            form.ShowDialog() |> ignore
-            if form.ResultMedia = null then None else Some form.ResultMedia
+        if (deleteData) then
+            for matchmedia in matchSession.Matchmedia do
+                if (File.Exists(matchmedia.Path)) then
+                    File.Delete(matchmedia.Path)
 
-        let preparedMatchmedia = 
-            watcher.FoundMedia
-                |> Seq.mapi  
-                    (fun i (lNum, mediaDate, m) -> 
-                        new Database.Matchmedia(
-                            Created = mediaDate, 
-                            MatchSession = matchSession,
-                            Map = (MediaAnalyser.analyseMedia m).Map,
-                            Name = Path.GetFileNameWithoutExtension m,
-                            Type = Path.GetExtension m,
-                            Path = m))
-                |> showEndSessionWindow
-        match preparedMatchmedia with
-        | None -> 
             db.MatchSessions.DeleteOnSubmit(matchSession)
             session.Context.MySubmitChanges()
-        | Some (media) ->
+        else
 
         logger.logInfo "Add Match to Database"   
-        matchSession.Matchmedia.AddRange(media)
         session.Context.MySubmitChanges()
         
         logger.logInfo "Move Media to MediaPath"   
-        for m in media do
+        for m in matchSession.Matchmedia do
             let dbMediaPath = Database.mediaPath m
             try
                 File.Move (m.Path, dbMediaPath)
@@ -241,7 +254,7 @@ type ReplayWirePlugin() as x =
         for action in Database.getActivatedMatchFormActions db session.IsEslMatch game do
             try
                 logger.logInfo "Executing Action %s on game %s" action.ActionObject.Name game.Name
-                executeAction db action.ActionObject media
+                executeAction db action.ActionObject matchSession.Matchmedia
             with exn ->
                 logger.logErr "Action %s on game %s failed! Error %O" action.ActionObject.Name game.Name exn
 

@@ -393,6 +393,33 @@
   <data name="&gt;&gt;rememberCheckBox.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <metadata name="Tags.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="matchmediaBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="matchmediaDataGridView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 58</value>
+  </data>
+  <data name="matchmediaDataGridView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>516, 204</value>
+  </data>
+  <data name="matchmediaDataGridView.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;matchmediaDataGridView.Name" xml:space="preserve">
+    <value>matchmediaDataGridView</value>
+  </data>
+  <data name="&gt;&gt;matchmediaDataGridView.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;matchmediaDataGridView.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;matchmediaDataGridView.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="nameDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Name</value>
   </data>
@@ -423,27 +450,6 @@
   <metadata name="matchmediaBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="matchmediaDataGridView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 58</value>
-  </data>
-  <data name="matchmediaDataGridView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>516, 204</value>
-  </data>
-  <data name="matchmediaDataGridView.TabIndex" type="System.Int32, mscorlib">
-    <value>11</value>
-  </data>
-  <data name="&gt;&gt;matchmediaDataGridView.Name" xml:space="preserve">
-    <value>matchmediaDataGridView</value>
-  </data>
-  <data name="&gt;&gt;matchmediaDataGridView.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;matchmediaDataGridView.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;matchmediaDataGridView.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>

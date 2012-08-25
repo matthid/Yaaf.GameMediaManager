@@ -12,7 +12,17 @@ namespace Yaaf.WirePlugin.WinFormGui
     using System.Diagnostics;
     using System.IO;
 
+    using Microsoft.FSharp.Control;
+    using Microsoft.FSharp.Core;
+
+    using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
+    public interface IMatchSession
+    {
+        MatchSession Session { get; }
+
+        FSharpAsync<Unit> LoadEslPlayers(string link);
+    }
 
     public partial class MatchSessionEnd : Form
     {
@@ -22,20 +32,21 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private readonly MatchSession session;
 
-        private readonly List<Matchmedia> mediaFiles;
-        
+        private IMatchSession myMatchSession;
 
-        public MatchSessionEnd(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, Database.MatchSession session, IEnumerable<Database.Matchmedia> mediaFiles)
+        public MatchSessionEnd(
+            Logging.LoggingInterfaces.ITracer logger, 
+            LocalDatabaseWrapper context, 
+            IMatchSession session)
         {
             this.logger = logger;
             this.context = context;
-            this.session = session;
-            this.mediaFiles = new List<Matchmedia>( mediaFiles );
+            this.myMatchSession = session;
+            this.session = session.Session;
             InitializeComponent();
         }
 
-
-        public IEnumerable<Database.Matchmedia> ResultMedia { get; private set; }
+        public bool DeleteMatchmedia { get; private set; }
 
         private void MatchSessionEnd_Load(object sender, EventArgs e)
         {
@@ -44,7 +55,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
             tagTextBox.Text = string.Join(
                 ",", (from assoc in session.MatchSessions_Tag select assoc.Tag.Name).ToArray());
-            matchmediaBindingSource.DataSource = mediaFiles;
+            matchmediaBindingSource.DataSource = session.Matchmedia;
             eslMatchCheckBox.Checked = session.EslMatchLink != null;
             EslMatchIdTextBox.Text = 
                 string.IsNullOrEmpty(session.EslMatchLink)
@@ -52,7 +63,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
             EslMatchIdTextBox.Enabled = session.EslMatchLink != null;
             int i = -1;
-            foreach (var file in mediaFiles)
+            foreach (var file in session.Matchmedia)
             {
                 i++;
                 file.Matchmedia_Tag.Load();
@@ -84,7 +95,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                 }
 
                 int i = -1;
-                foreach (var file in mediaFiles)
+                foreach (var file in session.Matchmedia)
                 {
                     i++;
                     var row = matchmediaDataGridView.Rows[i];
@@ -104,7 +115,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                 }
 
                 this.SetupRemember(true);
-                ResultMedia = new List<Matchmedia>(mediaFiles);
+                DeleteMatchmedia = false;
                 this.Close();
             }
             catch (Exception ex)
@@ -132,15 +143,7 @@ namespace Yaaf.WirePlugin.WinFormGui
         private void deleteMatchmediaButton_Click(object sender, EventArgs e)
         {
             this.SetupRemember(false);
-            ResultMedia = null;
-
-            foreach (var matchmedia in mediaFiles)
-            {
-                if (File.Exists(matchmedia.Path))
-                {
-                    File.Delete(matchmedia.Path);
-                }
-            }
+            DeleteMatchmedia = true;
         }
 
         private void SetupRemember(bool saveData)
@@ -195,8 +198,6 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             try
             {
-                this.LoadAvailablePlayers();
-
                 var managePlayer = new ManageMatchPlayers(logger, context, session);
                 managePlayer.ShowDialog();
             }
@@ -206,16 +207,25 @@ namespace Yaaf.WirePlugin.WinFormGui
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-
-        private void LoadAvailablePlayers()
+        
+        void task_Finished(object sender, Unit args)
         {
-            this.SetEslMatchId();
-            this.session.MatchSessions_Player.Load();
-            if (this.session.EslMatchLink != null)
-            {
-                // Load Enemies from ESL page and see if we can add new infos
-            }
+            logger.LogInformation("Task finished!");
+        }
+
+        void task_Error(object sender, Exception args)
+        {
+            logger.LogError("Task finished with error: {0}", args);
+        }
+
+        private void EslMatchIdTextBox_Leave(object sender, EventArgs e)
+        {
+            // Load Enemies from ESL page and see if we can add new infos
+            var async = this.myMatchSession.LoadEslPlayers(this.session.EslMatchLink);
+            var task = new Task<Unit>(async);
+            task.Error += this.task_Error;
+            task.Finished += this.task_Finished;
+            task.WaitForFinished();
         }
     }
 }

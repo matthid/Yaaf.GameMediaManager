@@ -1,4 +1,9 @@
-﻿module EslGrabber
+﻿// ----------------------------------------------------------------------------
+// This file is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package.
+// ----------------------------------------------------------------------------
+namespace Yaaf.WirePlugin
+module EslGrabber = 
     open System
     open System.IO
     open System.Net
@@ -32,7 +37,7 @@
         return matchDocument }
 
     let eslUrl = "http://www.esl.eu"
-
+    let asyncUnit = async { return () }
     let getPlayerFromLink team link nick = async {
         //let playerDocument = htmlWeb.Load(link) 
         match System.Int32.TryParse(idRegex.Match(link).ToString()) with
@@ -64,7 +69,7 @@
         //let matchDocument = htmlWeb.Load(link) 
         let! matchDocument = loadHtmlDocument link
         let playerVotes = matchDocument.GetElementbyId "votes_table"
-        if (playerVotes = null) then invalidOp "Vote Table could not be found (invalid Matchlinks?)"
+        if (playerVotes = null) then invalidOp "Vote Table could not be found (invalid Matchlink?)"
         
         let allLinks = 
             playerVotes.Descendants "a"

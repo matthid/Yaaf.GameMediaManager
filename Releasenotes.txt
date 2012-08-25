@@ -1,11 +1,13 @@
 
 
 Future - Version 1.0
- - Read Enemies for (Versus) matches from the esl page
+ - Read Enemies for matches from the esl page
  - Allow Custom Actions to be setup via GUI
  - Add CustomTool actions for converting
  - Matchmedia View to manage your media
 
+25.08.2012 Version 0.7
+ - Read Enemies for Versus-matches from the esl page
 
 23.08.2012 Version 0.6
  - Allow Enemies to be setup via GUI

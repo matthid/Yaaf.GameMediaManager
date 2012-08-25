@@ -53,6 +53,7 @@
     <Compile Include="MatchmediaWatcher.fs" />
     <Compile Include="MediaAnalyser.fs" />
     <Compile Include="EslGrabber.fs" />
+    <Compile Include="FSharpInterop.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>
   <ItemGroup>
