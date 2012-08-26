@@ -12,11 +12,9 @@ module EslGrabber =
     open Microsoft.FSharp.Control.WebExtensions
 
     let idPattern = @"(?<=player/).*(?=/)"
-    let namePattern = "(?<=Nick</td><td>).*(?=</td></tr><tr><td class=\"firstcol\">Member)"
     
     // They are thread safe and can be shared see http://msdn.microsoft.com/en-us/library/6h453d2h.aspx
     let idRegex = new Regex(idPattern)
-    //let nameRegex = new Regex(namePattern)
 
     type Player = {
         Id : int;
@@ -39,7 +37,6 @@ module EslGrabber =
     let eslUrl = "http://www.esl.eu"
     let asyncUnit = async { return () }
     let getPlayerFromLink team link nick = async {
-        //let playerDocument = htmlWeb.Load(link) 
         match System.Int32.TryParse(idRegex.Match(link).ToString()) with
         | (true, id) ->
             return {
@@ -56,9 +53,6 @@ module EslGrabber =
         let playerId = 
             idRegex.Match(playerLinkWithId).ToString()
             |> System.Int32.Parse
-        //let html = 
-        //    playerDocument.DocumentNode.OuterHtml.Replace("\n", "")
-        //let nick = nameRegex.Match(html).ToString()
         return {
             Id = playerId;
             Nick = nick;
@@ -66,7 +60,6 @@ module EslGrabber =
             Team = team} }
 
     let getMatchMembers link = async {
-        //let matchDocument = htmlWeb.Load(link) 
         let! matchDocument = loadHtmlDocument link
         let playerVotes = matchDocument.GetElementbyId "votes_table"
         if (playerVotes = null) then invalidOp "Vote Table could not be found (invalid Matchlink?)"
@@ -80,30 +73,3 @@ module EslGrabber =
                 |> Seq.mapi 
                     (fun i (link, nick) -> getPlayerFromLink (if i < linkCount / 2 then 1 else 2) link nick)
                 |> Async.Parallel }
-
-    let getMatchMembersSync link = 
-        getMatchMembers link
-            |> Async.RunSynchronously
-
-    open System.Diagnostics
-    let time asy = 
-        let watch = Stopwatch.StartNew()
-        asy |> Async.RunSynchronously
-        watch.Stop()
-        printfn "Elapsed Time: %i ms" watch.ElapsedMilliseconds
-        watch.Reset()
-
-    let runSync asyncList = async {
-            let l = new System.Collections.Generic.List<_>()
-            for asy in asyncList do
-                let! t = asy
-                l.Add(t)
-            return l.ToArray()
-        }
-
-    let benc dataList workFun = 
-        dataList
-            |> Seq.map workFun
-            |> runSync
-            |> Async.Ignore
-            |> time
