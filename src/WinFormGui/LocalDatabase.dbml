@@ -1,21 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="D:\projects\aktuell\wireyaafcssplugin\yaaf\src\WinFormGui\LocalDatabase.sdf" EntityNamespace="Yaaf.WirePlugin.WinFormGui.Database" ContextNamespace="Yaaf.WirePlugin.WinFormGui.Database" Class="LocalDatabaseDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Table Name="ActionAndFilter" Member="ActionAndFilters">
-    <Type Name="ActionAndFilter">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+  <Table Name="Actions">
+    <Type Name="Actions">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="Parameters" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="ActionObjects">
     <Type Name="ActionObject">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="ActionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="FilterId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NextActionObjectId" Storage="_FilterId" Type="System.Int32" DbType="Int" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Association Name="ActionObject_ObjectParameter" Member="ObjectParameter" ThisKey="Id" OtherKey="ObjectId" Type="ObjectParameter" />
-      <Association Name="ActionAndFilter_ActionObject" Member="Action" Storage="_ActionAndFilter" ThisKey="ActionId" OtherKey="Id" Type="ActionAndFilter" IsForeignKey="true" />
-      <Association Name="ActionAndFilter_ActionObject1" Member="Filter" Storage="_ActionAndFilter1" ThisKey="FilterId" OtherKey="Id" Type="ActionAndFilter" IsForeignKey="true" />
+      <Association Name="ActionAndFilter_ActionObject" Member="Action" Storage="_ActionAndFilter" ThisKey="ActionId" OtherKey="Id" Type="Actions" IsForeignKey="true" />
+      <Association Name="ActionObject_ActionObject" Member="NextActionObject" ThisKey="NextActionObjectId" OtherKey="Id" Type="ActionObject" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="Games">
@@ -103,12 +102,9 @@
     <Type Name="ObjectParameter">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="ObjectId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
       <Column Name="ParamNum" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
       <Column Name="Parameter" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
-      <Column Name="LinkedAction" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="ActionObject_ObjectParameter" Member="ActionObject" ThisKey="ObjectId" OtherKey="Id" Type="ActionObject" IsForeignKey="true" />
-      <Association Name="ActionObject_ObjectParameter1" Member="LinkedActionObject" Storage="_ActionObject1" ThisKey="LinkedAction" OtherKey="Id" Type="ActionObject" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="Player_Tags">

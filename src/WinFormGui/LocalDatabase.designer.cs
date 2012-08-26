@@ -30,9 +30,9 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnCreated();
-    partial void InsertActionAndFilter(ActionAndFilter instance);
-    partial void UpdateActionAndFilter(ActionAndFilter instance);
-    partial void DeleteActionAndFilter(ActionAndFilter instance);
+    partial void InsertActions(Actions instance);
+    partial void UpdateActions(Actions instance);
+    partial void DeleteActions(Actions instance);
     partial void InsertActionObject(ActionObject instance);
     partial void UpdateActionObject(ActionObject instance);
     partial void DeleteActionObject(ActionObject instance);
@@ -98,11 +98,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<ActionAndFilter> ActionAndFilters
+		public System.Data.Linq.Table<Actions> Actions
 		{
 			get
 			{
-				return this.GetTable<ActionAndFilter>();
+				return this.GetTable<Actions>();
 			}
 		}
 		
@@ -212,55 +212,38 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute()]
-	public partial class ActionAndFilter : INotifyPropertyChanging, INotifyPropertyChanged
+	public partial class Actions : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private int _Id;
+		private int _Id = default(int);
 		
 		private string _Name;
 		
 		private byte _Parameters;
 		
-		private byte _Type;
-		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
     partial void OnParametersChanging(byte value);
     partial void OnParametersChanged();
-    partial void OnTypeChanging(byte value);
-    partial void OnTypeChanged();
     #endregion
 		
-		public ActionAndFilter()
+		public Actions()
 		{
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true, UpdateCheck=UpdateCheck.Never)]
 		public int Id
 		{
 			get
 			{
 				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
 			}
 		}
 		
@@ -304,26 +287,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="TinyInt NOT NULL")]
-		public byte Type
-		{
-			get
-			{
-				return this._Type;
-			}
-			set
-			{
-				if ((this._Type != value))
-				{
-					this.OnTypeChanging(value);
-					this.SendPropertyChanging();
-					this._Type = value;
-					this.SendPropertyChanged("Type");
-					this.OnTypeChanged();
-				}
-			}
-		}
-		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -361,9 +324,9 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private EntitySet<ObjectParameter> _ObjectParameter;
 		
-		private EntityRef<ActionAndFilter> _ActionAndFilter;
+		private EntityRef<Actions> _ActionAndFilter;
 		
-		private EntityRef<ActionAndFilter> _ActionAndFilter1;
+		private EntityRef<ActionObject> _NextActionObject;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -373,8 +336,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnIdChanged();
     partial void OnActionIdChanging(int value);
     partial void OnActionIdChanged();
-    partial void OnFilterIdChanging(int value);
-    partial void OnFilterIdChanged();
+    partial void OnNextActionObjectIdChanging(int value);
+    partial void OnNextActionObjectIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
     #endregion
@@ -382,8 +345,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		public ActionObject()
 		{
 			this._ObjectParameter = new EntitySet<ObjectParameter>(new Action<ObjectParameter>(this.attach_ObjectParameter), new Action<ObjectParameter>(this.detach_ObjectParameter));
-			this._ActionAndFilter = default(EntityRef<ActionAndFilter>);
-			this._ActionAndFilter1 = default(EntityRef<ActionAndFilter>);
+			this._ActionAndFilter = default(EntityRef<Actions>);
+			this._NextActionObject = default(EntityRef<ActionObject>);
 			OnCreated();
 		}
 		
@@ -431,8 +394,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FilterId", DbType="Int NOT NULL")]
-		public int FilterId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FilterId", DbType="Int")]
+		public int NextActionObjectId
 		{
 			get
 			{
@@ -442,15 +405,15 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				if ((this._FilterId != value))
 				{
-					if (this._ActionAndFilter1.HasLoadedOrAssignedValue)
+					if (this._NextActionObject.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
-					this.OnFilterIdChanging(value);
+					this.OnNextActionObjectIdChanging(value);
 					this.SendPropertyChanging();
 					this._FilterId = value;
-					this.SendPropertyChanged("FilterId");
-					this.OnFilterIdChanged();
+					this.SendPropertyChanged("NextActionObjectId");
+					this.OnNextActionObjectIdChanged();
 				}
 			}
 		}
@@ -489,7 +452,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		}
 		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionAndFilter_ActionObject", Storage="_ActionAndFilter", ThisKey="ActionId", OtherKey="Id", IsForeignKey=true)]
-		public ActionAndFilter Action
+		public Actions Action
 		{
 			get
 			{
@@ -506,20 +469,20 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionAndFilter_ActionObject1", Storage="_ActionAndFilter1", ThisKey="FilterId", OtherKey="Id", IsForeignKey=true)]
-		public ActionAndFilter Filter
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_ActionObject", Storage="_NextActionObject", ThisKey="NextActionObjectId", OtherKey="Id", IsForeignKey=true)]
+		public ActionObject NextActionObject
 		{
 			get
 			{
-				return this._ActionAndFilter1.Entity;
+				return this._NextActionObject.Entity;
 			}
 			set
 			{
-				if ((this._ActionAndFilter1.Entity != value))
+				if ((this._NextActionObject.Entity != value))
 				{
 					this.SendPropertyChanging();
-					this._ActionAndFilter1.Entity = value;
-					this.SendPropertyChanged("Filter");
+					this._NextActionObject.Entity = value;
+					this.SendPropertyChanged("NextActionObject");
 				}
 			}
 		}
@@ -2274,17 +2237,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private int _ObjectId;
 		
-		private byte _Type;
-		
 		private byte _ParamNum;
 		
 		private string _Parameter;
 		
-		private System.Nullable<int> _LinkedAction;
-		
 		private EntityRef<ActionObject> _ActionObject;
-		
-		private EntityRef<ActionObject> _ActionObject1;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -2294,20 +2251,15 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnIdChanged();
     partial void OnObjectIdChanging(int value);
     partial void OnObjectIdChanged();
-    partial void OnTypeChanging(byte value);
-    partial void OnTypeChanged();
     partial void OnParamNumChanging(byte value);
     partial void OnParamNumChanged();
     partial void OnParameterChanging(string value);
     partial void OnParameterChanged();
-    partial void OnLinkedActionChanging(System.Nullable<int> value);
-    partial void OnLinkedActionChanged();
     #endregion
 		
 		public ObjectParameter()
 		{
 			this._ActionObject = default(EntityRef<ActionObject>);
-			this._ActionObject1 = default(EntityRef<ActionObject>);
 			OnCreated();
 		}
 		
@@ -2355,26 +2307,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="TinyInt NOT NULL")]
-		public byte Type
-		{
-			get
-			{
-				return this._Type;
-			}
-			set
-			{
-				if ((this._Type != value))
-				{
-					this.OnTypeChanging(value);
-					this.SendPropertyChanging();
-					this._Type = value;
-					this.SendPropertyChanged("Type");
-					this.OnTypeChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ParamNum", DbType="TinyInt NOT NULL")]
 		public byte ParamNum
 		{
@@ -2415,30 +2347,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LinkedAction", DbType="Int")]
-		public System.Nullable<int> LinkedAction
-		{
-			get
-			{
-				return this._LinkedAction;
-			}
-			set
-			{
-				if ((this._LinkedAction != value))
-				{
-					if (this._ActionObject1.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnLinkedActionChanging(value);
-					this.SendPropertyChanging();
-					this._LinkedAction = value;
-					this.SendPropertyChanged("LinkedAction");
-					this.OnLinkedActionChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_ObjectParameter", Storage="_ActionObject", ThisKey="ObjectId", OtherKey="Id", IsForeignKey=true)]
 		public ActionObject ActionObject
 		{
@@ -2469,24 +2377,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 						this._ObjectId = default(int);
 					}
 					this.SendPropertyChanged("ActionObject");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActionObject_ObjectParameter1", Storage="_ActionObject1", ThisKey="LinkedAction", OtherKey="Id", IsForeignKey=true)]
-		public ActionObject LinkedActionObject
-		{
-			get
-			{
-				return this._ActionObject1.Entity;
-			}
-			set
-			{
-				if ((this._ActionObject1.Entity != value))
-				{
-					this.SendPropertyChanging();
-					this._ActionObject1.Entity = value;
-					this.SendPropertyChanged("LinkedActionObject");
 				}
 			}
 		}
