@@ -94,24 +94,16 @@
             {
                 wasNotSet = true;
                 var contextCopy = this.Copy();
-                var noneFilter = contextCopy.GetActionAndFilter("None");
-                var copyAction = contextCopy.GetActionAndFilter("CopyToEslMatchmedia");
+                var copyAction = contextCopy.GetAction("CopyToEslMatchmedia");
 
                 var obj = new ActionObject();
                 obj.Action = copyAction;
-                obj.Filter = noneFilter;
                 obj.Name = "DefaultActionObject_CopyToEslMatchMedia";
 
                 contextCopy.Context.ActionObjects.InsertOnSubmit(obj);
                 contextCopy.Context.SubmitChanges();
                 Properties.Settings.Default.DefaultEslWarAction = obj.Id;
                 Properties.Settings.Default.Save();
-                //var paramCopy = new ObjectParameter();
-                //paramCopy.ActionObject = obj;
-                //paramCopy.ParamNum = 1;
-                //paramCopy.Type = 2;
-                //var s = System.IO.Path.DirectorySeparatorChar;
-                //paramCopy.Parameter = "{11}" + s + "{6}_"
             }
 
             var id = Properties.Settings.Default.DefaultEslWarAction;
@@ -122,22 +114,20 @@
 	        }
 	        catch (InvalidOperationException e)
 	        {
-                if (!wasNotSet)
+	            if (!wasNotSet)
                 {
                     logger.LogError("Could not find DefaultActionObject_CopyToEslMatchMedia object trying to reset (Error: {0}", e);
                     Properties.Settings.Default.DefaultEslWarAction = -1;
                     return this.GetMoveToMatchmediaActionObject();
                 }
-                else
-                {
-                    throw;
-                }
-	        } 
+	            
+                throw;
+	        }
         }
 
-        private ActionAndFilter GetActionAndFilter(string name)
+        private Actions GetAction(string name)
         {
-            return (from tag in this.context.ActionAndFilters where tag.Name == name select tag).Single();
+            return (from tag in this.context.Actions where tag.Name == name select tag).Single();
         }
 
         public void MySubmitChanges()

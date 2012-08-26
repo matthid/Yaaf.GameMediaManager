@@ -8,12 +8,12 @@ Future - Version 1.0
 
 26.08.2012 Version 0.8
  - Redesign/Changes of the Action-Backend
-
-25.08.2012 Version 0.7.1
- - Remove old Players after link-analyse 
  ! This version requires that you delete your old database file 
    delete C:\Users\_\AppData\Local\Yaaf\WirePlugin\LocalDatabase.sdf
    and the C:\Users\_\AppData\Local\Yaaf\WirePlugin\media folder
+
+25.08.2012 Version 0.7.1
+ - Remove old Players after link-analyse 
 
 25.08.2012 Version 0.7
  - Read Enemies for Versus-matches from the esl page

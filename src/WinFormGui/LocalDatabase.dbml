@@ -10,7 +10,7 @@
     <Type Name="ActionObject">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="ActionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="NextActionObjectId" Storage="_FilterId" Type="System.Int32" DbType="Int" CanBeNull="false" />
+      <Column Name="NextActionObjectId" Storage="_FilterId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Association Name="ActionObject_ObjectParameter" Member="ObjectParameter" ThisKey="Id" OtherKey="ObjectId" Type="ObjectParameter" />
       <Association Name="ActionAndFilter_ActionObject" Member="Action" Storage="_ActionAndFilter" ThisKey="ActionId" OtherKey="Id" Type="Actions" IsForeignKey="true" />

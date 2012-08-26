@@ -84,56 +84,20 @@ module Database =
                 if a.Tag.Name = tag then
                     yield tag } @> |> Query.query |> Seq.isEmpty |> not
 
-    let getParameterForAction actionType (action:Database.ActionObject)  = 
+    let getParameterForAction (action:Database.ActionObject)  = 
         action.ObjectParameter.Load()
         let parameter = 
             action.ObjectParameter
-                |> Seq.filter (fun o -> o.Type = actionType)
                 |> Seq.sortBy (fun o -> o.ParamNum)
                 |> Seq.toArray
         parameter
             |> Seq.iteri 
                 (fun i o -> 
                     if int o.ParamNum <> i then 
-                        invalidOp "Database is broken: Invalid parameter number for type %d in actionobject %d" actionType action.Id)
+                        invalidOp "Database is broken: Invalid parameter number in actionobject %d" action.Id)
         if (parameter.Length <> int action.Action.Parameters) then
-            invalidOp "Database is broken: Invalid parameter count for type %d in actionobject %d" actionType action.Id
+            invalidOp "Database is broken: Invalid parameter count in actionobject %d" action.Id
         parameter 
-
-    let rec getFilter (action:Database.ActionObject) = 
-        let parameter = getParameterForAction 1uy action
-        match action.Filter.Name with
-        | "Merge" ->
-            (fun (m:Database.Matchmedia) ->
-                getFilter parameter.[0].ActionObject m &&
-                getFilter parameter.[1].ActionObject m) 
-        | "None" ->
-            (fun (m:Database.Matchmedia) -> true)
-        | "OrFilter" ->
-            (fun (m:Database.Matchmedia) ->
-                getFilter parameter.[0].ActionObject m ||
-                getFilter parameter.[1].ActionObject m)
-        | "TypeFilter" ->
-            (fun (m:Database.Matchmedia) ->
-                m.Type = parameter.[0].Parameter)
-        | "RegexPathFilter" ->
-            (fun (m:Database.Matchmedia) ->
-                let regex = parameter.[0].Parameter
-                let r = new System.Text.RegularExpressions.Regex(regex)
-                r.IsMatch(m.Path))
-        | "RegexNameFilter" ->
-            (fun (m:Database.Matchmedia) ->
-                let regex = parameter.[0].Parameter
-                let r = new System.Text.RegularExpressions.Regex(regex)
-                r.IsMatch(m.Name))
-        | "MapNameFilter" ->
-            (fun (m:Database.Matchmedia) ->
-                m.Map = parameter.[0].Parameter)                
-        | "TagFilter" ->
-            (fun (m:Database.Matchmedia) -> 
-                let tag = parameter.[0].Parameter
-                matchmediaContainsTag m tag)
-        | _ as e -> invalidOp (sprintf "Unknown Filter: %s" e)
 
     let getIdFromLink link = 
         let uri = new System.Uri(link)
@@ -167,53 +131,102 @@ module Database =
                 (new System.Text.StringBuilder(path.Length))
         ).ToString()
 
-    let rec getAction (action:Database.ActionObject) = 
-        let parameter = getParameterForAction 2uy action
-        match action.Action.Name with
-        | "Merge" ->
-            (fun (m:Database.Matchmedia) ->
-                getAction parameter.[0].ActionObject m 
-                getAction parameter.[1].ActionObject m)
-        | "None" ->
-            (fun (m:Database.Matchmedia) -> ())
-        | "CopyMedia" ->
-            (fun (m:Database.Matchmedia) ->
-                let rawTargetPath = parameter.[0].Parameter
-                let targetPath = 
-                    System.String.Format(
-                        rawTargetPath,
-                        m.MatchSession.Startdate, 
-                        m.Created,
-                        m.Map,
-                        m.MatchSession.Game.Shortname,
-                        m.Type,
-                        m.Name,
-                        (if m.MatchSession.EslMatchLink <> null then m.MatchSession.EslMatchLink else ""),
-                        (if m.MatchSession.EslMatchLink <> null then
-                            let eslId = getIdFromLink m.MatchSession.EslMatchLink
-                            let info = Wire.InterfaceFactory.gameInterface().matchInfo(eslId)
-                            info.["name"] :?> string
-                         else "unknown"),
-                        System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
-                        System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
-                        System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
-                        Properties.Settings.Default.MatchMediaPath)
-                    |> escapeInvalidChars '_'
-                File.Copy(m.Path, targetPath))
+    let fromGenericFun<'T1, 'T2> (f:'T1 -> 'T2) = 
+        (fun (m:obj) ->
+            match m with
+            | :? 'T1 as typedObj ->
+                typedObj
+                    |> f
+                    :> obj
+            | _ -> invalidOp (sprintf "invalid typed input value, got %O expected %O" (m.GetType()) typeof<'T1>))
+    
+    let getAction (db:Database.LocalDatabaseDataContext) (action:Database.ActionObject) =
+        let rec getActionRec prevFun (action:Database.ActionObject) = 
+            let parameter = getParameterForAction action
+        
+            let fromFilterFun f = fromGenericFun (Seq.filter f)
+            let fromActionFun f = fromGenericFun (Seq.map f)
+            let actionFun = 
+                match action.Action.Name with
+                | "CopyToEslMatchmedia" ->
+                    fromGenericFun (fun (matchSession:Database.MatchSession) ->
+                        if matchSession.EslMatchLink <> null then 
+                            let gameInterface = Wire.InterfaceFactory.gameInterface()
+                            let eslId = getIdFromLink matchSession.EslMatchLink
+                            matchSession.Matchmedia
+                                |> Seq.iter (fun m ->
+                                    gameInterface.copyToMatchMedia(m.Path, eslId)
+                                        |> ignore)
+                            () :> obj
+                        else invalidOp "Can't copy to matchmedia on public match!")
+                
+                | "TypeFilter" ->
+                    let fileType = parameter.[0].Parameter
+                    fromFilterFun (fun (m:Database.Matchmedia) ->
+                        m.Type = fileType)
+                | "RegexPathFilter" ->
+                    let regex = parameter.[0].Parameter
+                    fromFilterFun (fun (m:Database.Matchmedia) ->
+                        let r = new System.Text.RegularExpressions.Regex(regex)
+                        r.IsMatch(m.Path))
+                | "RegexNameFilter" ->
+                    let regex = parameter.[0].Parameter
+                    fromFilterFun (fun (m:Database.Matchmedia) ->
+                        let r = new System.Text.RegularExpressions.Regex(regex)
+                        r.IsMatch(m.Name))
+                | "MapNameFilter" ->
+                    let map = parameter.[0].Parameter
+                    fromFilterFun (fun (m:Database.Matchmedia) ->
+                        m.Map = map)                
+                | "TagFilter" ->
+                    let tag = parameter.[0].Parameter
+                    fromFilterFun (fun (m:Database.Matchmedia) -> 
+                        matchmediaContainsTag m tag)
+                | "CopyMedia" ->
+                    let rawTargetPath = parameter.[0].Parameter
+                    fromActionFun (fun (m:Database.Matchmedia) ->
+                        let targetPath = 
+                            System.String.Format(
+                                rawTargetPath,
+                                m.MatchSession.Startdate, 
+                                m.Created,
+                                m.Map,
+                                m.MatchSession.Game.Shortname,
+                                m.Type,
+                                m.Name,
+                                (if m.MatchSession.EslMatchLink <> null then m.MatchSession.EslMatchLink else ""),
+                                (if m.MatchSession.EslMatchLink <> null then
+                                    let eslId = getIdFromLink m.MatchSession.EslMatchLink
+                                    let info = Wire.InterfaceFactory.gameInterface().matchInfo(eslId)
+                                    info.["name"] :?> string
+                                    else "unknown"),
+                                System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
+                                System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+                                System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
+                                Properties.Settings.Default.MatchMediaPath)
+                            |> escapeInvalidChars '_'
+                        File.Copy(m.Path, targetPath))
 
-        | "CopyToEslMatchmedia" ->
-            (fun (m:Database.Matchmedia) ->
-                if m.MatchSession.EslMatchLink <> null then 
-                    let gameInterface = Wire.InterfaceFactory.gameInterface()
-                    let eslId = getIdFromLink m.MatchSession.EslMatchLink
-                    gameInterface.copyToMatchMedia(m.Path, eslId)
-                        |> ignore
-                else invalidOp "Can't copy to matchmedia on public match")
-        | "DeleteMedia" ->
-            (fun (m:Database.Matchmedia) ->
-                File.Delete(m.Path)
-                m.Path <- null)
-        | _ as e -> invalidOp (sprintf "Unknown Action: %s" e)
+                | "DeleteMedia" ->
+                    fromActionFun (fun (m:Database.Matchmedia) ->
+                        File.Delete(m.Path)
+                        m.Path <- null)
+                | "DeleteSession" ->
+                    fromGenericFun (fun (session:Database.MatchSession) ->
+                        db.MatchSessions.DeleteOnSubmit(session))
+                | "ExtractMatchmedia" ->
+                    fromGenericFun (fun (session:Database.MatchSession) ->
+                        session.Matchmedia :> Database.Matchmedia seq)
+                | _ as e -> invalidOp (sprintf "Unknown Action: %s" e)
+            let actionFun = 
+                (fun (m:obj) ->
+                    actionFun(prevFun(m)))
+            if action.NextActionObjectId.HasValue then
+                getActionRec actionFun action.NextActionObject
+            else
+                actionFun
+        getActionRec id action
+
     let getOrCreateItem query f = 
         let item =
             tryGetSingle query

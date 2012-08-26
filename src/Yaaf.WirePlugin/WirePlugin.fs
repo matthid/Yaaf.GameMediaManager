@@ -176,13 +176,10 @@ type ReplayWirePlugin() as x =
 
         { session with GameData = gameData }
 
-    let executeAction (context:Database.LocalDatabaseDataContext) (action:Database.ActionObject) (media:Database.Matchmedia seq) = 
-        let filter = Database.getFilter action
-        let action = Database.getAction action
+    let executeAction (context:Database.LocalDatabaseDataContext) (actionObj:Database.ActionObject) (session:Database.MatchSession) = 
+        let action = Database.getAction context actionObj
         try
-            media 
-                |> Seq.filter filter
-                |> Seq.iter action
+            action (session:>obj)
         finally
             context.SubmitChanges()
             
@@ -231,39 +228,68 @@ type ReplayWirePlugin() as x =
                 // Could be changed in the meantime
                 (session.IsEslMatch && not game.WarMatchFormSaveFiles) || (not session.IsEslMatch && not game.PublicMatchFormSaveFiles)
 
-        if (deleteData) then
-            for matchmedia in matchSession.Matchmedia do
-                if (File.Exists(matchmedia.Path)) then
-                    File.Delete(matchmedia.Path)
-
-            db.MatchSessions.DeleteOnSubmit(matchSession)
-            session.Context.MySubmitChanges()
-        else
-
-        logger.logInfo "Add Match to Database"   
-        session.Context.MySubmitChanges()
-        
-        logger.logInfo "Move Media to MediaPath"   
-        for m in matchSession.Matchmedia do
-            let dbMediaPath = Database.mediaPath m
+       
+        let doCustomAction = 
             try
-                File.Move (m.Path, dbMediaPath)
-                m.Path <- dbMediaPath
-            with :? IOException as e ->
-                logger.logErr "Could not move Matchmedia from %s to Database! (Error: %O)" m.Path e   
-        
-        logger.logInfo "Change to MediaPath in Database"  
-        session.Context.MySubmitChanges() 
+                if (deleteData) then
+                    for matchmedia in matchSession.Matchmedia do
+                        if (File.Exists(matchmedia.Path)) then
+                            File.Delete(matchmedia.Path)
 
-        // Execute automatic actions for this game
-        for action in Database.getActivatedMatchFormActions db session.IsEslMatch game do
-            try
-                logger.logInfo "Executing Action %s on game %s" action.ActionObject.Name game.Name
-                executeAction db action.ActionObject matchSession.Matchmedia
+                    db.MatchSessions.DeleteOnSubmit(matchSession)
+                    session.Context.MySubmitChanges()
+                    false
+                else
+                logger.logInfo "Add Match to Database"   
+                session.Context.MySubmitChanges()
+        
+                logger.logInfo "Move Media to MediaPath"   
+                for m in matchSession.Matchmedia do
+                    let dbMediaPath = Database.mediaPath m
+                    try
+                        File.Move (m.Path, dbMediaPath)
+                        m.Path <- dbMediaPath
+                    with :? IOException as e ->
+                        logger.logErr "Could not move Matchmedia from %s to Database! (Error: %O)" m.Path e   
+        
+                logger.logInfo "Change to MediaPath in Database"  
+                session.Context.MySubmitChanges() 
+                true
             with exn ->
-                logger.logErr "Action %s on game %s failed! Error %O" action.ActionObject.Name game.Name exn
+                logger.logCrit "Error while saving in Database: %O" exn
+                System.Windows.Forms.MessageBox.Show(
+                    "You triggered a critical bug in Yaaf.Wireplugin.\n"+
+                    " Please let me know how you did it and report it on the website (rightclick -> Report Bug or Request Feature).\n"+
+                    " Dont forget to send your logfiles (%LOCALAPPDATA%\Yaaf\WirePlugin\log\*.svclog)" + 
+                    " Dont panik! Your matchmedia is either safe on his original place or in the database folder!" + 
+                    " Error Message: " + exn.Message,
+                    "Gratulation!!!", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Exclamation) 
+                    |> ignore
+                false
 
-    do  logger.logVerb "Starting up Yaaf wire plugin"
+        if doCustomAction then
+            // Execute automatic actions for this game
+            for action in Database.getActivatedMatchFormActions db session.IsEslMatch game do
+                try
+                    logger.logInfo "Executing Action %s on game %s" action.ActionObject.Name game.Name
+                    let data = executeAction db action.ActionObject matchSession
+                    logger.logInfo "Action completed with object: %O" data
+                with exn ->
+                    logger.logErr "Action %s on game %s failed! Error %O" action.ActionObject.Name game.Name exn
+                    System.Windows.Forms.MessageBox.Show(
+                        "At least one of your automatic actions failed :(\n"+
+                        " Error Message: " + exn.Message + "\n" +
+                        " If you feel like this is a bug, report it: (rightclick -> Report Bug or Request Feature).\n"+
+                        " Dont forget to send your logfiles (%LOCALAPPDATA%\Yaaf\WirePlugin\log\*.svclog)", 
+                        "Ups!", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Warning) 
+                        |> ignore
+                
+            
+    do  logger.logVerb "Starting up Yaaf.WirePlugin (%s)" ProjectConstants.VersionString
     static do 
         Application.EnableVisualStyles()
         
@@ -308,9 +334,8 @@ type ReplayWirePlugin() as x =
     
     override x.init () =
         try 
-            logger.logVerb "Setup Icon"
+            logger.logVerb "Init Plugin" 
             x.setIcon(Resources.bluedragon)
-            logger.logVerb "Setup Events"
             gameInterface <- Some (InterfaceFactory.gameInterface())
         
             let logEvent event f = 

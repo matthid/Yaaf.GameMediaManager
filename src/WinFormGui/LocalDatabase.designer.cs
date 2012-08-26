@@ -318,7 +318,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private int _ActionId;
 		
-		private int _FilterId;
+		private System.Nullable<int> _FilterId;
 		
 		private string _Name;
 		
@@ -336,7 +336,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnIdChanged();
     partial void OnActionIdChanging(int value);
     partial void OnActionIdChanged();
-    partial void OnNextActionObjectIdChanging(int value);
+    partial void OnNextActionObjectIdChanging(System.Nullable<int> value);
     partial void OnNextActionObjectIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
@@ -395,7 +395,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FilterId", DbType="Int")]
-		public int NextActionObjectId
+		public System.Nullable<int> NextActionObjectId
 		{
 			get
 			{
