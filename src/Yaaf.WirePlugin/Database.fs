@@ -306,3 +306,22 @@ module Database =
                     s.Player.MatchSessions_Player.Remove s |> ignore
                     matchSession.MatchSessions_Player.Remove s |> ignore)
 
+    let removeSession (db:Database.LocalDatabaseDataContext) deleteFiles (matchSession:Database.MatchSession) = 
+        for matchmedia in System.Collections.Generic.List<_> matchSession.Matchmedia do
+            if deleteFiles && File.Exists matchmedia.Path then
+                File.Delete matchmedia.Path
+            matchSession.Matchmedia.Remove matchmedia |> ignore
+                        
+            for tag in System.Collections.Generic.List<_> matchmedia.Matchmedia_Tag do
+                matchmedia.Matchmedia_Tag.Remove tag |> ignore
+                tag.Tag.Matchmedia_Tag.Remove tag |> ignore
+
+        for player in System.Collections.Generic.List<_> matchSession.MatchSessions_Player do
+            matchSession.MatchSessions_Player.Remove player |> ignore
+            player.Player.MatchSessions_Player.Remove player |> ignore
+
+        for tag in System.Collections.Generic.List<_> matchSession.MatchSessions_Tag do
+            matchSession.MatchSessions_Tag.Remove tag |> ignore
+            tag.Tag.MatchSessions_Tag.Remove tag |> ignore
+                                
+        db.MatchSessions.DeleteOnSubmit(matchSession)

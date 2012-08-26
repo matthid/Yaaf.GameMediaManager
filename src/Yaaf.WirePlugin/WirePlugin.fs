@@ -232,11 +232,8 @@ type ReplayWirePlugin() as x =
         let doCustomAction = 
             try
                 if (deleteData) then
-                    for matchmedia in matchSession.Matchmedia do
-                        if (File.Exists(matchmedia.Path)) then
-                            File.Delete(matchmedia.Path)
-
-                    db.MatchSessions.DeleteOnSubmit(matchSession)
+                    // Removing the session and the files from the database
+                    Database.removeSession db true matchSession
                     session.Context.MySubmitChanges()
                     false
                 else
@@ -261,7 +258,7 @@ type ReplayWirePlugin() as x =
                     "You triggered a critical bug in Yaaf.Wireplugin.\n"+
                     " Please let me know how you did it and report it on the website (rightclick -> Report Bug or Request Feature).\n"+
                     " Dont forget to send your logfiles (%LOCALAPPDATA%\Yaaf\WirePlugin\log\*.svclog)" + 
-                    " Dont panik! Your matchmedia is either safe on his original place or in the database folder!" + 
+                    " Dont panik! Your matchmedia is either safe on his original place or in the database folder (or deleted if you clicked the delete matchmedia button)!" + 
                     " Error Message: " + exn.Message,
                     "Gratulation!!!", 
                     MessageBoxButtons.OK, 
