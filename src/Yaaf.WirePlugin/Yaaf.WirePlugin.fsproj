@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Database.fs" />
+    <Compile Include="DatabaseUpgrade.fs" />
     <Compile Include="WirePlugin.fs" />
     <None Include="Script.fsx" />
     <None Include="..\..\Readme.md">

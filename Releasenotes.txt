@@ -11,7 +11,10 @@ Future - Version 1.0
  - Add CustomTool actions for converting (implementation)
  - Allow Custom Actions to be setup via GUI
  - Matchmedia View to manage your media
- 
+
+28.08.2012 Version 0.8.3
+ - Initial Support for Database Schema upgrades 
+
 27.08.2012 Version 0.8.2
  - Read Enemies for matches from the esl page (thanks to Nicolai Wirtz (https://github.com/Jallah))
 

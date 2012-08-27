@@ -70,5 +70,17 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
                 this["DefaultEslWarAction"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.0.0.0")]
+        public string DatabaseSchemaVersion {
+            get {
+                return ((string)(this["DatabaseSchemaVersion"]));
+            }
+            set {
+                this["DatabaseSchemaVersion"] = value;
+            }
+        }
     }
 }

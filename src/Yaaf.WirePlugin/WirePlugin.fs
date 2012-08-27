@@ -335,6 +335,22 @@ type ReplayWirePlugin() as x =
             x.setIcon(Resources.bluedragon)
             gameInterface <- Some (InterfaceFactory.gameInterface())
         
+            let task = DatabaseUpgrade.getUpgradeDatabaseTask logger
+            match task with
+            | Some t ->     
+                let t = Primitives.Task<_> t
+                WaitingForm.StartTask(logger, t, "Upgrading database...")
+                match t.ErrorObj with
+                | Some error ->
+                    MessageBox.Show(
+                        "Failed to upgrade your database!\n"+
+                        "Message: " + error.Message, 
+                        "Error")
+                        |> ignore
+                    raise (InvalidOperationException("Unable to startup with possible corrupt database", error))
+                | None -> ()
+            | None -> ()
+
             let logEvent event f = 
                 let logger = logger.childTracer (event)
                 try

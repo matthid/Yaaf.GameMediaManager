@@ -14,5 +14,8 @@
     <Setting Name="DefaultEslWarAction" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-1</Value>
     </Setting>
+    <Setting Name="DatabaseSchemaVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1.0.0.0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
