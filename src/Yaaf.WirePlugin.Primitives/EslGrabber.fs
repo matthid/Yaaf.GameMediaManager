@@ -59,7 +59,10 @@ module EslGrabber =
             EslLink = link
             Team = team} }
 
-    let getMatchMembers link = async {
+    let getLinkAndNickFromNode (htmlLink:HtmlNode) = 
+        eslUrl + htmlLink.Attributes.["href"].Value, htmlLink.InnerText.Trim()
+        
+    let getVersusMatchMembers link = async {
         let! matchDocument = loadHtmlDocument link
         let playerVotes = matchDocument.GetElementbyId "votes_table"
         if (playerVotes = null) then invalidOp "Vote Table could not be found (invalid Matchlink?)"
@@ -67,9 +70,47 @@ module EslGrabber =
         let allLinks = 
             playerVotes.Descendants "a"
         let linkCount = allLinks |> Seq.length
-        return!
+        let! players =
             allLinks 
-                |> Seq.map (fun htmlLink -> eslUrl + htmlLink.Attributes.["href"].Value, htmlLink.InnerText.Trim())
+                |> Seq.map getLinkAndNickFromNode
                 |> Seq.mapi 
                     (fun i (link, nick) -> getPlayerFromLink (if i < linkCount / 2 then 1 else 2) link nick)
-                |> Async.Parallel }
+                |> Async.Parallel 
+        return players :> Player seq}
+    
+    let getTeamMembers team teamLink = async {
+        let! matchDocument = loadHtmlDocument teamLink
+        let playerNodes = matchDocument.GetElementbyId "main_content"
+        return!
+            (playerNodes.SelectNodes "./div[4]/div[5]/table/tr/td[2]/div")
+            .Descendants "a"
+            |> Seq.map getLinkAndNickFromNode
+            |> Seq.filter (fun (link, nick) -> not <| link.Contains "playercard")
+            //|> Seq.map (fun (link, node) -> link, )
+            |> Seq.map (fun (link, nick) -> getPlayerFromLink team link nick)
+            |> Async.Parallel
+        }
+        
+    let getRegularMatchMembers link = async {
+        let! matchDocument = loadHtmlDocument link
+        let teamLinkNodes = matchDocument.GetElementbyId "main_content"
+        let getTeamLink team nodeString = 
+            let teamLink = teamLinkNodes.SelectSingleNode nodeString
+            eslUrl + teamLink.Attributes.["href"].Value
+            |> getTeamMembers team
+        
+        let! teamplayers = 
+            [ getTeamLink 1 "./table/tr[3]/td[1]/table/tr[2]/td[1]/a[1]";
+              getTeamLink 2 "./table/tr[3]/td[1]/table/tr[2]/td[3]/a[1]" ]
+            |> Async.Parallel
+        return
+            teamplayers
+            |> Seq.collect (fun t -> t)
+        }
+
+    let getMatchMembers (link:string) = 
+        let fetchFun = 
+            if link.Contains "versus" then
+                getVersusMatchMembers
+            else getRegularMatchMembers
+        fetchFun link

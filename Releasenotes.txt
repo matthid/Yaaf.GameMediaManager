@@ -1,12 +1,25 @@
 
 
+Other Features
+ - Info Extraction from mediadata (players,mapname,server, ...) as plugin system
+ -> Example Plugin for sc2 replays.
+ -> Start new sessions when something differs to hard.
+ - Extract Mediafiles into new session (open a secound Match-End Window)
+
 Future - Version 1.0
- - Read Enemies for matches from the esl page
+ ! First public release with support
+ - Add CustomTool actions for converting (implementation)
  - Allow Custom Actions to be setup via GUI
- - Add CustomTool actions for converting
  - Matchmedia View to manage your media
+ 
+27.08.2012 Version 0.8.2
+ - Read Enemies for matches from the esl page (thanks to Nicolai Wirtz (https://github.com/Jallah))
+
+26.08.2012 Version 0.8.1
+ - Bugfix
 
 26.08.2012 Version 0.8
+ - Add CustomTool actions for converting (not implemented but design finished)
  - Redesign/Changes of the Action-Backend
  ! This version requires that you delete your old database file 
    delete C:\Users\_\AppData\Local\Yaaf\WirePlugin\LocalDatabase.sdf
@@ -16,7 +29,7 @@ Future - Version 1.0
  - Remove old Players after link-analyse 
 
 25.08.2012 Version 0.7
- - Read Enemies for Versus-matches from the esl page
+ - Read Enemies for Versus-matches from the esl page (thanks to Nicolai Wirtz (https://github.com/Jallah))
  - Set yourself via ManagePlayers Form
 
 23.08.2012 Version 0.6
