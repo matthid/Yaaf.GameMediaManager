@@ -17,8 +17,8 @@ Features:
 - save a short description to players
 - save additional player info to matches (skill/cheater/team)
 - link to your esl matches
-- fills your enemies for Esl-VERSUS Matches (if you provide Versus match-link)
-- automatically fills your enemies for normal Esl Matches (not implemented)
+- fills your enemies for Esl Matches (even for Versus if you provide the Versus match-link)
+- fills the Esl matchmedia upload window
 - integrated in Wire so no additional program has to be opened (besides Wire)
 - automatic actions based on tags/names/games/... (not implemented)
 
@@ -44,6 +44,9 @@ Read the Wiki:
 https://github.com/matthid/Yaaf.WirePlugin/wiki
 
 ## Contributing
+
+Read the wishlist in the releasenotes (https://github.com/matthid/Yaaf.WirePlugin/blob/master/Releasenotes.txt) if you want to get some ideas where to start.
+If you start something you can send me a mail to coordinate progress/tasks if you want (matthi.d@googlemail.com).
 
 ### There are 3 ways to contribute to the project.
 
