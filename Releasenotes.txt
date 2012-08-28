@@ -1,6 +1,7 @@
 
 Wish List
  - Matchmedia View to manage your media
+ - Associate Matchmedia with player and allow adding matchmedia from other players to database
  - Allow Custom Actions to be setup via GUI
  - Add CustomTool actions for converting (implementation)
  - Info Extraction from mediadata (players,mapname,server, ...) as plugin system
@@ -10,6 +11,13 @@ Wish List
  - Automatic Updates 
  (note: not any database update is supported. For example it is possible that you have to update to version 1.9 first before you can update to 2.0. Updatecode should consider such requirements)
  - GUI Redesign (nicer look&feel and more intuitive)
+
+28.08.2012 Version 0.8.4
+ - Fixed a race condition when MatchEnd was triggered before the window was closed
+ - Fixed a race condition when MatchEnd was triggered before the window was closed
+ - Fixed another race condition where grabbing was not finished after game closing (very unlikely)
+ - Allow starting other game sessions while another game is open (you can't do this via wire directly but it will be supported)
+
 
 28.08.2012 Version 0.8.3
  - Initial Support for Database Schema upgrades 

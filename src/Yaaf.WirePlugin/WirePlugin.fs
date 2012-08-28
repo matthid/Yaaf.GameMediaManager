@@ -36,6 +36,10 @@ type Session = {
         member x.DB = 
             x.Context.Context
 
+type GrabberProcMsg =
+    | StartGrabbing
+    | StoppedGrabbing
+    | WaitForFinish of AsyncReplyChannel<unit>
 /// The Wire Plugin implementation
 type ReplayWirePlugin() as x = 
     inherit Wire.Plugin()
@@ -82,8 +86,12 @@ type ReplayWirePlugin() as x =
         cm
 
     let mutable gameInterface = None 
-
-    let mutable session = None : Session option
+    let gameSessions = new System.Collections.Generic.Dictionary<int, Session option>()
+    let getGameSession id = 
+        match gameSessions.TryGetValue id with
+        | true, v -> v
+        | false, _ -> None
+    let setGameSession id game = gameSessions.[id] <- game
 
     let sessionMatchStarted logger matchId = 
         let localContext = Database.getContext()
@@ -93,13 +101,43 @@ type ReplayWirePlugin() as x =
             StartTime = DateTime.Now
             EslMatch = matchId }
     
+    let grabberProcessor = MailboxProcessor.Start(fun inbox ->
+        let rec loop grabbingNum (waitingList:AsyncReplyChannel<unit> list)= async {
+            let! msg = inbox.Receive()
+            match msg with
+            | GrabberProcMsg.StartGrabbing ->
+                return! loop (grabbingNum + 1) waitingList
+            | GrabberProcMsg.StoppedGrabbing ->
+                let newWaitingList = 
+                    if grabbingNum = 1 then
+                        waitingList
+                            |> List.iter (fun w -> w.Reply())
+                        []
+                    else waitingList
+                return! loop (grabbingNum - 1) newWaitingList
+            | GrabberProcMsg.WaitForFinish(replyChannel) ->
+                let newWaitingList =
+                    if grabbingNum = 0 then
+                        waitingList
+                            |> List.iter (fun w -> w.Reply())
+                        replyChannel.Reply()
+                        []
+                    else replyChannel :: waitingList
+                return! loop grabbingNum newWaitingList
+            }
+        loop 0 [])
+            
     let getGrabAction db matchSession link = 
         async  {
             try
-                let! players = EslGrabber.getMatchMembers link
-                Database.fillPlayers db matchSession players
-            with exn ->
-                logger.logErr "Could not grab esl-infos: %O" exn        
+                try
+                    grabberProcessor.Post GrabberProcMsg.StartGrabbing
+                    let! players = EslGrabber.getMatchMembers link
+                    Database.fillPlayers db matchSession players
+                with exn ->
+                    logger.logErr "Could not grab esl-infos: %O" exn    
+            finally
+                grabberProcessor.Post GrabberProcMsg.StoppedGrabbing    
             return ()
         }
 
@@ -211,7 +249,13 @@ type ReplayWirePlugin() as x =
                         Type = Path.GetExtension m,
                         Path = m))
             |> Seq.iter (fun s -> matchSession.Matchmedia.Add(s))
-
+        let waitGrabbing () = 
+            let finishTask = 
+                grabberProcessor.PostAndAsyncReply(fun channel -> GrabberProcMsg.WaitForFinish(channel))
+            let task = Primitives.Task<_> finishTask
+            WaitingForm.StartTask(logger, task, "Waiting for Grabbing Players...")
+        
+        waitGrabbing()
         let deleteData =
             if (session.IsEslMatch && game.EnableWarMatchForm) || (not session.IsEslMatch && game.EnableMatchForm) then
                 let formSession = 
@@ -228,7 +272,6 @@ type ReplayWirePlugin() as x =
                 // Could be changed in the meantime
                 (session.IsEslMatch && not game.WarMatchFormSaveFiles) || (not session.IsEslMatch && not game.PublicMatchFormSaveFiles)
 
-       
         let doCustomAction = 
             try
                 if (deleteData) then
@@ -365,40 +408,56 @@ type ReplayWirePlugin() as x =
                 with exn ->
                     logger.logErr "Error: %O" exn
 
+            let formatGameData (data:System.Collections.Generic.Dictionary<_,_>) =
+                let stringJoin sep strings =
+                    System.String.Join(sep, strings |> Seq.toArray)
+                let s = 
+                    data
+                    |> Seq.map (fun k -> k.Key, k.Value)
+                    |> Seq.map (fun (k,v) -> sprintf "\t[%s, %O]" k v)
+                    |> stringJoin "; \n"
+                sprintf "[ \n%s ]" s
+
             // Match started (before Game started and only with wire)
             x.GameInterface.add_MatchStarted
                 (fun matchId matchMediaPath -> 
                     logEvent ("MatchStart" + string matchId) (fun logger ->
                         Settings.Default.MatchMediaPath <- matchMediaPath
                         Settings.Default.Save()
-                        match session with
+                        let data = x.GameInterface.matchInfo matchId
+                        logger.logInfo 
+                            "Starting Match with data: %s" (data |> formatGameData)
+                        let gameId = data.["gameId"] :?> int
+                        match getGameSession gameId with
                         | Some (s) -> 
                             failwith "a previous session was not closed properly!"
                         | None ->
-                            session <-
-                                Some (sessionMatchStarted logger (Some matchId))))
+                            let session = Some (sessionMatchStarted logger (Some matchId))
+                            setGameSession gameId session))
 
             // Game started (with or without wire)
             x.GameInterface.add_GameStarted
                 (fun gameId gamePath -> 
                     logEvent ("GameStart" + string gameId) (fun logger ->
                         let currS = 
-                            match session with
+                            match getGameSession gameId with
                             | Some (s) -> s // Use this session as it was created in MatchStart
                             | None -> sessionMatchStarted logger None
-                        session <-
-                            sessionGameStarted logger currS gameId gamePath |> Some))
+                        
+                        sessionGameStarted logger currS gameId gamePath 
+                        |> Some
+                        |> setGameSession gameId))
 
             // Game stopped (before Match ended and always)
             // On real matches we have time until Anticheat has finished (parallel) for copying our matchmedia
             x.GameInterface.add_GameStopped
                 (fun gameId -> 
                     logEvent ("GameEnd" + string gameId) (fun logger ->
-                        match session with
+                        match getGameSession gameId with
                         | Some (s) -> 
                             // Use this session as it was created in MatchStart
+                            setGameSession gameId None
                             sessionEnd logger s
-                            session <- None
                         | None -> 
                             failwith "No session found on GameEnd!"))
 
@@ -407,10 +466,15 @@ type ReplayWirePlugin() as x =
             x.GameInterface.add_MatchEnded
                 (fun matchId -> 
                     logEvent ("MatchEnd" + string matchId) (fun logger ->
-                        match session with
+                        let data = x.GameInterface.matchInfo matchId
+                        logger.logInfo 
+                            "Ending match session with data: %s" (data |> formatGameData)
+                             
+                        let gameId = data.["gameId"] :?> int
+                        match getGameSession gameId with
                         | Some (s) -> 
+                            setGameSession gameId None
                             sessionEnd logger s
-                            session <- None
                             failwith "Session not already closed on MatchEnd!"
                         | None -> ()))
         with exn ->
