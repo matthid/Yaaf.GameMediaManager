@@ -12,8 +12,11 @@ Wish List
  (note: not any database update is supported. For example it is possible that you have to update to version 1.9 first before you can update to 2.0. Updatecode should consider such requirements)
  - GUI Redesign (nicer look&feel and more intuitive)
 
+30.08.2012 Version 0.8.5
+ - Fixed a bug while adding Matchmedia
+ - Fixed demo recognition on overwriting demos
+
 28.08.2012 Version 0.8.4
- - Fixed a race condition when MatchEnd was triggered before the window was closed
  - Fixed a race condition when MatchEnd was triggered before the window was closed
  - Fixed another race condition where grabbing was not finished after game closing (very unlikely)
  - Allow starting other game sessions while another game is open (you can't do this via wire directly but it will be supported)

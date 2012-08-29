@@ -49,11 +49,14 @@ type RecursiveFileSystemWatcher(path, filter) as x =
     member x.MyOnError e = x.OnError e
     member x.MyOnRenamed e = x.OnRenamed e
 
+/// A found media: Number of this type, Created Date, path
+type FoundMedia = int * System.DateTime * System.String
+
 /// This class provides observation functionality which can used in subclasses
 [<AbstractClass>]
 type MatchmediaWatcher(logger : ITracer) =
     let notifyEvent = new Event<unit>()
-    let foundMedia = new System.Collections.Generic.List<int * System.DateTime * System.String>()
+    let foundMedia = new System.Collections.Generic.Dictionary<string, FoundMedia>()
     let watcher = new System.Collections.Generic.List<FileSystemWatcher>()
     let mutable started = false
 
@@ -62,21 +65,24 @@ type MatchmediaWatcher(logger : ITracer) =
 
     member x.NotifyRecordMissing () = notifyEvent.Trigger()
 
-    member x.FoundMedia with get() = new System.Collections.Generic.List<int * System.DateTime * System.String>(foundMedia)
+    member x.FoundMedia with get() = new System.Collections.Generic.List<FoundMedia>(foundMedia.Values)
     member x.BasicWatchFolder path filter notify = 
         let localNr = ref 0
         let w = new RecursiveFileSystemWatcher(path, filter)
         w.Error
-            |> Event.add (fun e -> logger.logErr "Error in Watcher: %O" (e.GetException()))
-        w.Created
             |> Event.add 
                 (fun e -> 
-                    logger.logVerb "Found Matchmedia: %s" e.FullPath
-                    foundMedia.Add(!localNr, System.DateTime.Now, e.FullPath)
-                    localNr := !localNr + 1
-                    x.FileChanged(e.FullPath))
+                    logger.logErr "Error in Watcher: %O" (e.GetException()))
+        let addFile (e:FileSystemEventArgs) = 
+            if not <| foundMedia.ContainsKey e.FullPath then
+                logger.logVerb "Found Matchmedia: %s" e.FullPath
+                foundMedia.Add(e.FullPath, (!localNr, System.DateTime.Now, e.FullPath))
+                localNr := !localNr + 1
+            x.FileChanged(e.FullPath)
+        w.Created
+            |> Event.add addFile
         w.Changed
-            |> Event.add (fun e -> x.FileChanged(e.FullPath))
+            |> Event.add addFile
         watcher.Add(w)
 
     member x.StartGameWatching () = 
