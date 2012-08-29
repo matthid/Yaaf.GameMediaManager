@@ -179,7 +179,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                 var res = fod.ShowDialog();
                 if (res == DialogResult.OK)
                 {
-                    AddMatchMedia(fod.SafeFileName);
+                    AddMatchMedia(fod.FileName);
                 }
             }
             catch (Exception ex)
