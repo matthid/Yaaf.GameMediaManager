@@ -11,6 +11,9 @@ Wish List
  - Automatic Updates 
  (note: not any database update is supported. For example it is possible that you have to update to version 1.9 first before you can update to 2.0. Updatecode should consider such requirements)
  - GUI Redesign (nicer look&feel and more intuitive)
+ 
+09.09.2012 Version 0.8.6
+ - adding Matchmedia is now finally possible
 
 30.08.2012 Version 0.8.5
  - Fixed a bug while adding Matchmedia

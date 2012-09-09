@@ -99,7 +99,8 @@ namespace Yaaf.WirePlugin.WinFormGui
                 {
                     i++;
                     var row = matchmediaDataGridView.Rows[i];
-                    var media_tags = row.Cells["Tags"].Value.ToString().Split(',');
+                    var mytags = row.Cells["Tags"].Value;
+                    var media_tags = (mytags == null ? "" : mytags.ToString()).Split(',');
                     foreach (var tag in media_tags)
                     {
                         if (!(from assoc in file.Matchmedia_Tag
@@ -192,14 +193,13 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void AddMatchMedia(string safeFileName)
         {
-            var media = new Database.Matchmedia();
+            var media = (Database.Matchmedia)matchmediaBindingSource.AddNew();
             media.Path = safeFileName;
             media.Map = Yaaf.WirePlugin.MediaAnalyser.analyseMedia(safeFileName).Map;
             media.Name = Path.GetFileNameWithoutExtension(safeFileName);
             media.Created = DateTime.Now;
             media.Type = Path.GetExtension(safeFileName);
             media.MatchSession = this.session;
-            matchmediaBindingSource.Add(media);
         }
 
         private void managePlayersButton_Click(object sender, EventArgs e)
