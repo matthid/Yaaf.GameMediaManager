@@ -214,7 +214,7 @@ type ReplayWirePlugin() as x =
 
         { session with GameData = gameData }
 
-    let executeAction (context:Database.LocalDatabaseDataContext) (actionObj:Database.ActionObject) (session:Database.MatchSession) = 
+    let executeAction (context:Database.LocalDataContext) (actionObj:Database.ActionObject) (session:Database.MatchSession) = 
         let action = Database.getAction context actionObj
         try
             action (session:>obj)
@@ -332,18 +332,19 @@ type ReplayWirePlugin() as x =
     do  logger.logVerb "Starting up Yaaf.WirePlugin (%s)" ProjectConstants.VersionString
     static do 
         Application.EnableVisualStyles()
-        
-        if Settings.Default.upgradeSettings then
+
+        Settings.Default.SetProjectDefaults()        
+        if Version(Settings.Default.SettingsVersion) < ProjectConstants.ProjectVersion then
             Settings.Default.Upgrade()
-            Settings.Default.upgradeSettings <- false
-            Settings.Default.Save()
+            Settings.Default.SettingsVersion <- ProjectConstants.VersionString
         
         if System.String.IsNullOrEmpty Settings.Default.MatchMediaPath then
             Settings.Default.MatchMediaPath <-
                 Path.Combine(
                     System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
                     "ESL Match Media")
-            Settings.Default.Save()
+
+        Settings.Default.Save()
 
         #if DEBUG
         let dir = Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly().Location)

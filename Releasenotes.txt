@@ -15,6 +15,10 @@ next Version 0.9
  - Associate Matchmedia with player and allow adding matchmedia from other players to database
  - Fetch more info (EslId/Nick) for current player
  - removed "Edit Players" functionality (no need anymore)
+ 
+10.09.2012 Version 0.8.7.2
+ - small fix to allow upgrade to 0.9
+ - must be installed before upgrading to 0.9
 
 09.09.2012 Version 0.8.6
  - adding Matchmedia is now finally possible

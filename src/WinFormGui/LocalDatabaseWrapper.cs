@@ -23,7 +23,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private static readonly Logging.LoggingInterfaces.ITracer logger;
 
-        private readonly LocalDatabaseDataContext context;
+        private readonly LocalDataContext context;
 
         static LocalDatabaseWrapper()
         {
@@ -31,12 +31,12 @@ namespace Yaaf.WirePlugin.WinFormGui
             logger = Logging.DefaultTracer(loggerSource, "Initialization");
         }
 
-        public LocalDatabaseWrapper(LocalDatabaseDataContext context)
+        public LocalDatabaseWrapper(LocalDataContext context)
         {
             this.context = context;
         }
 
-        public LocalDatabaseDataContext Context
+        public LocalDataContext Context
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                     return t;
                 }
 
-                var newContext = new LocalDatabaseDataContext(context.Connection);
+                var newContext = new LocalDataContext(context.Connection);
                 t = new Tag();
                 t.Name = tagString;
                 newContext.Tags.InsertOnSubmit(t);
@@ -90,7 +90,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         public LocalDatabaseWrapper Copy()
         {
-            return new LocalDatabaseWrapper(new LocalDatabaseDataContext(context.Connection));
+            return new LocalDatabaseWrapper(new LocalDataContext(context.Connection));
         }
 
         public ActionObject GetMoveToMatchmediaActionObject()

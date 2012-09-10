@@ -5,7 +5,7 @@
 // Created: 2012/08/26 20:57
 // ----------------------------------------------------------------------------
 
-namespace Yaaf.WirePlugin.WinFormGui.Database
+namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 {
     using System;
 
@@ -52,7 +52,4 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     {
     }
 
-    partial class LocalDataContext
-    {
-    }
 }

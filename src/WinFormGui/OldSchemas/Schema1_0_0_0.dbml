@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Database Name="D:\projects\aktuell\wireyaafcssplugin\yaaf\src\WinFormGui\LocalDatabase.sdf" EntityNamespace="Yaaf.WirePlugin.WinFormGui.Database" ContextNamespace="Yaaf.WirePlugin.WinFormGui.Database" Class="LocalDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="D:\projects\aktuell\wireyaafcssplugin\yaaf\src\WinFormGui\LocalDatabase.sdf" EntityNamespace="Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_0_0_0" ContextNamespace="Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_0_0_0" Class="LocalDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="Actions">
     <Type Name="Actions">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />

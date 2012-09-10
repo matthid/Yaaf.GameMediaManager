@@ -97,7 +97,24 @@
     <Compile Include="MatchSessionEnd.Designer.cs">
       <DependentUpon>MatchSessionEnd.cs</DependentUpon>
     </Compile>
+    <Compile Include="OldSchemas\Schema1_1_0_0.cs">
+      <DependentUpon>Schema1_1_0_0.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="OldSchemas\Schema1_1_0_0.designer.cs">
+      <DependentUpon>Schema1_1_0_0.dbml</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="OldSchemas\Schema1_0_0_0.cs">
+      <DependentUpon>Schema1_0_0_0.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="OldSchemas\Schema1_0_0_0.designer.cs">
+      <DependentUpon>Schema1_0_0_0.dbml</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="WaitingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -113,6 +130,17 @@
     <EmbeddedResource Include="ManagePlayers.resx">
       <DependentUpon>ManagePlayers.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="OldSchemas\Schema1_1_0_0.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>Schema1_1_0_0.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="OldSchemas\Schema1_0_0_0.dbml.layout">
+      <DependentUpon>Schema1_0_0_0.dbml</DependentUpon>
+    </None>
+    <None Include="OldSchemas\Schema1_1_0_0.dbml.layout">
+      <DependentUpon>Schema1_1_0_0.dbml</DependentUpon>
+    </None>
     <EmbeddedResource Include="WaitingForm.resx">
       <DependentUpon>WaitingForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -143,6 +171,11 @@
     <None Include="LocalDatabase.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>LocalDatabase.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="OldSchemas\Schema1_0_0_0.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>Schema1_0_0_0.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\DataSources\Yaaf.WirePlugin.WinFormGui.Database.Game.datasource" />

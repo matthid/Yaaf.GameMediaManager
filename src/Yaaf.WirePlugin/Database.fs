@@ -11,19 +11,24 @@ module Database =
     let pluginFolder =
             [ System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
                 "Yaaf"; "WirePlugin" ] |> pathCombine
+    
+    let dbFile addendum =
+        let dbFileName = sprintf "LocalDatabase%s.sdf" (if addendum |> System.String.IsNullOrEmpty then "" else sprintf "_%s" addendum)
+        [ pluginFolder; dbFileName ] |> pathCombine
+    let connectString dbFile = 
+        sprintf "Data Source=%s" dbFile
     let private db = 
-        let dbFileName = "LocalDatabase.sdf"
-        let dbFile =
-            [ pluginFolder; dbFileName ] |> pathCombine
-        
+        let dbFile = (dbFile "")
+        let dbFileName = Path.GetFileName dbFile
         if not <| File.Exists dbFile then
             if File.Exists dbFileName then
                 File.Copy(dbFileName, dbFile)
             else
                 invalidOp "Source DB-File could not be found"
 
-        let connectString = sprintf "Data Source=%s" dbFile
-        new Database.LocalDatabaseDataContext(connectString)
+        new Database.LocalDataContext(connectString dbFile)
+         
+        
     let private wrapper = 
         new LocalDatabaseWrapper(db)
 
@@ -40,14 +45,14 @@ module Database =
         s |> Query.query |> Seq.head
    
     /// Finds a game in database
-    let getGame (db:Database.LocalDatabaseDataContext) id = 
+    let getGame (db:Database.LocalDataContext) id = 
         tryGetSingle
             <@ seq {
                 for a in db.Games do
                     if a.Id = id then
                         yield a } @>
     
-    let findEslMatch (db:Database.LocalDatabaseDataContext) link = 
+    let findEslMatch (db:Database.LocalDataContext) link = 
         tryGetSingle
             <@ seq {
                 for m in db.MatchSessions do
@@ -72,7 +77,7 @@ module Database =
             Directory.CreateDirectory dir |> ignore
         mediaPath
 
-    let getActivatedMatchFormActions (db:Database.LocalDatabaseDataContext) isWar (game : Database.Game) = 
+    let getActivatedMatchFormActions (db:Database.LocalDataContext) isWar (game : Database.Game) = 
         <@ seq {
             for a in db.MatchFormActions do
                 if a.GameId = game.Id && (isWar && a.WarActivated || not isWar && a.PublicActivated) then
@@ -140,7 +145,7 @@ module Database =
                     :> obj
             | _ -> invalidOp (sprintf "invalid typed input value, got %O expected %O" (m.GetType()) typeof<'T1>))
     
-    let getAction (db:Database.LocalDatabaseDataContext) (action:Database.ActionObject) =
+    let getAction (db:Database.LocalDataContext) (action:Database.ActionObject) =
         let rec getActionRec prevFun (action:Database.ActionObject) = 
             let parameter = getParameterForAction action
         
@@ -234,7 +239,7 @@ module Database =
         | None -> f()
         | Some (s) -> s
 
-    let getPlayerByEslId (db:Database.LocalDatabaseDataContext) id nick = 
+    let getPlayerByEslId (db:Database.LocalDataContext) id nick = 
         let mid = System.Nullable(id)
         let myQuery = 
             <@ seq {
@@ -252,14 +257,14 @@ module Database =
             getSingle myQuery)
 
     open Wire
-    let getIdentityPlayer (db:Database.LocalDatabaseDataContext) = 
+    let getIdentityPlayer (db:Database.LocalDataContext) = 
         let session = InterfaceFactory.sessionInterface()
         let userInfo = session.user()
         let nick = userInfo.["nickname"] :?> string
         let eslId = userInfo.["id"] :?> int
         getPlayerByEslId db eslId nick
 
-    let fillPlayers (db:Database.LocalDatabaseDataContext) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
+    let fillPlayers (db:Database.LocalDataContext) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
         let addedPlayers =
             seq {
                 for p in players do
@@ -296,7 +301,7 @@ module Database =
                     s.Player.MatchSessions_Player.Remove s |> ignore
                     matchSession.MatchSessions_Player.Remove s |> ignore)
 
-    let removeSession (db:Database.LocalDatabaseDataContext) deleteFiles (matchSession:Database.MatchSession) = 
+    let removeSession (db:Database.LocalDataContext) deleteFiles (matchSession:Database.MatchSession) = 
         for matchmedia in System.Collections.Generic.List<_> matchSession.Matchmedia do
             if deleteFiles && File.Exists matchmedia.Path then
                 File.Delete matchmedia.Path

@@ -2,9 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Yaaf.WirePlugin.WinFormGui.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="upgradeSettings" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="MatchMediaPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -12,7 +9,10 @@
       <Value Profile="(Default)">-1</Value>
     </Setting>
     <Setting Name="DatabaseSchemaVersion" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1.0.0.0</Value>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SettingsVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

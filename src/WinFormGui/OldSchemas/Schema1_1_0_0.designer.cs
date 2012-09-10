@@ -9,7 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Yaaf.WirePlugin.WinFormGui.Database
+namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 {
 	using System.Data.Linq;
 	using System.Data.Linq.Mapping;
@@ -582,7 +582,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int Id
 		{
 			get
@@ -1102,6 +1102,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private System.DateTime _Created;
 		
+		private int _PlayerId;
+		
 		private EntitySet<Matchmedia_Tag> _Matchmedia_Tag;
 		
 		private EntityRef<MatchSession> _MatchSession;
@@ -1122,6 +1124,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnPathChanged();
     partial void OnCreatedChanging(System.DateTime value);
     partial void OnCreatedChanged();
+    partial void OnPlayerIdChanging(int value);
+    partial void OnPlayerIdChanged();
     #endregion
 		
 		public Matchmedia()
@@ -1260,6 +1264,26 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 					this._Created = value;
 					this.SendPropertyChanged("Created");
 					this.OnCreatedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlayerId", DbType="int NOT NULL")]
+		public int PlayerId
+		{
+			get
+			{
+				return this._PlayerId;
+			}
+			set
+			{
+				if ((this._PlayerId != value))
+				{
+					this.OnPlayerIdChanging(value);
+					this.SendPropertyChanging();
+					this._PlayerId = value;
+					this.SendPropertyChanged("PlayerId");
+					this.OnPlayerIdChanged();
 				}
 			}
 		}

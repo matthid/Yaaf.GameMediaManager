@@ -16,7 +16,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
     public partial class EditGames : Form
     {
-        private readonly LocalDatabaseDataContext context;
+        private readonly LocalDataContext context;
 
         private readonly Logging.LoggingInterfaces.ITracer logger;
 

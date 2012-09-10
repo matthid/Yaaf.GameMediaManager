@@ -25,18 +25,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool upgradeSettings {
-            get {
-                return ((bool)(this["upgradeSettings"]));
-            }
-            set {
-                this["upgradeSettings"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string MatchMediaPath {
             get {
@@ -61,13 +49,25 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1.0.0.0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string DatabaseSchemaVersion {
             get {
                 return ((string)(this["DatabaseSchemaVersion"]));
             }
             set {
                 this["DatabaseSchemaVersion"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SettingsVersion {
+            get {
+                return ((string)(this["SettingsVersion"]));
+            }
+            set {
+                this["SettingsVersion"] = value;
             }
         }
     }

@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Database Name="D:\projects\aktuell\wireyaafcssplugin\yaaf\src\WinFormGui\LocalDatabase.sdf" EntityNamespace="Yaaf.WirePlugin.WinFormGui.Database" ContextNamespace="Yaaf.WirePlugin.WinFormGui.Database" Class="LocalDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="D:\projects\aktuell\wireyaafcssplugin\yaaf\src\WinFormGui\LocalDatabase.sdf" EntityNamespace="Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0" ContextNamespace="Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0" Class="LocalDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="Actions">
     <Type Name="Actions">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -20,7 +19,7 @@
   </Table>
   <Table Name="Games">
     <Type Name="Game">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="Shortname" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
       <Column Name="EnableNotification" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
@@ -54,6 +53,7 @@
       <Column Name="Map" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Path" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Column Name="Created" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="PlayerId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Association Name="Matchmedia_Matchmedia_Tag" Member="Matchmedia_Tag" ThisKey="Id" OtherKey="MatchmediaId" Type="Matchmedia_Tag" />
       <Association Name="MatchSession_Matchmedia" Member="MatchSession" ThisKey="MatchSessionId" OtherKey="Id" Type="MatchSession" IsForeignKey="true" />
     </Type>
