@@ -1,4 +1,11 @@
-﻿namespace Yaaf.WirePlugin.WinFormGui
+﻿// ----------------------------------------------------------------------------
+// This file (LocalDatabaseWrapper.cs) is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package (Yaaf.WirePlugin).
+// Last Modified: 2012/09/10 14:08
+// Created: 2012/08/26 20:57
+// ----------------------------------------------------------------------------
+
+namespace Yaaf.WirePlugin.WinFormGui
 {
     using System;
     using System.Collections.Generic;
@@ -8,42 +15,40 @@
     using System.Linq;
 
     using Yaaf.WirePlugin.WinFormGui.Database;
+    using Yaaf.WirePlugin.WinFormGui.Properties;
 
     public class LocalDatabaseWrapper
     {
+        private static readonly TraceSource loggerSource;
+
+        private static readonly Logging.LoggingInterfaces.ITracer logger;
+
         private readonly LocalDatabaseDataContext context;
-
-        private static TraceSource loggerSource;
-
-        private static Logging.LoggingInterfaces.ITracer logger;
-
-        public LocalDatabaseWrapper(Database.LocalDatabaseDataContext context)
-        {
-            this.context = context;
-        }
 
         static LocalDatabaseWrapper()
         {
-
             loggerSource = Logging.Source("Yaaf.WirePlugin.WinFormGui.LocalDatabaseWrapper", "");
             logger = Logging.DefaultTracer(loggerSource, "Initialization");
+        }
+
+        public LocalDatabaseWrapper(LocalDatabaseDataContext context)
+        {
+            this.context = context;
         }
 
         public LocalDatabaseDataContext Context
         {
             get
             {
-                return this.context;
+                return context;
             }
         }
 
-        public Tag GetTag (string tagString)
+        public Tag GetTag(string tagString)
         {
             try
             {
-                var t = (from tag in context.Tags
-                         where tag.Name == tagString
-                         select tag).SingleOrDefault();
+                var t = (from tag in context.Tags where tag.Name == tagString select tag).SingleOrDefault();
                 if (t != null)
                 {
                     return t;
@@ -54,18 +59,19 @@
                 t.Name = tagString;
                 newContext.Tags.InsertOnSubmit(t);
                 newContext.SubmitChanges();
-                return (from tag in this.context.Tags where tag.Id == t.Id select tag).Single();
+                return (from tag in context.Tags where tag.Id == t.Id select tag).Single();
             }
             catch (Exception ex)
             {
                 logger.LogError("Could not create tag: {0}", ex);
 
                 // Maybe added by another thread
-                return (from tag in this.context.Tags where tag.Name == tagString select tag).Single();
+                return (from tag in context.Tags where tag.Name == tagString select tag).Single();
             }
         }
 
-        public void UpdateDatabase<T>(Table<T> table, IEnumerable<T> changedItems, IList<T> originalItems) where T : class
+        public void UpdateDatabase<T>(Table<T> table, IEnumerable<T> changedItems, IList<T> originalItems)
+            where T : class
         {
             foreach (var item in changedItems)
             {
@@ -89,11 +95,11 @@
 
         public ActionObject GetMoveToMatchmediaActionObject()
         {
-            bool wasNotSet = false;
-            if (Properties.Settings.Default.DefaultEslWarAction == -1)
+            var wasNotSet = false;
+            if (Settings.Default.DefaultEslWarAction == -1)
             {
                 wasNotSet = true;
-                var contextCopy = this.Copy();
+                var contextCopy = Copy();
                 var copyAction = contextCopy.GetAction("CopyToEslMatchmedia");
 
                 var obj = new ActionObject();
@@ -102,32 +108,33 @@
 
                 contextCopy.Context.ActionObjects.InsertOnSubmit(obj);
                 contextCopy.Context.SubmitChanges();
-                Properties.Settings.Default.DefaultEslWarAction = obj.Id;
-                Properties.Settings.Default.Save();
+                Settings.Default.DefaultEslWarAction = obj.Id;
+                Settings.Default.Save();
             }
 
-            var id = Properties.Settings.Default.DefaultEslWarAction;
-            var t = (from tag in this.context.ActionObjects where tag.Id == id select tag);
-            try 
-	        {	        
-		        return t.Single();
-	        }
-	        catch (InvalidOperationException e)
-	        {
-	            if (!wasNotSet)
+            var id = Settings.Default.DefaultEslWarAction;
+            var t = (from tag in context.ActionObjects where tag.Id == id select tag);
+            try
+            {
+                return t.Single();
+            }
+            catch (InvalidOperationException e)
+            {
+                if (!wasNotSet)
                 {
-                    logger.LogError("Could not find DefaultActionObject_CopyToEslMatchMedia object trying to reset (Error: {0}", e);
-                    Properties.Settings.Default.DefaultEslWarAction = -1;
-                    return this.GetMoveToMatchmediaActionObject();
+                    logger.LogError(
+                        "Could not find DefaultActionObject_CopyToEslMatchMedia object trying to reset (Error: {0}", e);
+                    Settings.Default.DefaultEslWarAction = -1;
+                    return GetMoveToMatchmediaActionObject();
                 }
-	            
+
                 throw;
-	        }
+            }
         }
 
         private Actions GetAction(string name)
         {
-            return (from tag in this.context.Actions where tag.Name == name select tag).Single();
+            return (from tag in context.Actions where tag.Name == name select tag).Single();
         }
 
         public void MySubmitChanges()

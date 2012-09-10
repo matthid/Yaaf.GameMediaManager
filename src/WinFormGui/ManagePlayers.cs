@@ -1,7 +1,7 @@
 ﻿// ----------------------------------------------------------------------------
 // This file (ManagePlayers.cs) is subject to the terms and conditions defined in
 // file 'LICENSE.txt', which is part of this source code package (Yaaf.WirePlugin).
-// Last Modified: 2012/09/10 14:05
+// Last Modified: 2012/09/10 14:08
 // Created: 2012/08/26 20:57
 // ----------------------------------------------------------------------------
 

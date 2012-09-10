@@ -1,54 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿// ----------------------------------------------------------------------------
+// This file (EditGames.cs) is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package (Yaaf.WirePlugin).
+// Last Modified: 2012/09/10 14:08
+// Created: 2012/08/26 20:57
+// ----------------------------------------------------------------------------
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
-    using System.Data.Linq;
-    using System.Diagnostics;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows.Forms;
 
     using Yaaf.WirePlugin.WinFormGui.Database;
 
     public partial class EditGames : Form
     {
-        private readonly Logging.LoggingInterfaces.ITracer logger;
-
         private readonly LocalDatabaseDataContext context;
 
-        private List<Game> old;
+        private readonly Logging.LoggingInterfaces.ITracer logger;
 
-        private LocalDatabaseWrapper wrapper;
+        private readonly LocalDatabaseWrapper wrapper;
+
+        private List<Game> old;
 
         private bool saveData = false;
 
         public EditGames(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context)
         {
             this.logger = logger;
-            
+
             // this is a copy.. this way we can discard everything at the end, if we need to
-            this.wrapper = context; 
+            wrapper = context;
             this.context = wrapper.Context;
             InitializeComponent();
         }
 
-
         private void EditGames_Load(object sender, EventArgs e)
         {
-            Logging.setupLogging(logger); 
-            var games = from g in this.context.Games select g;
-            old = new System.Collections.Generic.List<Database.Game>(games);
-            gameBindingSource.DataSource = new System.Collections.Generic.List<Database.Game>(old);
+            Logging.setupLogging(logger);
+            var games = from g in context.Games select g;
+            old = new List<Game>(games);
+            gameBindingSource.DataSource = new List<Game>(old);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.saveData = true;
-            this.Close();
+            saveData = true;
+            Close();
         }
 
         private void SaveData()
@@ -56,11 +55,11 @@ namespace Yaaf.WirePlugin.WinFormGui
             try
             {
                 // Add all new, delete all deleted and update all changed games.
-                this.wrapper.UpdateDatabase(this.context.Games, this.gameBindingSource.Cast<Game>(), this.old);
-                
+                wrapper.UpdateDatabase(context.Games, gameBindingSource.Cast<Game>(), old);
+
                 // TODO: Check for invalid WatchFolder Entries (well they are not critical)
 
-                this.wrapper.MySubmitChanges();
+                wrapper.MySubmitChanges();
             }
             catch (Exception ex)
             {
@@ -71,8 +70,8 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void button2_Click(object sender, EventArgs e)
         {
-            this.saveData = false;
-            this.Close();
+            saveData = false;
+            Close();
         }
 
         private void OpenGameForm(Func<Game, Form> createForm)
@@ -87,14 +86,16 @@ namespace Yaaf.WirePlugin.WinFormGui
             {
                 //if (!old.Contains(current))
                 //{
-                    //context.Games.InsertOnSubmit(current);
-                    //context.SubmitChanges();
-                    //old.Add(current);
+                //context.Games.InsertOnSubmit(current);
+                //context.SubmitChanges();
+                //old.Add(current);
                 //}
 
                 var form = createForm(current);
                 if (form != null)
+                {
                     form.ShowDialog();
+                }
             }
             catch (Exception ex)
             {
@@ -105,23 +106,24 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void button3_Click(object sender, EventArgs e)
         {
-            this.OpenGameForm((current) => new ManageWatchFolder(logger, wrapper, current));
+            OpenGameForm((current) => new ManageWatchFolder(logger, wrapper, current));
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            this.OpenGameForm((current) =>
-                {
-                    MessageBox.Show("Not implemented");
-                    return null;
-                });
+            OpenGameForm(
+                (current) =>
+                    {
+                        MessageBox.Show("Not implemented");
+                        return null;
+                    });
         }
 
         private void EditGames_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (this.saveData)
+            if (saveData)
             {
-                this.SaveData();
+                SaveData();
             }
         }
 
@@ -130,7 +132,10 @@ namespace Yaaf.WirePlugin.WinFormGui
             try
             {
                 var item = (Game)e.Row.DataBoundItem;
-                if (item == null) item = (Game)gameBindingSource.Current;
+                if (item == null)
+                {
+                    item = (Game)gameBindingSource.Current;
+                }
                 // Setup default action for this game (add to matchmedia path)
                 var copyAction = wrapper.GetMoveToMatchmediaActionObject();
 

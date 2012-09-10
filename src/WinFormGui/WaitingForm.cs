@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿// ----------------------------------------------------------------------------
+// This file (WaitingForm.cs) is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package (Yaaf.WirePlugin).
+// Last Modified: 2012/09/10 14:08
+// Created: 2012/08/26 20:57
+// ----------------------------------------------------------------------------
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
+    using System;
+    using System.Windows.Forms;
+
     using Microsoft.FSharp.Core;
 
     using Yaaf.WirePlugin.Primitives;
@@ -19,13 +20,12 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private readonly Task<Unit> task;
 
-
         public WaitingForm(Logging.LoggingInterfaces.ITracer logger, Task<Unit> task, string title)
         {
             this.logger = logger;
             this.task = task;
             InitializeComponent();
-            this.Text = title;
+            Text = title;
         }
 
         public static void StartTask(Logging.LoggingInterfaces.ITracer logger, Task<Unit> task, string title)
@@ -36,22 +36,21 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void WaitingForm_Load(object sender, EventArgs e)
         {
-            task.Error += this.task_Error;
-            task.Finished += this.task_Finished;
+            task.Error += task_Error;
+            task.Finished += task_Finished;
             task.Start();
         }
 
-
-        void task_Finished(object sender, Unit args)
+        private void task_Finished(object sender, Unit args)
         {
             logger.LogInformation("Task finished!");
-            this.Invoke(new Action(this.Close));
+            Invoke(new Action(Close));
         }
 
-        void task_Error(object sender, Exception args)
+        private void task_Error(object sender, Exception args)
         {
             logger.LogError("Task finished with error: {0}", args);
-            this.Invoke(new Action(this.Close));
+            Invoke(new Action(Close));
         }
     }
 }

@@ -1,30 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿// ----------------------------------------------------------------------------
+// This file (ManageMatchPlayers.cs) is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package (Yaaf.WirePlugin).
+// Last Modified: 2012/09/10 14:08
+// Created: 2012/08/26 20:57
+// ----------------------------------------------------------------------------
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
-    using System.Diagnostics;
-    using System.Globalization;
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Linq;
+    using System.Windows.Forms;
 
     using Yaaf.WirePlugin.WinFormGui.Database;
 
     public partial class ManageMatchPlayers : Form
     {
-        private readonly Logging.LoggingInterfaces.ITracer logger;
-
         private readonly LocalDatabaseWrapper context;
+
+        private readonly Logging.LoggingInterfaces.ITracer logger;
 
         private readonly MatchSession session;
 
         private List<MatchSessions_Player> old;
-        
-        public ManageMatchPlayers(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, MatchSession session)
+
+        public ManageMatchPlayers(
+            Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, MatchSession session)
         {
             this.logger = logger;
             this.context = context;
@@ -34,14 +36,14 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void ManageMatchPlayers_Load(object sender, EventArgs e)
         {
-            Logging.setupLogging(logger); 
+            Logging.setupLogging(logger);
             try
             {
                 session.MatchSessions_Player.Load();
                 old = new List<MatchSessions_Player>(session.MatchSessions_Player);
                 matchSessionsPlayerBindingSource.DataSource = new List<MatchSessions_Player>(old);
-                
-                DataTable teamSubdt = new DataTable();
+
+                var teamSubdt = new DataTable();
                 teamSubdt.Columns.Add("value", typeof(byte));
                 teamSubdt.Columns.Add("name");
                 int i;
@@ -54,7 +56,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                 teamDataGridViewTextBoxColumn.DisplayMember = "name";
                 teamDataGridViewTextBoxColumn.DataSource = teamSubdt;
 
-                DataTable skillSubdt = new DataTable();
+                var skillSubdt = new DataTable();
                 skillSubdt.Columns.Add("value", typeof(byte));
                 skillSubdt.Columns.Add("name");
                 for (i = 0; i < 11; i++)
@@ -73,10 +75,9 @@ namespace Yaaf.WirePlugin.WinFormGui
 
                     row.Cells["Tags"].Value = String.Join(
                         ",", (from assoc in player.Player.Player_Tag select assoc.Tag.Name).ToArray());
-                    row.Cells["EslPlayerId"].Value =
-                        player.Player.EslPlayerId == null
-                            ? ""
-                            : player.Player.EslPlayerId.ToString();
+                    row.Cells["EslPlayerId"].Value = player.Player.EslPlayerId == null
+                                                         ? ""
+                                                         : player.Player.EslPlayerId.ToString();
                     row.Cells["PlayerName"].Value = player.Player.Name;
                     row.Cells["PlayerId"].Value = player.Player.Id.ToString();
                     player.Player.Player_Tag.Load();
@@ -87,7 +88,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             {
                 logger.LogError("{0}", "Can't load player matchdata: " + ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.Close();
+                Close();
             }
         }
 
@@ -95,7 +96,7 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             try
             {
-                int i = -1;
+                var i = -1;
                 var toAdd = new List<MatchSessions_Player>();
                 var toRemoveFromOld = new List<MatchSessions_Player>();
                 foreach (var item in matchSessionsPlayerBindingSource.Cast<MatchSessions_Player>())
@@ -109,9 +110,11 @@ namespace Yaaf.WirePlugin.WinFormGui
                     var playerId = string.IsNullOrEmpty(playerIdString) ? -1 : int.Parse(playerIdString);
 
                     if (playerId > -1)
-                    { // Update player
+                    {
+                        // Update player
                         if (item.PlayerId != playerId)
-                        { // Find given player
+                        {
+                            // Find given player
                             var p =
                                 (from player in context.Context.Players where player.Id == playerId select player).
                                     SingleOrDefault();
@@ -126,8 +129,9 @@ namespace Yaaf.WirePlugin.WinFormGui
                         item.Player.Name = name;
                     }
                     else
-                    { // Add new Player
-                        var player = new Database.Player();
+                    {
+                        // Add new Player
+                        var player = new Player();
                         player.Name = name;
                         player.EslPlayerId = eslId;
                         item.Player = player;
@@ -137,9 +141,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                     item.Player.Player_Tag.Load();
                     foreach (var tag in tags)
                     {
-                        if (!(from assoc in item.Player.Player_Tag
-                              where assoc.Tag.Name == tag
-                              select assoc).Any())
+                        if (!(from assoc in item.Player.Player_Tag where assoc.Tag.Name == tag select assoc).Any())
                         {
                             var association = new Player_Tag();
                             association.Player = item.Player;
@@ -172,7 +174,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                     session.MatchSessions_Player.Remove(matchSessionsPlayer);
                 }
 
-                this.Close();
+                Close();
             }
             catch (Exception ex)
             {
@@ -183,7 +185,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void button2_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void matchPlayersDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -191,6 +193,5 @@ namespace Yaaf.WirePlugin.WinFormGui
             logger.LogWarning("{0}", "DataError: " + e.Exception);
             //e.ThrowException = false;
         }
-
     }
 }

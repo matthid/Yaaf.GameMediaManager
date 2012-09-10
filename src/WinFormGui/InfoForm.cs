@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿// ----------------------------------------------------------------------------
+// This file (InfoForm.cs) is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package (Yaaf.WirePlugin).
+// Last Modified: 2012/09/10 14:08
+// Created: 2012/08/20 07:49
+// ----------------------------------------------------------------------------
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
+    using System;
     using System.Diagnostics;
+    using System.Windows.Forms;
 
     using Yaaf.WirePlugin.WinFormGui.Properties;
 
@@ -28,7 +28,6 @@ namespace Yaaf.WirePlugin.WinFormGui
             TryStart("https://github.com/matthid/Yaaf.WirePlugin");
         }
 
-
         private void TryStart(string link)
         {
             try
@@ -42,18 +41,16 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
         }
 
-
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            this.TryStart("https://github.com/matthid/Yaaf.WirePlugin/downloads");
+            TryStart("https://github.com/matthid/Yaaf.WirePlugin/downloads");
         }
 
         private void InfoForm_Load(object sender, EventArgs e)
         {
             Logging.setupLogging(logger);
             linkLabel2.Text = string.Format(
-                Resources.InfoForm_InfoForm_Load_VersionString___0_,
-                ProjectConstants.ProjektVersion);
+                Resources.InfoForm_InfoForm_Load_VersionString___0_, ProjectConstants.ProjektVersion);
         }
     }
 }
