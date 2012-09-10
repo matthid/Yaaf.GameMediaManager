@@ -149,7 +149,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die edit players ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die view players ähnelt.
         /// </summary>
         public static string EditPlayers {
             get {

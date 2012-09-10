@@ -1,7 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)"
-              GeneratedClassNamespace="Yaaf.WirePlugin.WinFormGui.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Yaaf.WirePlugin.WinFormGui.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="upgradeSettings" Type="System.Boolean" Scope="User">
@@ -9,9 +7,6 @@
     </Setting>
     <Setting Name="MatchMediaPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="MyIdentity" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="DefaultEslWarAction" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-1</Value>

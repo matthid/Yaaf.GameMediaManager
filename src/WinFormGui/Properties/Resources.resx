@@ -263,9 +263,9 @@
     <value>add or edit games</value>
   </data>
   <data name="EditPlayers" xml:space="preserve">
-    <value>edit players</value>
+    <value>view players</value>
   </data>
-  <data name="ManagePlayers_setAsMeButton_Click_Please_select_a_player_">
-    <value xml:space="preserve">Please select a player!</value>
+  <data name="ManagePlayers_setAsMeButton_Click_Please_select_a_player_" xml:space="preserve">
+    <value>Please select a player!</value>
   </data>
 </root>

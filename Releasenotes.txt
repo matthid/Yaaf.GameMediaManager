@@ -1,7 +1,6 @@
 
 Wish List
  - Matchmedia View to manage your media
- - Associate Matchmedia with player and allow adding matchmedia from other players to database
  - Allow Custom Actions to be setup via GUI
  - Add CustomTool actions for converting (implementation)
  - Info Extraction from mediadata (players,mapname,server, ...) as plugin system
@@ -11,7 +10,12 @@ Wish List
  - Automatic Updates 
  (note: not any database update is supported. For example it is possible that you have to update to version 1.9 first before you can update to 2.0. Updatecode should consider such requirements)
  - GUI Redesign (nicer look&feel and more intuitive)
- 
+
+next Version 0.9
+ - Associate Matchmedia with player and allow adding matchmedia from other players to database
+ - Fetch more info (EslId/Nick) for current player
+ - removed "Edit Players" functionality (no need anymore)
+
 09.09.2012 Version 0.8.6
  - adding Matchmedia is now finally possible
  - Fixed a graphical bug in ManagePlayers

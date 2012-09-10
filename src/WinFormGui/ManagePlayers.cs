@@ -48,25 +48,13 @@ namespace Yaaf.WirePlugin.WinFormGui
             playerBindingSource.DataSource = new List<Player>(old);
             SetMe(me);
         }
-
-        private void setAsMeButton_Click(object sender, EventArgs e)
-        {
-            var player = (Player)playerBindingSource.Current;
-            if (player == null)
-            {
-                MessageBox.Show(Resources.ManagePlayers_setAsMeButton_Click_Please_select_a_player_);
-                return;
-            }
-
-            SetMe(player);
-        }
-
+        
         private void SetMe(Player player)
         {
-            var old = me;
-            if (old != null)
+            var oldPlayer = me;
+            if (oldPlayer != null)
             {
-                old.PropertyChanged -= CurrentPlayer_PropertyChanged;
+                oldPlayer.PropertyChanged -= CurrentPlayer_PropertyChanged;
             }
 
             me = player;
@@ -87,11 +75,8 @@ namespace Yaaf.WirePlugin.WinFormGui
             try
             {
                 // Add all new, delete all deleted and update all changed games.
-                wrapper.UpdateDatabase(wrapper.Context.Players, playerBindingSource.Cast<Player>(), old);
-
-                wrapper.MySubmitChanges();
-                Settings.Default.MyIdentity = me.Id;
-                Settings.Default.Save();
+                //wrapper.UpdateDatabase(wrapper.Context.Players, playerBindingSource.Cast<Player>(), old);
+                //wrapper.MySubmitChanges();
                 Close();
             }
             catch (Exception ex)

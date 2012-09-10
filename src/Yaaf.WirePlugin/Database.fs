@@ -234,24 +234,6 @@ module Database =
         | None -> f()
         | Some (s) -> s
 
-    let getIdentityPlayer (db:Database.LocalDatabaseDataContext) = 
-        let id = Properties.Settings.Default.MyIdentity
-        let myQuery id = 
-            <@ seq {
-                for a in db.Players do
-                    if a.Id = id then
-                        yield a } @>
-        getOrCreateItem (myQuery id) (fun _ ->
-            let dbCopy = wrapper.Copy().Context
-            let newIdentity = 
-                new Database.Player(
-                    Name = "Me")
-            dbCopy.Players.InsertOnSubmit(newIdentity)
-            dbCopy.SubmitChanges()
-            Properties.Settings.Default.MyIdentity <- newIdentity.Id
-            Properties.Settings.Default.Save()
-            getSingle (myQuery newIdentity.Id))
-
     let getPlayerByEslId (db:Database.LocalDatabaseDataContext) id nick = 
         let mid = System.Nullable(id)
         let myQuery = 
@@ -268,6 +250,14 @@ module Database =
             dbCopy.Players.InsertOnSubmit(newIdentity)
             dbCopy.SubmitChanges()
             getSingle myQuery)
+
+    open Wire
+    let getIdentityPlayer (db:Database.LocalDatabaseDataContext) = 
+        let session = InterfaceFactory.sessionInterface()
+        let userInfo = session.user()
+        let nick = userInfo.["nickname"] :?> string
+        let eslId = userInfo.["id"] :?> int
+        getPlayerByEslId db eslId nick
 
     let fillPlayers (db:Database.LocalDatabaseDataContext) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
         let addedPlayers =

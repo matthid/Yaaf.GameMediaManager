@@ -31,8 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManagePlayers));
             this.saveButton = new System.Windows.Forms.Button();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.setAsMeButton = new System.Windows.Forms.Button();
             this.playerDataGridView = new System.Windows.Forms.DataGridView();
             this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.eslPlayerIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -51,20 +49,6 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
-            // cancelButton
-            // 
-            resources.ApplyResources(this.cancelButton, "cancelButton");
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-            // 
-            // setAsMeButton
-            // 
-            resources.ApplyResources(this.setAsMeButton, "setAsMeButton");
-            this.setAsMeButton.Name = "setAsMeButton";
-            this.setAsMeButton.UseVisualStyleBackColor = true;
-            this.setAsMeButton.Click += new System.EventHandler(this.setAsMeButton_Click);
-            // 
             // playerDataGridView
             // 
             this.playerDataGridView.AllowUserToAddRows = false;
@@ -78,6 +62,7 @@
             this.playerDataGridView.DataSource = this.playerBindingSource;
             resources.ApplyResources(this.playerDataGridView, "playerDataGridView");
             this.playerDataGridView.Name = "playerDataGridView";
+            this.playerDataGridView.ReadOnly = true;
             // 
             // Id
             // 
@@ -93,6 +78,7 @@
             this.eslPlayerIdDataGridViewTextBoxColumn.FillWeight = 70F;
             resources.ApplyResources(this.eslPlayerIdDataGridViewTextBoxColumn, "eslPlayerIdDataGridViewTextBoxColumn");
             this.eslPlayerIdDataGridViewTextBoxColumn.Name = "eslPlayerIdDataGridViewTextBoxColumn";
+            this.eslPlayerIdDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // nameDataGridViewTextBoxColumn
             // 
@@ -100,6 +86,7 @@
             this.nameDataGridViewTextBoxColumn.FillWeight = 150F;
             resources.ApplyResources(this.nameDataGridViewTextBoxColumn, "nameDataGridViewTextBoxColumn");
             this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // playerBindingSource
             // 
@@ -122,8 +109,6 @@
             this.Controls.Add(this.meLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.playerDataGridView);
-            this.Controls.Add(this.setAsMeButton);
-            this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.saveButton);
             this.Name = "ManagePlayers";
             this.Load += new System.EventHandler(this.ManagePlayers_Load);
@@ -137,8 +122,6 @@
         #endregion
 
         private System.Windows.Forms.Button saveButton;
-        private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Button setAsMeButton;
         private System.Windows.Forms.DataGridView playerDataGridView;
         private System.Windows.Forms.BindingSource playerBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn Id;

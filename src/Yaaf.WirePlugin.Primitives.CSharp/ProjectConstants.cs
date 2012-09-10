@@ -11,7 +11,7 @@ namespace Yaaf.WirePlugin
 
     public static class ProjectConstants
     {
-        public const string VersionString = "0.8.6.0";
+        public const string VersionString = "0.8.7.0";
 
         public static readonly Version ProjektVersion = new Version(VersionString);
     }
