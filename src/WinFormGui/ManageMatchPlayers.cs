@@ -24,6 +24,7 @@ namespace Yaaf.WirePlugin.WinFormGui
         public ManageMatchPlayers(
             Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, MatchSession session)
         {
+            InitializeComponent();
             this.logger = logger;
             this.helper = 
                 new ManagePlayersHelper(
@@ -33,7 +34,6 @@ namespace Yaaf.WirePlugin.WinFormGui
                     matchSessionsPlayerBindingSource, 
                     teamDataGridViewTextBoxColumn, 
                     skillDataGridViewTextBoxColumn);
-            InitializeComponent();
         }
 
         private void ManageMatchPlayers_Load(object sender, EventArgs e)
@@ -71,7 +71,6 @@ namespace Yaaf.WirePlugin.WinFormGui
         private void matchPlayersDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             logger.LogWarning("{0}", "DataError: " + e.Exception);
-            //e.ThrowException = false;
         }
     }
 }
