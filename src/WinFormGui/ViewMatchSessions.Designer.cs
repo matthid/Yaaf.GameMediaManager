@@ -58,8 +58,8 @@
             this.matchSessionDataGridView.DataSource = this.matchSessionBindingSource;
             resources.ApplyResources(this.matchSessionDataGridView, "matchSessionDataGridView");
             this.matchSessionDataGridView.Name = "matchSessionDataGridView";
-            this.matchSessionDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.matchSessionDataGridView_CellContentClick);
-            this.matchSessionDataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentDoubleClick);
+            this.matchSessionDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.matchSessionDataGridView_CellClick);
+            this.matchSessionDataGridView.DoubleClick += new System.EventHandler(this.matchSessionDataGridView_DoubleClick);
             // 
             // idDataGridViewTextBoxColumn
             // 
@@ -72,6 +72,7 @@
             // gameIdDataGridViewTextBoxColumn
             // 
             this.gameIdDataGridViewTextBoxColumn.DataPropertyName = "GameId";
+            this.gameIdDataGridViewTextBoxColumn.FillWeight = 60F;
             resources.ApplyResources(this.gameIdDataGridViewTextBoxColumn, "gameIdDataGridViewTextBoxColumn");
             this.gameIdDataGridViewTextBoxColumn.Name = "gameIdDataGridViewTextBoxColumn";
             this.gameIdDataGridViewTextBoxColumn.ReadOnly = true;
@@ -91,6 +92,7 @@
             // eslMatchLinkDataGridViewTextBoxColumn
             // 
             this.eslMatchLinkDataGridViewTextBoxColumn.DataPropertyName = "EslMatchLink";
+            this.eslMatchLinkDataGridViewTextBoxColumn.FillWeight = 250F;
             resources.ApplyResources(this.eslMatchLinkDataGridViewTextBoxColumn, "eslMatchLinkDataGridViewTextBoxColumn");
             this.eslMatchLinkDataGridViewTextBoxColumn.Name = "eslMatchLinkDataGridViewTextBoxColumn";
             // 
@@ -138,14 +140,14 @@
         #endregion
 
         private System.Windows.Forms.DataGridView matchSessionDataGridView;
+        private System.Windows.Forms.BindingSource matchSessionBindingSource;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn gameIdDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn startdateDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn durationDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn eslMatchLinkDataGridViewTextBoxColumn;
-        private System.Windows.Forms.BindingSource matchSessionBindingSource;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button saveButton;
-        private System.Windows.Forms.Button cancelButton;
     }
 }

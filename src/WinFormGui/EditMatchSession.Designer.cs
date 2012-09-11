@@ -30,13 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.matchPlayersDataGridView = new System.Windows.Forms.DataGridView();
-            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PlayerNameDataGridViewTextBox = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EslPlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.teamDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.skillDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.cheatingDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.matchSessionsPlayerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.playerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
@@ -51,6 +44,14 @@
             this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.PlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EslPlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tags = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.teamDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.skillDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.cheatingDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.matchPlayersDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.matchSessionsPlayerBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playerBindingSource)).BeginInit();
@@ -65,9 +66,10 @@
             this.matchPlayersDataGridView.AutoGenerateColumns = false;
             this.matchPlayersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.matchPlayersDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Id,
-            this.PlayerNameDataGridViewTextBox,
+            this.PlayerId,
+            this.PlayerName,
             this.EslPlayerId,
+            this.Tags,
             this.descriptionDataGridViewTextBoxColumn,
             this.teamDataGridViewTextBoxColumn,
             this.skillDataGridViewTextBoxColumn,
@@ -75,65 +77,9 @@
             this.matchPlayersDataGridView.DataSource = this.matchSessionsPlayerBindingSource;
             this.matchPlayersDataGridView.Location = new System.Drawing.Point(12, 37);
             this.matchPlayersDataGridView.Name = "matchPlayersDataGridView";
-            this.matchPlayersDataGridView.Size = new System.Drawing.Size(657, 196);
+            this.matchPlayersDataGridView.Size = new System.Drawing.Size(724, 196);
             this.matchPlayersDataGridView.TabIndex = 0;
-            // 
-            // Id
-            // 
-            this.Id.FillWeight = 50F;
-            this.Id.HeaderText = "Id";
-            this.Id.Name = "Id";
-            this.Id.ReadOnly = true;
-            this.Id.Width = 50;
-            // 
-            // PlayerNameDataGridViewTextBox
-            // 
-            this.PlayerNameDataGridViewTextBox.HeaderText = "Name";
-            this.PlayerNameDataGridViewTextBox.Name = "PlayerNameDataGridViewTextBox";
-            // 
-            // EslPlayerId
-            // 
-            this.EslPlayerId.FillWeight = 75F;
-            this.EslPlayerId.HeaderText = "EslPlayerId";
-            this.EslPlayerId.Name = "EslPlayerId";
-            this.EslPlayerId.ReadOnly = true;
-            this.EslPlayerId.Width = 70;
-            // 
-            // descriptionDataGridViewTextBoxColumn
-            // 
-            this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Description";
-            this.descriptionDataGridViewTextBoxColumn.FillWeight = 200F;
-            this.descriptionDataGridViewTextBoxColumn.HeaderText = "Description";
-            this.descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
-            this.descriptionDataGridViewTextBoxColumn.Width = 200;
-            // 
-            // teamDataGridViewTextBoxColumn
-            // 
-            this.teamDataGridViewTextBoxColumn.DataPropertyName = "Team";
-            this.teamDataGridViewTextBoxColumn.FillWeight = 50F;
-            this.teamDataGridViewTextBoxColumn.HeaderText = "Team";
-            this.teamDataGridViewTextBoxColumn.Name = "teamDataGridViewTextBoxColumn";
-            this.teamDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.teamDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.teamDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // skillDataGridViewTextBoxColumn
-            // 
-            this.skillDataGridViewTextBoxColumn.DataPropertyName = "Skill";
-            this.skillDataGridViewTextBoxColumn.FillWeight = 50F;
-            this.skillDataGridViewTextBoxColumn.HeaderText = "Skill";
-            this.skillDataGridViewTextBoxColumn.Name = "skillDataGridViewTextBoxColumn";
-            this.skillDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.skillDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.skillDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // cheatingDataGridViewCheckBoxColumn
-            // 
-            this.cheatingDataGridViewCheckBoxColumn.DataPropertyName = "Cheating";
-            this.cheatingDataGridViewCheckBoxColumn.FillWeight = 50F;
-            this.cheatingDataGridViewCheckBoxColumn.HeaderText = "Cheating";
-            this.cheatingDataGridViewCheckBoxColumn.Name = "cheatingDataGridViewCheckBoxColumn";
-            this.cheatingDataGridViewCheckBoxColumn.Width = 50;
+            this.matchPlayersDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.matchPlayersDataGridView_DataError);
             // 
             // matchSessionsPlayerBindingSource
             // 
@@ -198,7 +144,7 @@
             this.copyFileToolStripMenuItem,
             this.showInExplorerToolStripMenuItem});
             this.matchmediaContextMenuStrip.Name = "contextMenuStrip1";
-            this.matchmediaContextMenuStrip.Size = new System.Drawing.Size(162, 70);
+            this.matchmediaContextMenuStrip.Size = new System.Drawing.Size(162, 48);
             // 
             // copyFileToolStripMenuItem
             // 
@@ -238,11 +184,73 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
+            // PlayerId
+            // 
+            this.PlayerId.FillWeight = 50F;
+            this.PlayerId.HeaderText = "Id";
+            this.PlayerId.Name = "PlayerId";
+            this.PlayerId.ReadOnly = true;
+            this.PlayerId.Width = 50;
+            // 
+            // PlayerName
+            // 
+            this.PlayerName.HeaderText = "Name";
+            this.PlayerName.Name = "PlayerName";
+            // 
+            // EslPlayerId
+            // 
+            this.EslPlayerId.FillWeight = 75F;
+            this.EslPlayerId.HeaderText = "EslPlayerId";
+            this.EslPlayerId.Name = "EslPlayerId";
+            this.EslPlayerId.ReadOnly = true;
+            this.EslPlayerId.Width = 70;
+            // 
+            // Tags
+            // 
+            this.Tags.HeaderText = "Tags";
+            this.Tags.Name = "Tags";
+            // 
+            // descriptionDataGridViewTextBoxColumn
+            // 
+            this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Description";
+            this.descriptionDataGridViewTextBoxColumn.FillWeight = 200F;
+            this.descriptionDataGridViewTextBoxColumn.HeaderText = "Description";
+            this.descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
+            this.descriptionDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // teamDataGridViewTextBoxColumn
+            // 
+            this.teamDataGridViewTextBoxColumn.DataPropertyName = "Team";
+            this.teamDataGridViewTextBoxColumn.FillWeight = 50F;
+            this.teamDataGridViewTextBoxColumn.HeaderText = "Team";
+            this.teamDataGridViewTextBoxColumn.Name = "teamDataGridViewTextBoxColumn";
+            this.teamDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.teamDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.teamDataGridViewTextBoxColumn.Width = 50;
+            // 
+            // skillDataGridViewTextBoxColumn
+            // 
+            this.skillDataGridViewTextBoxColumn.DataPropertyName = "Skill";
+            this.skillDataGridViewTextBoxColumn.FillWeight = 50F;
+            this.skillDataGridViewTextBoxColumn.HeaderText = "Skill";
+            this.skillDataGridViewTextBoxColumn.Name = "skillDataGridViewTextBoxColumn";
+            this.skillDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.skillDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.skillDataGridViewTextBoxColumn.Width = 50;
+            // 
+            // cheatingDataGridViewCheckBoxColumn
+            // 
+            this.cheatingDataGridViewCheckBoxColumn.DataPropertyName = "Cheating";
+            this.cheatingDataGridViewCheckBoxColumn.FillWeight = 50F;
+            this.cheatingDataGridViewCheckBoxColumn.HeaderText = "Cheating";
+            this.cheatingDataGridViewCheckBoxColumn.Name = "cheatingDataGridViewCheckBoxColumn";
+            this.cheatingDataGridViewCheckBoxColumn.Width = 50;
+            // 
             // EditMatchSession
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(714, 596);
+            this.ClientSize = new System.Drawing.Size(748, 596);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.dataGridView2);
@@ -271,18 +279,19 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn pathDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn createdDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource matchmediaBindingSource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Id;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PlayerNameDataGridViewTextBox;
-        private System.Windows.Forms.DataGridViewTextBoxColumn EslPlayerId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewComboBoxColumn teamDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewComboBoxColumn skillDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn cheatingDataGridViewCheckBoxColumn;
         private System.Windows.Forms.BindingSource matchSessionsPlayerBindingSource;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.ContextMenuStrip matchmediaContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem copyFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showInExplorerToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PlayerId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PlayerName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn EslPlayerId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tags;
+        private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewComboBoxColumn teamDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewComboBoxColumn skillDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn cheatingDataGridViewCheckBoxColumn;
     }
 }

@@ -30,6 +30,12 @@ namespace Yaaf.WirePlugin.WinFormGui
                     matchSessionsPlayerBindingSource,
                     teamDataGridViewTextBoxColumn,
                     skillDataGridViewTextBoxColumn);
+            matchSessionsPlayerBindingSource.CurrentItemChanged += new EventHandler(matchSessionsPlayerBindingSource_CurrentItemChanged);
+        }
+
+        void matchSessionsPlayerBindingSource_CurrentItemChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void EditMatchSession_Load(object sender, EventArgs e)
@@ -86,6 +92,11 @@ namespace Yaaf.WirePlugin.WinFormGui
                 MessageBox.Show("Please select a File first!");
                 return;
             }
+        }
+
+        private void matchPlayersDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            logger.LogWarning("{0}", "DataError: " + e.Exception);
         }
 
     }

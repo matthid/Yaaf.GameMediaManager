@@ -117,6 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="idDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="idDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>50</value>
+  </data>
+  <data name="gameIdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>GameId</value>
+  </data>
+  <data name="gameIdDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>60</value>
+  </data>
+  <data name="startdateDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Startdate</value>
+  </data>
+  <data name="durationDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="eslMatchLinkDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>EslMatchLink</value>
+  </data>
+  <data name="eslMatchLinkDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>250</value>
+  </data>
   <metadata name="matchSessionBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
@@ -125,9 +150,8 @@
     <value>12, 25</value>
   </data>
   <data name="matchSessionDataGridView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>494, 348</value>
+    <value>784, 348</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="matchSessionDataGridView.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
@@ -143,27 +167,6 @@
   <data name="&gt;&gt;matchSessionDataGridView.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="idDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>Id</value>
-  </data>
-  <data name="idDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
-    <value>50</value>
-  </data>
-  <data name="gameIdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>GameId</value>
-  </data>
-  <data name="startdateDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>Startdate</value>
-  </data>
-  <data name="durationDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>Duration</value>
-  </data>
-  <data name="eslMatchLinkDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>EslMatchLink</value>
-  </data>
-  <metadata name="matchSessionBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>

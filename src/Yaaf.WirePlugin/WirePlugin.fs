@@ -57,7 +57,16 @@ type ReplayWirePlugin() as x =
                 ShowItemToolTips = false,
                 AutoClose = true)
         let item s pic f = 
-             new ToolStripMenuItem(s, pic, (fun sender e -> f())) 
+             new ToolStripMenuItem(s, pic, 
+                (fun sender e -> 
+                    let t = 
+                        new System.Threading.Thread(fun () ->
+                            try
+                                f()
+                            with exn ->
+                                logger.logErr "Error: %O" exn)
+                    t.SetApartmentState(System.Threading.ApartmentState.STA)
+                    t.Start())) 
              :> ToolStripItem
         let seperator () = new ToolStripSeparator() :> ToolStripItem
         let showForm (f:System.Windows.Forms.Form) = 

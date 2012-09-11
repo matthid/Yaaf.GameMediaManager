@@ -90,7 +90,26 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         public LocalDatabaseWrapper Copy()
         {
-            return new LocalDatabaseWrapper(new LocalDataContext(context.Connection));
+            var newContext = new LocalDatabaseWrapper(new LocalDataContext(context.Connection));
+            //var newChanges = context.GetChangeSet();
+            //foreach (var d in newChanges.Deletes)
+            //{
+            //    var table = newContext.Context.GetTable(d.GetType());
+            //    table.DeleteOnSubmit(d);
+            //} 
+            //foreach (var i in newChanges.Inserts)
+            //{
+            //    var table = newContext.Context.GetTable(i.GetType());
+            //    table.InsertOnSubmit(i);
+            //} 
+            //foreach (var u in newChanges.Updates)
+            //{
+            //    var table = newContext.Context.GetTable(u.GetType());
+            //    var changes =
+            //        table.GetModifiedMembers(u);
+
+            //}
+            return newContext;
         }
 
         public ActionObject GetMoveToMatchmediaActionObject()

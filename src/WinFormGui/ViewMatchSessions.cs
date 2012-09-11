@@ -27,32 +27,58 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void ViewMatchSessions_Load(object sender, EventArgs e)
         {
+            try
+            {
+                matchSessionBindingSource.DataSource = context.Context.MatchSessions;
+            }
+            catch(Exception ex)
+            {
+                ex.ShowError(logger, "Couldn't load ViewMatchSessions Form");
+                Close();
+            }
+        }
+        
+        private void matchSessionDataGridView_DoubleClick(object sender, EventArgs e)
+        {
+            try
+            {
+                var selectedSession = (MatchSession)matchSessionBindingSource.Current;
+                if (selectedSession == null) return;
 
+                var editForm = new EditMatchSession(logger, context, selectedSession);
+                editForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Couldn't Show EditWindow");
+            }
         }
 
-        private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void matchSessionDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            var selectedSession = (MatchSession)matchSessionBindingSource.Current;
-            if (selectedSession == null) return;
-
-        }
-
-        private void matchSessionDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            var selectedSession = (MatchSession)matchSessionBindingSource.Current;
-            if (selectedSession == null) return;
-
-
+            try
+            {
+                var selectedSession = (MatchSession)matchSessionBindingSource.Current;
+                if (selectedSession == null) return;
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Couldn't Handle CellClick");
+            }
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-
+            context.MySubmitChanges();
+            Close();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-
+            Close();
         }
+
+
+
     }
 }
