@@ -36,6 +36,8 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private readonly MatchSession session;
 
+        private ManageMatchmediaHelper matchmediaHelper;
+
         public MatchSessionEnd(
             Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, IMatchSession session)
         {
@@ -44,6 +46,9 @@ namespace Yaaf.WirePlugin.WinFormGui
             myMatchSession = session;
             this.session = session.Session;
             InitializeComponent();
+
+            matchmediaHelper = new ManageMatchmediaHelper(
+                logger, context, session.Session, matchmediaBindingSource, matchmediaDataGridView);
         }
 
         public bool DeleteMatchmedia { get; private set; }
@@ -51,26 +56,18 @@ namespace Yaaf.WirePlugin.WinFormGui
         private void MatchSessionEnd_Load(object sender, EventArgs e)
         {
             Logging.setupLogging(logger);
+
             session.MatchSessions_Tag.Load();
 
             tagTextBox.Text = string.Join(
                 ",", (from assoc in session.MatchSessions_Tag select assoc.Tag.Name).ToArray());
-            matchmediaBindingSource.DataSource = session.Matchmedia;
             eslMatchCheckBox.Checked = session.EslMatchLink != null;
             EslMatchIdTextBox.Text = string.IsNullOrEmpty(session.EslMatchLink)
                                          ? "http://www.esl.eu/"
                                          : session.EslMatchLink;
 
             EslMatchIdTextBox.Enabled = session.EslMatchLink != null;
-            var i = -1;
-            foreach (var file in session.Matchmedia)
-            {
-                i++;
-                file.Matchmedia_Tag.Load();
-                var row = matchmediaDataGridView.Rows[i];
-                row.Cells["Tags"].Value = String.Join(
-                    ",", (from assoc in file.Matchmedia_Tag select assoc.Tag.Name).ToArray());
-            }
+            matchmediaHelper.Load();
         }
 
         private void saveMatchmediaButton_Click(object sender, EventArgs e)
@@ -80,8 +77,10 @@ namespace Yaaf.WirePlugin.WinFormGui
                 SetEslMatchId();
 
                 var tags = tagTextBox.Text.Split(',');
+                var toRemove = session.MatchSessions_Tag.ToDictionary(t => t.Tag.Name, t => t);
                 foreach (var tag in tags)
                 {
+                    toRemove.Remove(tag);
                     if (!(from assoc in session.MatchSessions_Tag where assoc.Tag.Name == tag select assoc).Any())
                     {
                         var association = new MatchSessions_Tag();
@@ -91,25 +90,13 @@ namespace Yaaf.WirePlugin.WinFormGui
                         session.MatchSessions_Tag.Add(association);
                     }
                 }
-
-                var i = -1;
-                foreach (var file in session.Matchmedia)
+                context.Context.MatchSessions_Tags.DeleteAllOnSubmit(toRemove.Values);
+                foreach (var matchSessionsTag in toRemove)
                 {
-                    i++;
-                    var row = matchmediaDataGridView.Rows[i];
-                    var mytags = row.Cells["Tags"].Value;
-                    var media_tags = (mytags == null ? "" : mytags.ToString()).Split(',');
-                    foreach (var tag in media_tags)
-                    {
-                        if (!(from assoc in file.Matchmedia_Tag where assoc.Tag.Name == tag select assoc).Any())
-                        {
-                            var association = new Matchmedia_Tag();
-                            association.Matchmedia = file;
-                            association.Tag = context.GetTag(tag);
-                            file.Matchmedia_Tag.Add(association);
-                        }
-                    }
+                    session.MatchSessions_Tag.Remove(matchSessionsTag.Value);
                 }
+
+                matchmediaHelper.Save();
 
                 SetupRemember(true);
                 DeleteMatchmedia = false;
@@ -161,6 +148,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                 game.WarMatchFormSaveFiles = saveData;
             }
         }
+
 
         private void eslMatchCheckBox_CheckedChanged(object sender, EventArgs e)
         {

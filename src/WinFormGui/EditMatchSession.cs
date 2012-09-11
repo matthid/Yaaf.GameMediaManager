@@ -19,6 +19,8 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private ManagePlayersHelper helper;
 
+        private DataTableWatcher watcher;
+
         public EditMatchSession(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, MatchSession session)
         {
             this.logger = logger;
@@ -37,31 +39,8 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void matchPlayersDataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            var selectedItems = 
-                matchPlayersDataGridView
-                    .SelectedRows
-                    .Cast<DataGridViewRow>()
-                    .Select <DataGridViewRow, MatchSessions_Player>(
-                        f => (MatchSessions_Player)f.DataBoundItem);
-
-            var matchSessionsPlayers = selectedItems as List<MatchSessions_Player> ?? selectedItems.ToList();
-            if (!matchSessionsPlayers.Any())
-            {
-                var item = matchPlayersDataGridView.CurrentRow == null
-                               ? null
-                               : (MatchSessions_Player)matchPlayersDataGridView.CurrentRow.DataBoundItem;
-                if (item == null)
-                {
-                    item = (MatchSessions_Player)playerBindingSource.Current;
-                }
-
-                if (item != null)
-                {
-                    matchSessionsPlayers = new List<MatchSessions_Player>() { item };
-
-                }
-            }
-
+            var matchSessionsPlayers = GetSelectedPlayers();
+            var primaryPlayer = matchSessionsPlayers.Item2;
             var table = new DataTable("MatchmediaTable");
             table.Columns.Add("Id", typeof(int));
             table.Columns.Add("Created", typeof(DateTime));
@@ -69,7 +48,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             table.Columns.Add("Name", typeof(string));
             table.Columns.Add("Path", typeof(string));
             table.Columns.Add("Type", typeof(string));
-            foreach (var player in matchSessionsPlayers)
+            foreach (var player in matchSessionsPlayers.Item1)
             {
                 MatchSessions_Player player1 = player;
                 if (player1 == null) continue;
@@ -87,42 +66,46 @@ namespace Yaaf.WirePlugin.WinFormGui
                     table.Rows.Add(row);
                 }
             }
+            SetNewMatchmediaTable(table, primaryPlayer);
+        }
+
+        private void SetNewMatchmediaTable(DataTable table, MatchSessions_Player primaryPlayer)
+        {
+            var oldTable = matchmediaBindingSource.DataSource as DataTable;
+            if (oldTable != null)
+            {
+                var changes = oldTable.GetChanges();
+            }
+
+            watcher = DataTableWatcher.WatchTable(logger, table);
             matchmediaBindingSource.DataSource = table;
         }
 
-        private void matchPlayersDataGridView_MultiSelectChanged(object sender, EventArgs e)
+        private Tuple<List<MatchSessions_Player>, MatchSessions_Player> GetSelectedPlayers()
         {
             var selectedItems =
-                matchPlayersDataGridView
-                    .SelectedRows
-                    .Cast<DataGridViewRow>()
-                    .Select<DataGridViewRow, MatchSessions_Player>(
-                        f => (MatchSessions_Player)f.DataBoundItem);
-            var table = new DataTable("MatchmediaTable");
-            table.Columns.Add("Id", typeof(int));
-            table.Columns.Add("Created", typeof(DateTime));
-            table.Columns.Add("Map", typeof(string));
-            table.Columns.Add("Name", typeof(string));
-            table.Columns.Add("Path", typeof(string));
-            table.Columns.Add("Type", typeof(string));
-            foreach (var player in selectedItems)
+                matchPlayersDataGridView.SelectedRows.Cast<DataGridViewRow>().Select<DataGridViewRow, MatchSessions_Player>(
+                    f => (MatchSessions_Player)f.DataBoundItem);
+
+            var matchSessionsPlayers = selectedItems as List<MatchSessions_Player> ?? selectedItems.ToList();
+
+            var primaryPlayer = matchPlayersDataGridView.CurrentRow == null
+                               ? null
+                               : (MatchSessions_Player)matchPlayersDataGridView.CurrentRow.DataBoundItem;
+            if (primaryPlayer == null)
             {
-                MatchSessions_Player player1 = player;
-                foreach (var matchmedia in from f in session.Matchmedia
-                                           where f.Player == player1.Player
-                                           select f)
+                primaryPlayer = (MatchSessions_Player)playerBindingSource.Current;
+            }
+
+            
+            if (!matchSessionsPlayers.Any())
+            {
+                if (primaryPlayer != null)
                 {
-                    var row = table.NewRow();
-                    row["Id"] = matchmedia.Id;
-                    row["Created"] = matchmedia.Created;
-                    row["Map"] = matchmedia.Map;
-                    row["Name"] = matchmedia.Name;
-                    row["Path"] = matchmedia.Path;
-                    row["Type"] = matchmedia.Type;
-                    table.Rows.Add(row);
+                    matchSessionsPlayers = new List<MatchSessions_Player>() { primaryPlayer };
                 }
             }
-            matchmediaBindingSource.DataSource = table;
+            return Tuple.Create(matchSessionsPlayers, primaryPlayer);
         }
 
         private void EditMatchSession_Load(object sender, EventArgs e)

@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTableWatcher.cs" />
     <Compile Include="EditGames.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,6 +81,7 @@
       <DependentUpon>LocalDatabase.dbml</DependentUpon>
     </Compile>
     <Compile Include="LocalDatabaseWrapper.cs" />
+    <Compile Include="ManageMatchmediaHelper.cs" />
     <Compile Include="ManageMatchPlayers.cs">
       <SubType>Form</SubType>
     </Compile>
