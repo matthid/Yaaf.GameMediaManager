@@ -418,7 +418,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL UNIQUE", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -602,7 +602,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL UNIQUE", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -622,7 +622,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Shortname", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Shortname", DbType="NVarChar(20) NOT NULL UNIQUE", CanBeNull=false)]
 		public string Shortname
 		{
 			get
@@ -1108,6 +1108,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 		
 		private EntityRef<MatchSession> _MatchSession;
 		
+		private EntityRef<Player> _Player;
+		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1132,10 +1134,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 		{
 			this._Matchmedia_Tag = new EntitySet<Matchmedia_Tag>(new Action<Matchmedia_Tag>(this.attach_Matchmedia_Tag), new Action<Matchmedia_Tag>(this.detach_Matchmedia_Tag));
 			this._MatchSession = default(EntityRef<MatchSession>);
+			this._Player = default(EntityRef<Player>);
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true, UpdateCheck=UpdateCheck.Never)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true, UpdateCheck=UpdateCheck.Never)]
 		public int Id
 		{
 			get
@@ -1279,6 +1282,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			{
 				if ((this._PlayerId != value))
 				{
+					if (this._Player.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnPlayerIdChanging(value);
 					this.SendPropertyChanging();
 					this._PlayerId = value;
@@ -1331,6 +1338,40 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 						this._MatchSessionId = default(int);
 					}
 					this.SendPropertyChanged("MatchSession");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Player_Matchmedia", Storage="_Player", ThisKey="PlayerId", OtherKey="Id", IsForeignKey=true)]
+		public Player Player
+		{
+			get
+			{
+				return this._Player.Entity;
+			}
+			set
+			{
+				Player previousValue = this._Player.Entity;
+				if (((previousValue != value) 
+							|| (this._Player.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Player.Entity = null;
+						previousValue.Matchmedia.Remove(this);
+					}
+					this._Player.Entity = value;
+					if ((value != null))
+					{
+						value.Matchmedia.Add(this);
+						this._PlayerId = value.Id;
+					}
+					else
+					{
+						this._PlayerId = default(int);
+					}
+					this.SendPropertyChanged("Player");
 				}
 			}
 		}
@@ -2610,6 +2651,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 		
 		private EntitySet<Player_Tag> _Player_Tag;
 		
+		private EntitySet<Matchmedia> _Matchmedia;
+		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2626,6 +2669,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 		{
 			this._MatchSessions_Player = new EntitySet<MatchSessions_Player>(new Action<MatchSessions_Player>(this.attach_MatchSessions_Player), new Action<MatchSessions_Player>(this.detach_MatchSessions_Player));
 			this._Player_Tag = new EntitySet<Player_Tag>(new Action<Player_Tag>(this.attach_Player_Tag), new Action<Player_Tag>(this.detach_Player_Tag));
+			this._Matchmedia = new EntitySet<Matchmedia>(new Action<Matchmedia>(this.attach_Matchmedia), new Action<Matchmedia>(this.detach_Matchmedia));
 			OnCreated();
 		}
 		
@@ -2715,6 +2759,19 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Player_Matchmedia", Storage="_Matchmedia", ThisKey="Id", OtherKey="PlayerId")]
+		public EntitySet<Matchmedia> Matchmedia
+		{
+			get
+			{
+				return this._Matchmedia;
+			}
+			set
+			{
+				this._Matchmedia.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -2754,6 +2811,18 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 		}
 		
 		private void detach_Player_Tag(Player_Tag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Player = null;
+		}
+		
+		private void attach_Matchmedia(Matchmedia entity)
+		{
+			this.SendPropertyChanging();
+			entity.Player = this;
+		}
+		
+		private void detach_Matchmedia(Matchmedia entity)
 		{
 			this.SendPropertyChanging();
 			entity.Player = null;

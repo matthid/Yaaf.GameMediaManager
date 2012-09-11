@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Database Name="D:\projects\aktuell\wireyaafcssplugin\yaaf\src\WinFormGui\LocalDatabase.sdf" EntityNamespace="Yaaf.WirePlugin.WinFormGui.Database" ContextNamespace="Yaaf.WirePlugin.WinFormGui.Database" Class="LocalDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="Actions">
-    <Type Name="Actions">
+    <Type Name="Action">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL UNIQUE" CanBeNull="false" />
       <Column Name="Parameters" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
@@ -12,17 +12,17 @@
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="ActionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="NextActionObjectId" Storage="_FilterId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL UNIQUE" CanBeNull="false" />
       <Association Name="ActionObject_ObjectParameter" Member="ObjectParameter" ThisKey="Id" OtherKey="ObjectId" Type="ObjectParameter" />
-      <Association Name="Actions_ActionObject" Member="Action" Storage="_ActionAndFilter" ThisKey="ActionId" OtherKey="Id" Type="Actions" IsForeignKey="true" />
+      <Association Name="Action_ActionObject" Member="Action" Storage="_ActionAndFilter" ThisKey="ActionId" OtherKey="Id" Type="Action" IsForeignKey="true" />
       <Association Name="ActionObject_ActionObject" Member="NextActionObject" ThisKey="NextActionObjectId" OtherKey="Id" Type="ActionObject" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="Games">
     <Type Name="Game">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Shortname" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL UNIQUE" CanBeNull="false" />
+      <Column Name="Shortname" Type="System.String" DbType="NVarChar(20) NOT NULL UNIQUE" CanBeNull="false" />
       <Column Name="EnableNotification" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="EnableMatchForm" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="EnablePublicNotification" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
@@ -47,15 +47,17 @@
   </Table>
   <Table Name="Matchmedia" Member="Matchmedias">
     <Type Name="Matchmedia">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Type" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="MatchSessionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Map" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Path" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Column Name="Created" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="PlayerId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Association Name="Matchmedia_Matchmedia_Tag" Member="Matchmedia_Tag" ThisKey="Id" OtherKey="MatchmediaId" Type="Matchmedia_Tag" />
       <Association Name="MatchSession_Matchmedia" Member="MatchSession" ThisKey="MatchSessionId" OtherKey="Id" Type="MatchSession" IsForeignKey="true" />
+      <Association Name="Player_Matchmedia" Member="Player" ThisKey="PlayerId" OtherKey="Id" Type="Player" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="Matchmedia_Tags">
@@ -123,12 +125,13 @@
       <Column Name="EslPlayerId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="Player_MatchSessions_Player" Member="MatchSessions_Player" ThisKey="Id" OtherKey="PlayerId" Type="MatchSessions_Player" />
       <Association Name="Player_Player_Tag" Member="Player_Tag" ThisKey="Id" OtherKey="PlayerId" Type="Player_Tag" />
+      <Association Name="Player_Matchmedia" Member="Matchmedia" ThisKey="Id" OtherKey="PlayerId" Type="Matchmedia" />
     </Type>
   </Table>
   <Table Name="Tags">
     <Type Name="Tag">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL UNIQUE" CanBeNull="false" />
       <Association Name="Tag_Matchmedia_Tag" Member="Matchmedia_Tag" ThisKey="Id" OtherKey="TagId" Type="Matchmedia_Tag" />
       <Association Name="Tag_MatchSessions_Tag" Member="MatchSessions_Tag" ThisKey="Id" OtherKey="TagId" Type="MatchSessions_Tag" />
       <Association Name="Tag_Player_Tag" Member="Player_Tag" ThisKey="Id" OtherKey="TagId" Type="Player_Tag" />
@@ -136,7 +139,7 @@
   </Table>
   <Table Name="WatchFolder" Member="WatchFolders">
     <Type Name="WatchFolder">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="GameId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Folder" Type="System.String" DbType="NVarChar(4000) NOT NULL" CanBeNull="false" />
       <Column Name="Filter" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />

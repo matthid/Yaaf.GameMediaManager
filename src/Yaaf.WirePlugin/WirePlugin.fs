@@ -60,6 +60,9 @@ type ReplayWirePlugin() as x =
              new ToolStripMenuItem(s, pic, (fun sender e -> f())) 
              :> ToolStripItem
         let seperator () = new ToolStripSeparator() :> ToolStripItem
+        let showForm (f:System.Windows.Forms.Form) = 
+            using f (fun form ->
+                form.ShowDialog() |> ignore)
         [
             item Resources.ReportBug Resources.mail
                 (fun () -> 
@@ -67,18 +70,16 @@ type ReplayWirePlugin() as x =
                         Process.Start("https://github.com/matthid/Yaaf.WirePlugin/issues") |> ignore
                     with exn -> logger.logErr "Error: %O" exn)
             item Resources.Info Resources.i
-                (fun () ->
-                    using (new InfoForm(logger)) (fun o ->
-                        o.ShowDialog() |> ignore))
+                (fun () -> new InfoForm(logger) |> showForm)
             item Resources.EditGames Resources.add
-                (fun () ->
-                    using (new EditGames(logger, Database.getContext())) (fun o ->
-                        o.ShowDialog() |> ignore))
+                (fun () -> new EditGames(logger, Database.getContext())|> showForm)
+//            item Resources.MatchSessions Resources.favs
+//                (fun () ->
+//                    new ViewMatchSessions(logger, Database.getContext())|> showForm)
             item Resources.EditPlayers Resources.edit
                 (fun () ->
                     let dbContext = Database.getContext()
-                    using (new ManagePlayers(logger, dbContext, Database.getIdentityPlayer dbContext.Context)) (fun o ->
-                        o.ShowDialog() |> ignore))
+                    new ManagePlayers(logger, dbContext, Database.getIdentityPlayer dbContext.Context)|> showForm)
             seperator()
             item Resources.CloseMenu Resources.cancel id
         ]
@@ -237,11 +238,12 @@ type ReplayWirePlugin() as x =
         let watcher, game = data.Watcher, data.Game
         watcher.EndGameWatching()
         let matchSession = data.MatchSession 
-           
+        let me = Database.getIdentityPlayer db
         watcher.FoundMedia
             |> Seq.mapi  
                 (fun i (lNum, mediaDate, m) -> 
                     new Database.Matchmedia(
+                        Player = me,
                         Created = mediaDate, 
                         MatchSession = matchSession,
                         Map = (MediaAnalyser.analyseMedia m).Map,
@@ -264,6 +266,8 @@ type ReplayWirePlugin() as x =
                             getGrabAction db matchSession link
                         member x.Session 
                             with get() = matchSession
+                        member x.IdentityPlayer 
+                            with get() = Database.getIdentityPlayer db
                         }
                 let form = new MatchSessionEnd(logger, session.Context, formSession)
                 form.ShowDialog() |> ignore

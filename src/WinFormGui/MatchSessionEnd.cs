@@ -22,6 +22,7 @@ namespace Yaaf.WirePlugin.WinFormGui
     {
         MatchSession Session { get; }
 
+        Player IdentityPlayer { get; }
         FSharpAsync<Unit> LoadEslPlayers(string link);
     }
 
@@ -187,6 +188,12 @@ namespace Yaaf.WirePlugin.WinFormGui
         private void AddMatchMedia(string safeFileName)
         {
             var media = (Matchmedia)matchmediaBindingSource.AddNew();
+            if (media == null)
+            {
+                throw new InvalidOperationException("Couldn't add new Matchmedia (was null)");
+            }
+
+            media.Player = myMatchSession.IdentityPlayer;
             media.Path = safeFileName;
             media.Map = MediaAnalyser.analyseMedia(safeFileName).Map;
             media.Name = Path.GetFileNameWithoutExtension(safeFileName);

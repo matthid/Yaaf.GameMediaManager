@@ -132,7 +132,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
         }
 
-        private Actions GetAction(string name)
+        private Database.Action GetAction(string name)
         {
             return (from tag in context.Actions where tag.Name == name select tag).Single();
         }

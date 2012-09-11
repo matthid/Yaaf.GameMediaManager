@@ -11,7 +11,7 @@
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="ActionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="NextActionObjectId" Storage="_FilterId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL UNIQUE" CanBeNull="false" />
       <Association Name="ActionObject_ObjectParameter" Member="ObjectParameter" ThisKey="Id" OtherKey="ObjectId" Type="ObjectParameter" />
       <Association Name="Action_ActionObject" Member="Action" Storage="_ActionAndFilter" ThisKey="ActionId" OtherKey="Id" Type="Action" IsForeignKey="true" />
       <Association Name="ActionObject_ActionObject" Member="NextActionObject" ThisKey="NextActionObjectId" OtherKey="Id" Type="ActionObject" IsForeignKey="true" />
@@ -20,8 +20,8 @@
   <Table Name="Games">
     <Type Name="Game">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Shortname" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL UNIQUE" CanBeNull="false" />
+      <Column Name="Shortname" Type="System.String" DbType="NVarChar(20) NOT NULL UNIQUE" CanBeNull="false" />
       <Column Name="EnableNotification" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="EnableMatchForm" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="EnablePublicNotification" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
@@ -46,7 +46,7 @@
   </Table>
   <Table Name="Matchmedia" Member="Matchmedias">
     <Type Name="Matchmedia">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Type" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="MatchSessionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -56,6 +56,7 @@
       <Column Name="PlayerId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Association Name="Matchmedia_Matchmedia_Tag" Member="Matchmedia_Tag" ThisKey="Id" OtherKey="MatchmediaId" Type="Matchmedia_Tag" />
       <Association Name="MatchSession_Matchmedia" Member="MatchSession" ThisKey="MatchSessionId" OtherKey="Id" Type="MatchSession" IsForeignKey="true" />
+      <Association Name="Player_Matchmedia" Member="Player" ThisKey="PlayerId" OtherKey="Id" Type="Player" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="Matchmedia_Tags">
@@ -123,6 +124,7 @@
       <Column Name="EslPlayerId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="Player_MatchSessions_Player" Member="MatchSessions_Player" ThisKey="Id" OtherKey="PlayerId" Type="MatchSessions_Player" />
       <Association Name="Player_Player_Tag" Member="Player_Tag" ThisKey="Id" OtherKey="PlayerId" Type="Player_Tag" />
+      <Association Name="Player_Matchmedia" Member="Matchmedia" ThisKey="Id" OtherKey="PlayerId" Type="Matchmedia" />
     </Type>
   </Table>
   <Table Name="Tags">

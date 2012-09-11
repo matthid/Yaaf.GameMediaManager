@@ -191,11 +191,18 @@
         <classShapeMoniker Id="0487cab6-4d43-4df3-8acd-a7f08570c314" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.875 : 3.21739710349059); (3.75 : 3.21739710349059)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.875 : 3.21739710349059); (3.75 : 3.21739710349059)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/LocalDataContext/Action/Action_ActionObject" />
       <nodes>
         <classShapeMoniker Id="b7c152c1-8518-4d54-8240-4e92a326ff51" />
         <classShapeMoniker Id="0487cab6-4d43-4df3-8acd-a7f08570c314" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.46875 : 8.7612939453125); (5.46875 : 11.5440991210937); (6 : 11.5440991210937)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/LocalDataContext/Player/Player_Matchmedia" />
+      <nodes>
+        <classShapeMoniker Id="f39c4fec-13a6-4b68-bf72-8e4b590bd41f" />
+        <classShapeMoniker Id="bf7c31c8-266e-4e5c-aaec-a16da1d3bf4e" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>

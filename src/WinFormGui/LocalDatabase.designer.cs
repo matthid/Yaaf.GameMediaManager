@@ -30,9 +30,9 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnCreated();
-    partial void InsertActions(Actions instance);
-    partial void UpdateActions(Actions instance);
-    partial void DeleteActions(Actions instance);
+    partial void InsertAction(Action instance);
+    partial void UpdateAction(Action instance);
+    partial void DeleteAction(Action instance);
     partial void InsertActionObject(ActionObject instance);
     partial void UpdateActionObject(ActionObject instance);
     partial void DeleteActionObject(ActionObject instance);
@@ -98,11 +98,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<Actions> Actions
+		public System.Data.Linq.Table<Action> Actions
 		{
 			get
 			{
-				return this.GetTable<Actions>();
+				return this.GetTable<Action>();
 			}
 		}
 		
@@ -211,8 +211,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute()]
-	public partial class Actions : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="Actions")]
+	public partial class Action : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
@@ -233,7 +233,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnParametersChanged();
     #endregion
 		
-		public Actions()
+		public Action()
 		{
 			OnCreated();
 		}
@@ -247,7 +247,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL UNIQUE", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -324,7 +324,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private EntitySet<ObjectParameter> _ObjectParameter;
 		
-		private EntityRef<Actions> _ActionAndFilter;
+		private EntityRef<Action> _ActionAndFilter;
 		
 		private EntityRef<ActionObject> _NextActionObject;
 		
@@ -345,7 +345,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		public ActionObject()
 		{
 			this._ObjectParameter = new EntitySet<ObjectParameter>(new Action<ObjectParameter>(this.attach_ObjectParameter), new Action<ObjectParameter>(this.detach_ObjectParameter));
-			this._ActionAndFilter = default(EntityRef<Actions>);
+			this._ActionAndFilter = default(EntityRef<Action>);
 			this._NextActionObject = default(EntityRef<ActionObject>);
 			OnCreated();
 		}
@@ -418,7 +418,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL UNIQUE", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -451,8 +451,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Actions_ActionObject", Storage="_ActionAndFilter", ThisKey="ActionId", OtherKey="Id", IsForeignKey=true)]
-		public Actions Action
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Action_ActionObject", Storage="_ActionAndFilter", ThisKey="ActionId", OtherKey="Id", IsForeignKey=true)]
+		public Action Action
 		{
 			get
 			{
@@ -602,7 +602,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL UNIQUE", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -622,7 +622,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Shortname", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Shortname", DbType="NVarChar(20) NOT NULL UNIQUE", CanBeNull=false)]
 		public string Shortname
 		{
 			get
@@ -1102,9 +1102,13 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private System.DateTime _Created;
 		
+		private int _PlayerId;
+		
 		private EntitySet<Matchmedia_Tag> _Matchmedia_Tag;
 		
 		private EntityRef<MatchSession> _MatchSession;
+		
+		private EntityRef<Player> _Player;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -1122,16 +1126,19 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     partial void OnPathChanged();
     partial void OnCreatedChanging(System.DateTime value);
     partial void OnCreatedChanged();
+    partial void OnPlayerIdChanging(int value);
+    partial void OnPlayerIdChanged();
     #endregion
 		
 		public Matchmedia()
 		{
 			this._Matchmedia_Tag = new EntitySet<Matchmedia_Tag>(new Action<Matchmedia_Tag>(this.attach_Matchmedia_Tag), new Action<Matchmedia_Tag>(this.detach_Matchmedia_Tag));
 			this._MatchSession = default(EntityRef<MatchSession>);
+			this._Player = default(EntityRef<Player>);
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true, UpdateCheck=UpdateCheck.Never)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true, UpdateCheck=UpdateCheck.Never)]
 		public int Id
 		{
 			get
@@ -1264,6 +1271,30 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlayerId", DbType="int NOT NULL")]
+		public int PlayerId
+		{
+			get
+			{
+				return this._PlayerId;
+			}
+			set
+			{
+				if ((this._PlayerId != value))
+				{
+					if (this._Player.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPlayerIdChanging(value);
+					this.SendPropertyChanging();
+					this._PlayerId = value;
+					this.SendPropertyChanged("PlayerId");
+					this.OnPlayerIdChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Matchmedia_Matchmedia_Tag", Storage="_Matchmedia_Tag", ThisKey="Id", OtherKey="MatchmediaId")]
 		public EntitySet<Matchmedia_Tag> Matchmedia_Tag
 		{
@@ -1307,6 +1338,40 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 						this._MatchSessionId = default(int);
 					}
 					this.SendPropertyChanged("MatchSession");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Player_Matchmedia", Storage="_Player", ThisKey="PlayerId", OtherKey="Id", IsForeignKey=true)]
+		public Player Player
+		{
+			get
+			{
+				return this._Player.Entity;
+			}
+			set
+			{
+				Player previousValue = this._Player.Entity;
+				if (((previousValue != value) 
+							|| (this._Player.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Player.Entity = null;
+						previousValue.Matchmedia.Remove(this);
+					}
+					this._Player.Entity = value;
+					if ((value != null))
+					{
+						value.Matchmedia.Add(this);
+						this._PlayerId = value.Id;
+					}
+					else
+					{
+						this._PlayerId = default(int);
+					}
+					this.SendPropertyChanged("Player");
 				}
 			}
 		}
@@ -2582,6 +2647,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		private System.Nullable<int> _EslPlayerId;
 		
+		private EntitySet<Matchmedia> _Matchmedia;
+		
 		private EntitySet<MatchSessions_Player> _MatchSessions_Player;
 		
 		private EntitySet<Player_Tag> _Player_Tag;
@@ -2600,6 +2667,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 		
 		public Player()
 		{
+			this._Matchmedia = new EntitySet<Matchmedia>(new Action<Matchmedia>(this.attach_Matchmedia), new Action<Matchmedia>(this.detach_Matchmedia));
 			this._MatchSessions_Player = new EntitySet<MatchSessions_Player>(new Action<MatchSessions_Player>(this.attach_MatchSessions_Player), new Action<MatchSessions_Player>(this.detach_MatchSessions_Player));
 			this._Player_Tag = new EntitySet<Player_Tag>(new Action<Player_Tag>(this.attach_Player_Tag), new Action<Player_Tag>(this.detach_Player_Tag));
 			OnCreated();
@@ -2665,6 +2733,19 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Player_Matchmedia", Storage="_Matchmedia", ThisKey="Id", OtherKey="PlayerId")]
+		public EntitySet<Matchmedia> Matchmedia
+		{
+			get
+			{
+				return this._Matchmedia;
+			}
+			set
+			{
+				this._Matchmedia.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Player_MatchSessions_Player", Storage="_MatchSessions_Player", ThisKey="Id", OtherKey="PlayerId")]
 		public EntitySet<MatchSessions_Player> MatchSessions_Player
 		{
@@ -2709,6 +2790,18 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Matchmedia(Matchmedia entity)
+		{
+			this.SendPropertyChanging();
+			entity.Player = this;
+		}
+		
+		private void detach_Matchmedia(Matchmedia entity)
+		{
+			this.SendPropertyChanging();
+			entity.Player = null;
 		}
 		
 		private void attach_MatchSessions_Player(MatchSessions_Player entity)
@@ -2790,7 +2883,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL UNIQUE", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -2946,7 +3039,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int Id
 		{
 			get

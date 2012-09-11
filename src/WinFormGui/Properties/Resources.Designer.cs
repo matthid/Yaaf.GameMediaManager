@@ -267,6 +267,15 @@ namespace Yaaf.WirePlugin.WinFormGui.Properties {
             }
         }
         
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die View Matchsessions ähnelt.
+        /// </summary>
+        public static string MatchSessions {
+            get {
+                return ResourceManager.GetString("MatchSessions", resourceCulture);
+            }
+        }
+        
         public static System.Drawing.Bitmap minus {
             get {
                 object obj = ResourceManager.GetObject("minus", resourceCulture);

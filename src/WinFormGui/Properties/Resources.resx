@@ -268,4 +268,7 @@
   <data name="ManagePlayers_setAsMeButton_Click_Please_select_a_player_" xml:space="preserve">
     <value>Please select a player!</value>
   </data>
+  <data name="MatchSessions" xml:space="preserve">
+    <value>View Matchsessions</value>
+  </data>
 </root>
