@@ -73,9 +73,9 @@ type ReplayWirePlugin() as x =
                 (fun () -> new InfoForm(logger) |> showForm)
             item Resources.EditGames Resources.add
                 (fun () -> new EditGames(logger, Database.getContext())|> showForm)
-//            item Resources.MatchSessions Resources.favs
-//                (fun () ->
-//                    new ViewMatchSessions(logger, Database.getContext())|> showForm)
+            item Resources.MatchSessions Resources.favs
+                (fun () ->
+                    new ViewMatchSessions(logger, Database.getContext())|> showForm)
             item Resources.EditPlayers Resources.edit
                 (fun () ->
                     let dbContext = Database.getContext()

@@ -57,7 +57,14 @@
     <Compile Include="EditGames.Designer.cs">
       <DependentUpon>EditGames.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditMatchSession.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditMatchSession.Designer.cs">
+      <DependentUpon>EditMatchSession.cs</DependentUpon>
+    </Compile>
     <Compile Include="FSharpInterop.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="InfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,6 +92,7 @@
     <Compile Include="ManagePlayers.Designer.cs">
       <DependentUpon>ManagePlayers.cs</DependentUpon>
     </Compile>
+    <Compile Include="ManagePlayersHelper.cs" />
     <Compile Include="ManageWatchFolder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +137,9 @@
     </Compile>
     <EmbeddedResource Include="EditGames.resx">
       <DependentUpon>EditGames.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditMatchSession.resx">
+      <DependentUpon>EditMatchSession.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>

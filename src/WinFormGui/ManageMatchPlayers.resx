@@ -1631,12 +1631,6 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Manage Match Players</value>
   </data>
-  <data name="&gt;&gt;matchSessionsPlayerBindingSource.Name" xml:space="preserve">
-    <value>matchSessionsPlayerBindingSource</value>
-  </data>
-  <data name="&gt;&gt;matchSessionsPlayerBindingSource.Type" xml:space="preserve">
-    <value>System.Windows.Forms.BindingSource, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="&gt;&gt;PlayerId.Name" xml:space="preserve">
     <value>PlayerId</value>
   </data>
@@ -1684,6 +1678,12 @@
   </data>
   <data name="&gt;&gt;cheatingDataGridViewCheckBoxColumn.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewCheckBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;matchSessionsPlayerBindingSource.Name" xml:space="preserve">
+    <value>matchSessionsPlayerBindingSource</value>
+  </data>
+  <data name="&gt;&gt;matchSessionsPlayerBindingSource.Type" xml:space="preserve">
+    <value>System.Windows.Forms.BindingSource, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>ManageMatchPlayers</value>

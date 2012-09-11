@@ -33,7 +33,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.matchPlayersDataGridView = new System.Windows.Forms.DataGridView();
-            this.matchSessionsPlayerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.PlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.EslPlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -42,6 +41,7 @@
             this.teamDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.skillDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.cheatingDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.matchSessionsPlayerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.matchPlayersDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.matchSessionsPlayerBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -51,17 +51,18 @@
             resources.ApplyResources(this.button1, "button1");
             this.button1.Name = "button1";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.save_Click);
             // 
             // button2
             // 
             resources.ApplyResources(this.button2, "button2");
             this.button2.Name = "button2";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.cancel_Click);
             // 
             // matchPlayersDataGridView
             // 
+            this.matchPlayersDataGridView.AllowUserToOrderColumns = true;
             this.matchPlayersDataGridView.AutoGenerateColumns = false;
             this.matchPlayersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.matchPlayersDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -77,10 +78,6 @@
             resources.ApplyResources(this.matchPlayersDataGridView, "matchPlayersDataGridView");
             this.matchPlayersDataGridView.Name = "matchPlayersDataGridView";
             this.matchPlayersDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.matchPlayersDataGridView_DataError);
-            // 
-            // matchSessionsPlayerBindingSource
-            // 
-            this.matchSessionsPlayerBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.MatchSessions_Player);
             // 
             // PlayerId
             // 
@@ -159,6 +156,10 @@
             this.cheatingDataGridViewCheckBoxColumn.FillWeight = 50F;
             resources.ApplyResources(this.cheatingDataGridViewCheckBoxColumn, "cheatingDataGridViewCheckBoxColumn");
             this.cheatingDataGridViewCheckBoxColumn.Name = "cheatingDataGridViewCheckBoxColumn";
+            // 
+            // matchSessionsPlayerBindingSource
+            // 
+            this.matchSessionsPlayerBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.MatchSessions_Player);
             // 
             // ManageMatchPlayers
             // 
