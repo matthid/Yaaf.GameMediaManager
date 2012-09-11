@@ -191,7 +191,7 @@
         <classShapeMoniker Id="0487cab6-4d43-4df3-8acd-a7f08570c314" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 3.31814697265625); (3.375 : 3.31814697265625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 3.31814697265625); (3.375 : 3.31814697265625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/LocalDataContext/Actions/Actions_ActionObject" />
       <nodes>
         <classShapeMoniker Id="b7c152c1-8518-4d54-8240-4e92a326ff51" />

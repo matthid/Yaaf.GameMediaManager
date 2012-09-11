@@ -30,9 +30,9 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnCreated();
-    partial void InsertActions(Actions instance);
-    partial void UpdateActions(Actions instance);
-    partial void DeleteActions(Actions instance);
+    partial void InsertAction(Action instance);
+    partial void UpdateAction(Action instance);
+    partial void DeleteAction(Action instance);
     partial void InsertActionObject(ActionObject instance);
     partial void UpdateActionObject(ActionObject instance);
     partial void DeleteActionObject(ActionObject instance);
@@ -98,11 +98,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<Actions> Actions
+		public System.Data.Linq.Table<Action> Actions
 		{
 			get
 			{
-				return this.GetTable<Actions>();
+				return this.GetTable<Action>();
 			}
 		}
 		
@@ -211,8 +211,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute()]
-	public partial class Actions : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="Actions")]
+	public partial class Action : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
@@ -233,7 +233,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
     partial void OnParametersChanged();
     #endregion
 		
-		public Actions()
+		public Action()
 		{
 			OnCreated();
 		}
@@ -247,7 +247,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL UNIQUE", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -324,7 +324,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 		
 		private EntitySet<ObjectParameter> _ObjectParameter;
 		
-		private EntityRef<Actions> _ActionAndFilter;
+		private EntityRef<Action> _ActionAndFilter;
 		
 		private EntityRef<ActionObject> _NextActionObject;
 		
@@ -345,7 +345,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 		public ActionObject()
 		{
 			this._ObjectParameter = new EntitySet<ObjectParameter>(new Action<ObjectParameter>(this.attach_ObjectParameter), new Action<ObjectParameter>(this.detach_ObjectParameter));
-			this._ActionAndFilter = default(EntityRef<Actions>);
+			this._ActionAndFilter = default(EntityRef<Action>);
 			this._NextActionObject = default(EntityRef<ActionObject>);
 			OnCreated();
 		}
@@ -451,8 +451,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Actions_ActionObject", Storage="_ActionAndFilter", ThisKey="ActionId", OtherKey="Id", IsForeignKey=true)]
-		public Actions Action
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Action_ActionObject", Storage="_ActionAndFilter", ThisKey="ActionId", OtherKey="Id", IsForeignKey=true)]
+		public Action Action
 		{
 			get
 			{
@@ -582,7 +582,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int NOT NULL", IsPrimaryKey=true)]
 		public int Id
 		{
 			get
@@ -2814,7 +2814,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL UNIQUE", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -2970,7 +2970,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_0_0
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int Id
 		{
 			get

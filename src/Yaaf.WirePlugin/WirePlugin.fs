@@ -381,8 +381,8 @@ type ReplayWirePlugin() as x =
         
             let task = DatabaseUpgrade.getUpgradeDatabaseTask logger
             match task with
-            | Some t ->     
-                let t = Primitives.Task<_> t
+            | Some (t, update) ->     
+                let t = Primitives.Task<_>(t, update)
                 WaitingForm.StartTask(logger, t, "Upgrading database...")
                 match t.ErrorObj with
                 | Some error ->

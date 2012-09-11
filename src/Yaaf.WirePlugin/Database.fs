@@ -8,6 +8,7 @@ module Database =
     open System.IO
     open Microsoft.FSharp.Linq
     open Yaaf.WirePlugin.WinFormGui
+    type Context = Database.LocalDataContext
     let pluginFolder =
             [ System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
                 "Yaaf"; "WirePlugin" ] |> pathCombine
@@ -45,14 +46,14 @@ module Database =
         s |> Query.query |> Seq.head
    
     /// Finds a game in database
-    let getGame (db:Database.LocalDataContext) id = 
+    let getGame (db:Context) id = 
         tryGetSingle
             <@ seq {
                 for a in db.Games do
                     if a.Id = id then
                         yield a } @>
     
-    let findEslMatch (db:Database.LocalDataContext) link = 
+    let findEslMatch (db:Context) link = 
         tryGetSingle
             <@ seq {
                 for m in db.MatchSessions do
@@ -77,7 +78,7 @@ module Database =
             Directory.CreateDirectory dir |> ignore
         mediaPath
 
-    let getActivatedMatchFormActions (db:Database.LocalDataContext) isWar (game : Database.Game) = 
+    let getActivatedMatchFormActions (db:Context) isWar (game : Database.Game) = 
         <@ seq {
             for a in db.MatchFormActions do
                 if a.GameId = game.Id && (isWar && a.WarActivated || not isWar && a.PublicActivated) then
@@ -145,7 +146,7 @@ module Database =
                     :> obj
             | _ -> invalidOp (sprintf "invalid typed input value, got %O expected %O" (m.GetType()) typeof<'T1>))
     
-    let getAction (db:Database.LocalDataContext) (action:Database.ActionObject) =
+    let getAction (db:Context) (action:Database.ActionObject) =
         let rec getActionRec prevFun (action:Database.ActionObject) = 
             let parameter = getParameterForAction action
         
@@ -239,7 +240,7 @@ module Database =
         | None -> f()
         | Some (s) -> s
 
-    let getPlayerByEslId (db:Database.LocalDataContext) id nick = 
+    let getPlayerByEslId (db:Context) id nick = 
         let mid = System.Nullable(id)
         let myQuery = 
             <@ seq {
@@ -257,14 +258,18 @@ module Database =
             getSingle myQuery)
 
     open Wire
-    let getIdentityPlayer (db:Database.LocalDataContext) = 
+    let getIdentityPlayerInfo() = 
         let session = InterfaceFactory.sessionInterface()
         let userInfo = session.user()
         let nick = userInfo.["nickname"] :?> string
         let eslId = userInfo.["id"] :?> int
+        nick, eslId
+
+    let getIdentityPlayer (db:Context) = 
+        let nick, eslId = getIdentityPlayerInfo()
         getPlayerByEslId db eslId nick
 
-    let fillPlayers (db:Database.LocalDataContext) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
+    let fillPlayers (db:Context) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
         let addedPlayers =
             seq {
                 for p in players do
@@ -301,7 +306,7 @@ module Database =
                     s.Player.MatchSessions_Player.Remove s |> ignore
                     matchSession.MatchSessions_Player.Remove s |> ignore)
 
-    let removeSession (db:Database.LocalDataContext) deleteFiles (matchSession:Database.MatchSession) = 
+    let removeSession (db:Context) deleteFiles (matchSession:Database.MatchSession) = 
         for matchmedia in System.Collections.Generic.List<_> matchSession.Matchmedia do
             if deleteFiles && File.Exists matchmedia.Path then
                 File.Delete matchmedia.Path

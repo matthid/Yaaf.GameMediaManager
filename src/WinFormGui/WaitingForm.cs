@@ -19,12 +19,16 @@ namespace Yaaf.WirePlugin.WinFormGui
         private readonly Logging.LoggingInterfaces.ITracer logger;
 
         private readonly Task<Unit> task;
+        private bool taskStarted = false;
+
+        private string myTitle;
 
         public WaitingForm(Logging.LoggingInterfaces.ITracer logger, Task<Unit> task, string title)
         {
             this.logger = logger;
             this.task = task;
             InitializeComponent();
+            myTitle = title;
             Text = title;
         }
 
@@ -36,9 +40,25 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void WaitingForm_Load(object sender, EventArgs e)
         {
-            task.Error += task_Error;
-            task.Finished += task_Finished;
-            task.Start();
+            if (!taskStarted)
+            {
+                task.Error += task_Error;
+                task.Finished += task_Finished;
+                task.Update += task_Update;
+
+                task.Start();
+                taskStarted = true;
+            }
+        }
+
+        void task_Update(object sender, string args)
+        {
+            logger.LogInformation("Task Update: {0} - {1}", myTitle, args);
+            var newTitle = string.Format("{0} - {1}", myTitle, args);
+            Invoke(
+                new Action(
+                    () =>
+                        { Text = newTitle; }));
         }
 
         private void task_Finished(object sender, Unit args)
