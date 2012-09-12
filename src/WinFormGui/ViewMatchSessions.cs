@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
+    using System.Reflection;
+
+    using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
 
     public partial class ViewMatchSessions : Form
@@ -37,15 +40,27 @@ namespace Yaaf.WirePlugin.WinFormGui
                 Close();
             }
         }
-        
+        private Dictionary<MatchSession, Primitives.WrapperDataTable.WrapperTable<Matchmedia>> sessionData = new Dictionary<MatchSession, WrapperDataTable.WrapperTable<Matchmedia>>(); 
         private void matchSessionDataGridView_DoubleClick(object sender, EventArgs e)
         {
             try
             {
                 var selectedSession = (MatchSession)matchSessionBindingSource.Current;
                 if (selectedSession == null) return;
+                WrapperDataTable.WrapperTable<Matchmedia> wrapperTable;
+                if (!sessionData.TryGetValue(selectedSession, out wrapperTable))
+                {
+                    selectedSession.Matchmedia.Load();
 
-                var editForm = new EditMatchSession(logger, context, selectedSession);
+                    wrapperTable =
+                        WrapperDataTable.getWrapperDelegate(
+                            WrapperDataTable.getFilterDelegate<PropertyInfo>(
+                                new[] { "MyId", "Created", "Map", "Name", "Path", "Type", "PlayerId" }),
+                            selectedSession.Matchmedia);
+                    sessionData.Add(selectedSession, wrapperTable);
+                }
+
+                var editForm = new EditMatchSession(logger, context, wrapperTable, selectedSession);
                 editForm.ShowDialog();
             }
             catch (Exception ex)

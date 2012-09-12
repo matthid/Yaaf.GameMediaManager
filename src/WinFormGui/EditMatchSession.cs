@@ -9,11 +9,18 @@ using System.Windows.Forms;
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
+    using System.Reflection;
+
+    using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
 
     public partial class EditMatchSession : Form
     {
         private readonly Logging.LoggingInterfaces.ITracer logger;
+
+        private readonly LocalDatabaseWrapper context;
+
+        private readonly WrapperDataTable.WrapperTable<Matchmedia> matchmediaData;
 
         private readonly MatchSession session;
 
@@ -21,12 +28,18 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private DataTableWatcher watcher;
 
-        public EditMatchSession(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, MatchSession session)
+        private WrapperDataTable.WrapperTable<Matchmedia> oldWrapper;
+
+        private WrapperDataTable.WrapperTable<Matchmedia> matchmediaDataCopy;
+
+        public EditMatchSession(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, WrapperDataTable.WrapperTable<Matchmedia> matchmediaData, MatchSession session)
         {
             this.logger = logger;
+            this.context = context;
+            this.matchmediaData = matchmediaData;
+            this.matchmediaDataCopy = matchmediaData.Clone();
             this.session = session;
             InitializeComponent();
-            session.Matchmedia.Load();
             helper =
                 new ManagePlayersHelper(
                     context,
@@ -41,44 +54,33 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             var matchSessionsPlayers = GetSelectedPlayers();
             var primaryPlayer = matchSessionsPlayers.Item2;
-            var table = new DataTable("MatchmediaTable");
-            table.Columns.Add("Id", typeof(int));
-            table.Columns.Add("Created", typeof(DateTime));
-            table.Columns.Add("Map", typeof(string));
-            table.Columns.Add("Name", typeof(string));
-            table.Columns.Add("Path", typeof(string));
-            table.Columns.Add("Type", typeof(string));
-            foreach (var player in matchSessionsPlayers.Item1)
-            {
-                MatchSessions_Player player1 = player;
-                if (player1 == null) continue;
-                foreach (var matchmedia in from f in session.Matchmedia
-                                           where f.Player == player1.Player
-                                           select f)
-                {
-                    var row = table.NewRow();
-                    row["Id"] = matchmedia.Id;
-                    row["Created"] = matchmedia.Created;
-                    row["Map"] = matchmedia.Map;
-                    row["Name"] = matchmedia.Name;
-                    row["Path"] = matchmedia.Path;
-                    row["Type"] = matchmedia.Type;
-                    table.Rows.Add(row);
-                }
-            }
-            SetNewMatchmediaTable(table, primaryPlayer);
+            IEnumerable<Matchmedia> media = new Matchmedia[0];
+            media =
+                matchSessionsPlayers.Item1
+                    .Where(player1 => player1 != null)
+                    .Aggregate(
+                        media,
+                        (current, player1) => current.Union(from f in matchmediaDataCopy.CopyLinqData where f.PlayerId == player1.PlayerId select f));
+
+            var value = matchmediaDataCopy.GetCopiedTable(media);
+            value.SetInitializer(mediaM =>
+                    {
+                        mediaM.Created = DateTime.Now; mediaM.MatchSession = session;
+                        mediaM.Player = primaryPlayer.Player;
+                    });
+           
+            SetNewWrapper(value);
         }
 
-        private void SetNewMatchmediaTable(DataTable table, MatchSessions_Player primaryPlayer)
+        private void SetNewWrapper(WrapperDataTable.WrapperTable<Matchmedia> value)
         {
-            var oldTable = matchmediaBindingSource.DataSource as DataTable;
-            if (oldTable != null)
+            if (oldWrapper != null)
             {
-                var changes = oldTable.GetChanges();
+                matchmediaDataCopy.ImportChanges(oldWrapper);
             }
 
-            watcher = DataTableWatcher.WatchTable(logger, table);
-            matchmediaBindingSource.DataSource = table;
+            oldWrapper = value;
+            matchmediaBindingSource.DataSource = value.SourceTable;
         }
 
         private Tuple<List<MatchSessions_Player>, MatchSessions_Player> GetSelectedPlayers()
@@ -126,6 +128,9 @@ namespace Yaaf.WirePlugin.WinFormGui
             try
             {
                 helper.Save();
+                matchmediaDataCopy.ImportChanges(oldWrapper);
+                matchmediaData.ImportChanges(matchmediaDataCopy);
+
                 Close();
             }
             catch (Exception ex)

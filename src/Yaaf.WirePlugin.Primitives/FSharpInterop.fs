@@ -7,6 +7,14 @@ namespace Yaaf.WirePlugin.Primitives
 open System
 open System.Xml
 
+module Interop = 
+    let isNone o = 
+        match o with
+        | None -> true
+        | _ -> false
+    let isSome o = 
+        not <| isNone o
+
 type Task<'T>(a:Async<'T>, update:IEvent<string>) =
     let a = a
     let updateEvent = update

@@ -8,6 +8,20 @@
 namespace Yaaf.WirePlugin.WinFormGui.Database
 {
     using System;
+    partial class Matchmedia
+    {
+        public int MyId
+        {
+            get
+            {
+                return Id;
+            }
+            set
+            {
+                _Id = value;
+            }
+        }
+    }
 
     partial class Game
     {
