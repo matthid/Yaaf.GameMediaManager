@@ -20,11 +20,14 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private readonly LocalDatabaseWrapper context;
 
+        private readonly IFSharpInterop interop;
+
         public ViewMatchSessions(
-            Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context)
+            Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, IFSharpInterop interop)
         {
             this.logger = logger;
             this.context = context;
+            this.interop = interop;
             InitializeComponent();
         }
 
@@ -55,7 +58,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                     wrapperTable =
                         WrapperDataTable.getWrapperDelegate(
                             WrapperDataTable.getFilterDelegate<PropertyInfo>(
-                                new[] { "MyId", "Created", "Map", "Name", "Path", "Type", "PlayerId" }),
+                                new[] { "MyId", "Created", "Map", "Name", "Path", "Type", "PlayerId", "MatchsessionId" }),
                             selectedSession.Matchmedia);
                     sessionData.Add(selectedSession, wrapperTable);
                 }
@@ -84,8 +87,40 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            context.MySubmitChanges();
-            Close();
+            try
+            {
+                foreach (var wrapperTable in sessionData.Values)
+                {
+                    wrapperTable.UpdateTable(context.Context.Matchmedias);
+                }
+
+                var changes = context.Context.GetChangeSet();
+
+                foreach (var media in changes.Deletes.Select(o => o as Matchmedia).Where(o => o != null))
+                {
+                    if (System.IO.File.Exists(media.Path))
+                    {
+                        System.IO.File.Delete(media.Path);
+                    }
+                }
+
+                var mediaToCopy = changes.Inserts.Select(o => o as Matchmedia).Where(o => o != null).ToList();
+                
+                context.MySubmitChanges();
+                foreach (var media in mediaToCopy)
+                {
+                    var newPath = interop.GetMatchmediaPath(media);
+                    System.IO.File.Copy(media.Path, newPath);
+                    media.Path = newPath;
+                }
+
+                context.MySubmitChanges();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Couldn't Save Data!");
+            }
         }
 
         private void cancelButton_Click(object sender, EventArgs e)

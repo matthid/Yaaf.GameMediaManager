@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
+    using System.Collections.Specialized;
     using System.Reflection;
 
     using Yaaf.WirePlugin.Primitives;
@@ -32,6 +33,8 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private WrapperDataTable.WrapperTable<Matchmedia> matchmediaDataCopy;
 
+        private MatchSessions_Player primaryPlayer;
+
         public EditMatchSession(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, WrapperDataTable.WrapperTable<Matchmedia> matchmediaData, MatchSession session)
         {
             this.logger = logger;
@@ -53,7 +56,9 @@ namespace Yaaf.WirePlugin.WinFormGui
         private void matchPlayersDataGridView_SelectionChanged(object sender, EventArgs e)
         {
             var matchSessionsPlayers = GetSelectedPlayers();
-            var primaryPlayer = matchSessionsPlayers.Item2;
+            primaryPlayer = matchSessionsPlayers.Item2;
+            primaryPlayerLabel.Text = primaryPlayer == null ? "None" : string.Format("{0} ({1})", primaryPlayer.Player.Name, primaryPlayer.PlayerId);
+
             IEnumerable<Matchmedia> media = new Matchmedia[0];
             media =
                 matchSessionsPlayers.Item1
@@ -85,29 +90,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private Tuple<List<MatchSessions_Player>, MatchSessions_Player> GetSelectedPlayers()
         {
-            var selectedItems =
-                matchPlayersDataGridView.SelectedRows.Cast<DataGridViewRow>().Select<DataGridViewRow, MatchSessions_Player>(
-                    f => (MatchSessions_Player)f.DataBoundItem);
-
-            var matchSessionsPlayers = selectedItems as List<MatchSessions_Player> ?? selectedItems.ToList();
-
-            var primaryPlayer = matchPlayersDataGridView.CurrentRow == null
-                               ? null
-                               : (MatchSessions_Player)matchPlayersDataGridView.CurrentRow.DataBoundItem;
-            if (primaryPlayer == null)
-            {
-                primaryPlayer = (MatchSessions_Player)playerBindingSource.Current;
-            }
-
-            
-            if (!matchSessionsPlayers.Any())
-            {
-                if (primaryPlayer != null)
-                {
-                    matchSessionsPlayers = new List<MatchSessions_Player>() { primaryPlayer };
-                }
-            }
-            return Tuple.Create(matchSessionsPlayers, primaryPlayer);
+            return matchPlayersDataGridView.GetSelection<MatchSessions_Player>(playerBindingSource);
         }
 
         private void EditMatchSession_Load(object sender, EventArgs e)
@@ -146,32 +129,82 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void dataGridView2_DragDrop(object sender, DragEventArgs e)
         {
+            try
+            {
+                if (primaryPlayer == null)
+                {
+                    MessageBox.Show("Please select a Player first!");
+                    return;
+                }
 
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                foreach (var file in files)
+                {
+                    AddMatchmedia(file);
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Drag&Drop error!");
+            }
         }
-
+        private void AddMatchmedia (string file)
+        {
+            var row = (System.Data.DataRowView)matchmediaBindingSource.AddNew();
+            if (row == null)
+            {
+                throw new InvalidOperationException("Couldn't add new Matchmedia (was null)");
+            } 
+            var media = oldWrapper.GetCopyItem(row.Row);
+            media.AddDataFromFile(file);
+            oldWrapper.UpdateItem(media);
+        }
         private void showInExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var matchmedia = (Matchmedia)matchmediaBindingSource.Current;
-            if (matchmedia == null)
+            try {
+                var row = (DataRowView)matchmediaBindingSource.Current;
+                if (row == null)
+                {
+                    MessageBox.Show("Please select a File first!");
+                    return;
+                }
+                var matchmedia = oldWrapper.GetCopyItem(row.Row);
+                if (!System.IO.File.Exists(matchmedia.Path))
+                {
+                    MessageBox.Show("Matchmedia was deleted!");
+                    return;
+                }
+                System.Diagnostics.Process.Start(System.IO.Path.GetDirectoryName(matchmedia.Path));
+            }
+            catch (Exception ex)
             {
-                MessageBox.Show("Please select a File first!");
-                return;
+                ex.ShowError(logger, "Show in explorer error!");
             }
         }
 
         private void copyFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var matchmedia = (Matchmedia)matchmediaBindingSource.Current;
-            if (matchmedia == null)
+            try
             {
-                MessageBox.Show("Please select a File first!");
-                return;
+                var selection = playersDataGridView.GetSelection<DataRowView>(playerBindingSource);
+                var paths = new StringCollection();
+                paths.AddRange(selection.Item1.Select(r => oldWrapper.GetCopyItem(r.Row)).Select(m => m.Path).ToArray());
+                Clipboard.SetFileDropList(paths);
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Copy media to clipboard error!");
             }
         }
 
         private void matchPlayersDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             logger.LogWarning("{0}", "DataError: " + e.Exception);
+        }
+
+        private void dataGridView2_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
         }
 
 

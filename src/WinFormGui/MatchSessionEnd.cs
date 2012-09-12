@@ -182,11 +182,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
 
             media.Player = myMatchSession.IdentityPlayer;
-            media.Path = safeFileName;
-            media.Map = MediaAnalyser.analyseMedia(safeFileName).Map;
-            media.Name = Path.GetFileNameWithoutExtension(safeFileName);
-            media.Created = DateTime.Now;
-            media.Type = Path.GetExtension(safeFileName);
+            media.AddDataFromFile(safeFileName);
             media.MatchSession = session;
         }
 

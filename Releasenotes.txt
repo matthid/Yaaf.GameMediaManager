@@ -1,5 +1,6 @@
 
 Wish List
+Features:
  - Allow Custom Actions to be setup via GUI
  - Add CustomTool actions for converting (implementation)
  - Info Extraction from mediadata (players,mapname,server, ...) as plugin system
@@ -9,10 +10,16 @@ Wish List
  - Automatic Updates 
  (note: not any database update is supported. For example it is possible that you have to update to version 1.9 first before you can update to 2.0. Updatecode should consider such requirements)
  - GUI Redesign (nicer look&feel and more intuitive)
+ Code:
+ - integrate Context in IFSharpInterop 
+ - integrate IMatchSession in IFSharpInterop
+ - Documentation
 
-next Version 0.9
+12.09.2012 Version 0.9
  - Associate Matchmedia with player and allow adding matchmedia from other players to database
+ - Matchsession View to manage your session
  - Matchmedia View to manage your media
+ ! Please Update to 0.8.7.2 first!
 
 10.09.2012 Version 0.8.7.2
  - small fix to allow upgrade to 0.9

@@ -48,6 +48,11 @@ type ReplayWirePlugin() as x =
         let trace = Source "Yaaf.WirePlugin.ReplayWirePlugin" ""
         DefaultTracer trace "Initialization"
     
+    let interop = 
+        { new IFSharpInterop with
+            member x.GetMatchmediaPath media = 
+                Database.mediaPath media }
+
     let contextMenu = 
         let cm = 
             new ContextMenuStrip(
@@ -84,7 +89,7 @@ type ReplayWirePlugin() as x =
                 (fun () -> new EditGames(logger, Database.getContext())|> showForm)
             item Resources.MatchSessions Resources.favs
                 (fun () ->
-                    new ViewMatchSessions(logger, Database.getContext())|> showForm)
+                    new ViewMatchSessions(logger, Database.getContext(), interop)|> showForm)
             item Resources.EditPlayers Resources.edit
                 (fun () ->
                     let dbContext = Database.getContext()

@@ -6,7 +6,7 @@ The idea is basically to play a game and after playing already have the "Matchme
 You can tag matches, players and files. 
 You can also add some info to your enemies or mates, for example set their skill level, flag as cheater or save a description how they played in this game.
 
-All this data can be searched and exported (not implemented jet).
+All this data can be searched (not fully implemented) and exported (media files).
 
 WirePlugin goes even one step further and allows the same file/player/media management for any gaming you do besides ESL-Matches.
 
