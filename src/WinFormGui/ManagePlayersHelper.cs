@@ -48,7 +48,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             teamSubdt.Columns.Add("value", typeof(byte));
             teamSubdt.Columns.Add("name");
             int i;
-            for (i = 1; i < 11; i++)
+            for (i = 1; i < 12; i++)
             {
                 teamSubdt.Rows.Add((byte?)i, i.ToString());
             }

@@ -23,8 +23,8 @@ module DatabaseUpgrade =
     open Microsoft.FSharp.Linq
     let copyTableOnSubmit (newTable:Data.Linq.Table<_>) (oldTable:Data.Linq.Table<_>) creator = 
         let dict = new System.Collections.Generic.Dictionary<_,_>()
-        newTable.InsertAllOnSubmit
-            (Query.query <@ seq { for a in oldTable do yield a } @>
+        let newData = 
+            Query.query <@ seq { for a in oldTable do yield a } @>
                 |> Seq.map 
                     (fun a -> 
                         let newItem = creator a
@@ -34,7 +34,9 @@ module DatabaseUpgrade =
                         | None -> ()
                         newItem)
                 |> Seq.filter (fun a -> match a with | None -> false | _ -> true)
-                |> Seq.map (fun a -> match a with Some t -> t | _ -> failwith "should always be some"))
+                |> Seq.map (fun a -> match a with Some t -> t | _ -> failwith "should always be some")
+                |> Seq.toList
+        newTable.InsertAllOnSubmit(newData)
         (fun old ->
             dict.Item old)  
 
@@ -88,7 +90,7 @@ module DatabaseUpgrade =
             // db can not be used actually, but this will work
             let db = Database.getContext().Context
             use old = new OldContext(db.Connection)
-
+            
             // now db is actually a valid reference to our new database
             let upgradeFile = fileAdd |> Database.dbFile
             let databaseFile = "" |> Database.dbFile
@@ -226,17 +228,7 @@ module DatabaseUpgrade =
             let nick, eslId = Database.getIdentityPlayerInfo()           
             let identityPlayer = getPlayerByEslId db eslId nick
             
-            statusUpdate "matchmedias"
-            let getMatchmedia = 
-                copyTableOnSubmit db.Matchmedias old.Matchmedias
-                    (fun a -> 
-                        let matchSessionId = getMatchSessionId a.MatchSession
-                            
-                        NewMatchmedia(MatchSessionId = matchSessionId, Name = a.Name, Type = a.Type,
-                                        Map = a.Map, Path = a.Path, Created = a.Created, PlayerId = identityPlayer.Id)
-                        |> Some)
             
-            let getMatchmediaId (oldMatchMedia:OldMatchmedia) = (getMatchmedia oldMatchMedia).Id
                                     
             statusUpdate "matchsession players"
             let getMatchSessionPlayer = 
@@ -250,6 +242,37 @@ module DatabaseUpgrade =
                                 PlayerId = playerId, MatchSessionId = matchSessionId, Team = a.Team,
                                 Skill = a.Skill, Description = a.Description, Cheating = a.Cheating)
                                 |> Some)
+            
+            statusUpdate "submit matchsession players"
+            db.SubmitChanges()
+
+            statusUpdate "matchmedias"
+            let getMatchmedia = 
+                copyTableOnSubmit db.Matchmedias old.Matchmedias
+                    (fun a -> 
+                        let matchSession = getMatchSession a.MatchSession
+                        let attachedPlayers = 
+                            Query.query 
+                                <@ seq { for n in db.MatchSessions_Players do
+                                             if n.MatchSessionId = matchSession.Id && n.PlayerId = identityPlayer.Id then
+                                                 yield n } @>
+                        let loaded = attachedPlayers |> Seq.toArray
+                        if attachedPlayers
+                            |> Seq.isEmpty then
+                            try
+                                db.MatchSessions_Players.InsertOnSubmit(
+                                    NewMatchSessions_Player(
+                                        PlayerId = identityPlayer.Id, MatchSessionId = matchSession.Id, Team = 11uy,
+                                        Skill = Nullable(50uy), Description = "", Cheating = false))
+                                db.SubmitChanges()
+                            with exn -> 
+                                ()
+
+                        NewMatchmedia(MatchSessionId = matchSession.Id, Name = a.Name, Type = a.Type,
+                                        Map = a.Map, Path = a.Path, Created = a.Created, PlayerId = identityPlayer.Id)
+                        |> Some)
+            
+            let getMatchmediaId (oldMatchMedia:OldMatchmedia) = (getMatchmedia oldMatchMedia).Id
 
             statusUpdate "actionobject parameters"
             let getObjectParamter = 
