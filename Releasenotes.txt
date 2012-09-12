@@ -15,6 +15,9 @@ Features:
  - integrate IMatchSession in IFSharpInterop
  - Documentation
 
+12.09.2012 Version 0.9.0.1
+ - Fixed a bug in finding source database
+
 12.09.2012 Version 0.9
  - Associate Matchmedia with player and allow adding matchmedia from other players to database
  - Matchsession View to manage your session

@@ -20,10 +20,14 @@ module Database =
         sprintf "Data Source=%s" dbFile
     let private db = 
         let dbFile = (dbFile "")
+        let assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location
+        let currentPath = Path.GetDirectoryName assemblyPath
+
         let dbFileName = Path.GetFileName dbFile
+        let sourceDbFilePath = Path.Combine(currentPath, dbFileName)
         if not <| File.Exists dbFile then
-            if File.Exists dbFileName then
-                File.Copy(dbFileName, dbFile)
+            if File.Exists sourceDbFilePath then
+                File.Copy(sourceDbFilePath, dbFile)
             else
                 invalidOp "Source DB-File could not be found"
 
