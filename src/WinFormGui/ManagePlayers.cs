@@ -24,8 +24,6 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private Player me;
 
-        private List<Player> old;
-
         public ManagePlayers(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, Player me)
         {
             this.logger = logger;
@@ -43,9 +41,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void ManagePlayers_Load(object sender, EventArgs e)
         {
-            var players = from p in wrapper.Context.Players select p;
-            old = new List<Player>(players);
-            playerBindingSource.DataSource = new List<Player>(old);
+            playerBindingSource.DataSource = wrapper.Context.Players;
             SetMe(me);
         }
         
@@ -75,7 +71,6 @@ namespace Yaaf.WirePlugin.WinFormGui
             try
             {
                 // Add all new, delete all deleted and update all changed games.
-                //wrapper.UpdateDatabase(wrapper.Context.Players, playerBindingSource.Cast<Player>(), old);
                 //wrapper.MySubmitChanges();
                 Close();
             }
