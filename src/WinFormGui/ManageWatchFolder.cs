@@ -12,22 +12,28 @@ namespace Yaaf.WirePlugin.WinFormGui
     using System.Linq;
     using System.Windows.Forms;
 
+    using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
 
     public partial class ManageWatchFolder : Form
     {
         private readonly LocalDatabaseWrapper context;
 
+        private readonly WrapperDataTable.WrapperTable<WatchFolder> wrapperTable;
+
         private readonly Game game;
 
         private readonly Logging.LoggingInterfaces.ITracer logger;
+        
+        private WrapperDataTable.WrapperTable<WatchFolder> wrapperTableCopy;
 
-        private List<WatchFolder> old;
-
-        public ManageWatchFolder(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, Game game)
+        public ManageWatchFolder(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, WrapperDataTable.WrapperTable<WatchFolder> wrapperTable, Game game)
         {
             this.logger = logger;
             this.context = context;
+            this.wrapperTable = wrapperTable;
+            this.wrapperTableCopy = wrapperTable.Clone();
+            wrapperTableCopy.SetInitializer(w => w.GameId = game.Id);
             this.game = game;
             InitializeComponent();
         }
@@ -37,20 +43,11 @@ namespace Yaaf.WirePlugin.WinFormGui
             Logging.setupLogging(logger);
             try
             {
-                var folders =
-                    (from g in context.Context.WatchFolders where g.Game == game select g).AsEnumerable().Union(
-                        context.Context.GetChangeSet().Inserts.Where(d => d is WatchFolder).Select(d => (WatchFolder)d))
-                        .Except(
-                            context.Context.GetChangeSet().Deletes.Where(d => d is WatchFolder).Select(
-                                d => (WatchFolder)d));
-
-                old = new List<WatchFolder>(folders);
-                watchFolderBindingSource.DataSource = new List<WatchFolder>(old);
+                watchFolderBindingSource.DataSource = wrapperTableCopy.SourceTable;
             }
             catch (Exception ex)
             {
-                logger.LogError("{0}", "Can't load watchfolder data: " + ex);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ex.ShowError(logger, "Can't load watchfolder data");
                 Close();
             }
         }
@@ -60,18 +57,12 @@ namespace Yaaf.WirePlugin.WinFormGui
             try
             {
                 // Add all new, delete all deleted and update all changed games.
-                foreach (var w in watchFolderBindingSource.Cast<WatchFolder>())
-                {
-                    w.Game = game;
-                }
-
-                context.UpdateDatabase(context.Context.WatchFolders, watchFolderBindingSource.Cast<WatchFolder>(), old);
+                wrapperTable.ImportChanges(wrapperTableCopy);
                 Close();
             }
             catch (Exception ex)
             {
-                logger.LogError("{0}", "Can't change watchfolder changes: " + ex);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ex.ShowError(logger, "Can't change watchfolder changes");
             }
         }
 

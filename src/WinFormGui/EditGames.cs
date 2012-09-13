@@ -10,8 +10,10 @@ namespace Yaaf.WirePlugin.WinFormGui
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Windows.Forms;
 
+    using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
 
     public partial class EditGames : Form
@@ -57,12 +59,16 @@ namespace Yaaf.WirePlugin.WinFormGui
             try
             {
                 // TODO: Check for invalid WatchFolder Entries (well they are not critical)
+                foreach (var table in gameWatchFolders.Values)
+                {
+                    table.UpdateTable(wrapper.Context.WatchFolders);
+                }
+
                 wrapper.MySubmitChanges();
             }
             catch (Exception ex)
             {
-                logger.LogError("{0}", "Can't change game changes: " + ex);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ex.ShowError(logger, "Can't save game changes");
             }
         }
 
@@ -72,39 +78,51 @@ namespace Yaaf.WirePlugin.WinFormGui
             Close();
         }
 
-        private void OpenGameForm(Func<Game, Form> createForm)
+        private Game OpenGameForm(Func<Game, Form> createForm)
         {
             var current = (Game)gameBindingSource.Current;
             if (current == null)
             {
                 MessageBox.Show("Bitte ein Game auswählen");
-                return;
+                return null;
             }
             try
             {
-                //if (!old.Contains(current))
-                //{
-                //context.Games.InsertOnSubmit(current);
-                //context.SubmitChanges();
-                //old.Add(current);
-                //}
-
                 var form = createForm(current);
                 if (form != null)
                 {
                     form.ShowDialog();
                 }
+                return current;
             }
             catch (Exception ex)
             {
-                logger.LogError("{0}", "Can't open Game form: " + ex);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ex.ShowError(logger, "Can't open Game form");
             }
+            return current;
         }
 
+        private Dictionary<Game, WrapperDataTable.WrapperTable<WatchFolder>> gameWatchFolders =
+            new Dictionary<Game, WrapperDataTable.WrapperTable<WatchFolder>>();
+        
         private void button3_Click(object sender, EventArgs e)
         {
-            OpenGameForm((current) => new ManageWatchFolder(logger, wrapper, current));
+            OpenGameForm((game) =>
+            {
+                WrapperDataTable.WrapperTable<WatchFolder> wrapperTable;
+                if (!gameWatchFolders.TryGetValue(game, out wrapperTable))
+                {
+                    game.WatchFolder.Load();
+
+                    wrapperTable =
+                        WrapperDataTable.getWrapperDelegate(
+                            WrapperDataTable.getFilterDelegate<PropertyInfo>(
+                                new[] { "MyId", "GameId", "Folder", "Filter", "NotifyOnInactivity" }),
+                            game.WatchFolder);
+                    gameWatchFolders.Add(game, wrapperTable);
+                }
+                return new ManageWatchFolder(logger, wrapper, wrapperTable, game);
+            });
         }
 
         private void button4_Click(object sender, EventArgs e)

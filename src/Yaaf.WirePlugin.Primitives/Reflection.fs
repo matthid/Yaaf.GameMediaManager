@@ -24,4 +24,4 @@ module Reflection =
         p.SetValue(obj, value, null)
 
     let getPropertyValue (p:PropertyInfo) obj  = 
-        p.GetValue(obj, null) :?> 'a
+        p.GetValue(obj, null)

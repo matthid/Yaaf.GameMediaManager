@@ -26,7 +26,11 @@ module WrapperDataTable =
             for name, t in
                     properties 
                         |> Seq.map (fun prop -> prop.Name, prop.PropertyType) do
-                 table.Columns.Add(name, t) |> ignore
+                let newT = 
+                    if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<Nullable<_>> then
+                        Nullable.GetUnderlyingType t
+                    else t
+                table.Columns.Add(name, newT) |> ignore
             isInit <- true
 
         let rowReferences = new System.Collections.Generic.Dictionary<_,_>()
@@ -35,30 +39,36 @@ module WrapperDataTable =
         let copyItemReferences = new System.Collections.Generic.Dictionary<_,_>()
         let copyLinqData = new System.Collections.Generic.HashSet<_>()
         let updateItem (data:'T) (row:DataRow) = 
-            for prop, newValue in
+            for prop, value in
                     properties 
                         |> Seq.map (fun prop -> prop, row.[prop.Name]) do
                 let oldValue = Reflection.getPropertyValue prop data 
-                match newValue with
-                | :? System.DBNull -> ()
-                | _ -> 
-                    if (oldValue <> newValue) then
-                        Reflection.setProperty prop data newValue
+                let newValue =
+                    match value with
+                    | :? System.DBNull -> null
+                    | _ -> value
+                if (oldValue <> newValue) then
+                    Reflection.setProperty prop data newValue
 
         let updateRow (data:'T) (row:DataRow) =
             for name, value in
                     properties 
                         |> Seq.map (fun prop -> prop.Name, data |> Reflection.getPropertyValue prop) do
-                row.[name] <- value
+                let newValue = 
+                    if obj.ReferenceEquals(value, null) then System.DBNull.Value:>obj else value
+                row.[name] <- newValue
 
-        let addReferencesForNewItem row data =  
-            rowReferences.Add(row, data)
-            itemReferences.Add(data, row)  
+        let addCopyForRow row = 
             let copy = new 'T()
             updateItem copy row
             copyLinqData.Add copy |> ignore
             copyRowReferences.Add(row, copy)
             copyItemReferences.Add(copy, row)  
+
+        let addReferencesForNewItem row data =  
+            rowReferences.Add(row, data)
+            itemReferences.Add(data, row)  
+            addCopyForRow row
         
         let changes = new System.Collections.Generic.List<_>()
         let inserts = new System.Collections.Generic.List<_>()
@@ -67,14 +77,14 @@ module WrapperDataTable =
         let addData data = 
             let newRow = table.NewRow()
             updateRow data newRow
-            if not isListening then
-                addReferencesForNewItem newRow data
-            else // force reference to be this
-                let oldData = rowReferences.[newRow]
-                rowReferences.[newRow] <- data
-                itemReferences.Remove oldData |> ignore
-                itemReferences.Add (data, newRow)
-                updateItem (copyRowReferences.Item newRow) newRow
+            //if not isListening then
+            addReferencesForNewItem newRow data
+//            else // force reference to be this
+//                let oldData = rowReferences.[newRow]
+//                rowReferences.[newRow] <- data
+//                itemReferences.Remove oldData |> ignore
+//                itemReferences.Add (data, newRow)
+//                updateItem (copyRowReferences.Item newRow) newRow
             table.Rows.Add(newRow)
 
 
@@ -101,14 +111,26 @@ module WrapperDataTable =
                 copyLinqData.Add (copyRowReferences.Item row) |> ignore
             else
                 inserts.Add row
-                let newItem = new 'T()
-                initializer newItem
-                updateRow newItem row
-                addReferencesForNewItem row newItem
+                if not <| rowReferences.ContainsKey row then
+                    let newItem = new 'T()
+                    initializer newItem
+                    addReferencesForNewItem row newItem
+
+        let handleNewRow row = 
+            let newItem = new 'T()
+            initializer newItem
+            updateRow newItem row
+
         let startListen () =
-            table.RowChanged |> Event.add (fun e -> if e.Action <> DataRowAction.Commit then handleChanged e.Row)
+            table.RowChanged
+                |> Event.add 
+                    (fun e ->
+                        match e.Action with
+                        | DataRowAction.Commit -> ()
+                        | DataRowAction.Add -> handleInsertion e.Row
+                        | _ -> handleChanged e.Row)
             table.RowDeleted |> Event.add (fun e -> handleDeletion e.Row)
-            table.TableNewRow|> Event.add (fun e -> handleInsertion e.Row)
+            table.TableNewRow|> Event.add (fun e -> handleNewRow e.Row)
             isListening <- true
         let getInfo = (fun r -> rowReferences.Item r, r)
         
@@ -149,8 +171,8 @@ module WrapperDataTable =
                 updateItem item copyItem
 
             for currentRow in otherTable.Deletions |> Seq.map (fun (item, otherRow) -> itemReferences.Item item) do
-                
                 currentRow.Delete()
+
             for origItem, changedItem in otherTable.Updates |> Seq.map (fun (i,r) -> i, otherTable.GetCopyItem r) do
                 updateItem origItem changedItem
 

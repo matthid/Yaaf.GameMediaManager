@@ -8,17 +8,52 @@
 namespace Yaaf.WirePlugin.WinFormGui.Database
 {
     using System;
-    partial class Matchmedia
+    class MyIdHelper
     {
+        private readonly Func<int> id;
+
+        public MyIdHelper(Func<int> id)
+        {
+            this.id = id;
+        }
+
+        private int? myId;
         public int MyId
         {
             get
             {
-                return Id;
+                if (!myId.HasValue)
+                {
+                    var readId = id();
+                    myId = readId;
+                    return readId;
+                }
+
+                return myId.Value;
             }
             set
             {
-                _Id = value;
+                myId = value;
+            }
+        }
+    }
+
+    partial class Matchmedia
+    {
+        private MyIdHelper myId ;
+        partial void OnCreated()
+        {
+            myId = new MyIdHelper(() => Id);
+        }
+        public int MyId
+        {
+            get
+            {
+                return myId.MyId;
+            }
+            set
+            {
+                myId.MyId = value;
             }
         }
     }
@@ -64,6 +99,22 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 
     partial class WatchFolder
     {
+        private MyIdHelper myId;
+        partial void OnCreated()
+        {
+            myId = new MyIdHelper(() => Id);
+        }
+        public int MyId
+        {
+            get
+            {
+                return myId.MyId;
+            }
+            set
+            {
+                myId.MyId = value;
+            }
+        }
     }
 
     partial class LocalDataContext
