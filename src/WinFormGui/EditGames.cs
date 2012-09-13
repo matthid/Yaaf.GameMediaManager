@@ -22,8 +22,6 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private readonly LocalDatabaseWrapper wrapper;
 
-        private List<Game> old;
-
         private bool saveData = false;
 
         public EditGames(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context)
@@ -41,12 +39,11 @@ namespace Yaaf.WirePlugin.WinFormGui
             Logging.setupLogging(logger);
             var games = from g in context.Games select g;
 
-            old = new List<Game>(games);
-            foreach (var game in old)
+            foreach (var game in games)
             {
                 game.MatchFormAction.Load();
             }
-            gameBindingSource.DataSource = new List<Game>(old);
+            gameBindingSource.DataSource = context.Games;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -59,11 +56,7 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             try
             {
-                // Add all new, delete all deleted and update all changed games.
-                wrapper.UpdateDatabase(context.Games, gameBindingSource.Cast<Game>(), old);
-
                 // TODO: Check for invalid WatchFolder Entries (well they are not critical)
-
                 wrapper.MySubmitChanges();
             }
             catch (Exception ex)
