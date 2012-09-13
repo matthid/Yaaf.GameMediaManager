@@ -105,16 +105,28 @@ namespace Yaaf.WirePlugin.WinFormGui
                 }
 
                 var mediaToCopy = changes.Inserts.Select(o => o as Matchmedia).Where(o => o != null).ToList();
-                
-                context.MySubmitChanges();
-                foreach (var media in mediaToCopy)
-                {
-                    var newPath = interop.GetMatchmediaPath(media);
-                    System.IO.File.Copy(media.Path, newPath);
-                    media.Path = newPath;
-                }
 
                 context.MySubmitChanges();
+
+                try
+                {
+                    foreach (var media in mediaToCopy)
+                    {
+                        var newPath = interop.GetMatchmediaPath(media);
+                        if (System.IO.File.Exists(newPath))
+                        {
+                            throw new InvalidOperationException(string.Format("{0} should not exists, delete this file cleanup your database!", newPath));
+                        }
+                        System.IO.File.Move(media.Path, newPath);
+                        media.Path = newPath;
+                    }
+                }
+                finally
+                {
+                    // submit at least the moved items
+                    context.MySubmitChanges();
+                }
+
                 Close();
             }
             catch (Exception ex)
