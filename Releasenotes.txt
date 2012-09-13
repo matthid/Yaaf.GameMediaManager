@@ -10,10 +10,16 @@ Features:
  - Automatic Updates 
  (note: not any database update is supported. For example it is possible that you have to update to version 1.9 first before you can update to 2.0. Updatecode should consider such requirements)
  - GUI Redesign (nicer look&feel and more intuitive)
+
  Code:
  - integrate Context in IFSharpInterop 
  - integrate IMatchSession in IFSharpInterop
  - Documentation
+ - Refactoring some clump classes (WrapperDataTable)
+ - Using WrapperDataTable instead of EntitySet to be able to sort in DataGridView
+
+13.09.2012 Version 0.9.1.0
+ - Changed init code so that no .sdf file has to be shipped
 
 12.09.2012 Version 0.9.0.1
  - Fixed a bug in finding source database

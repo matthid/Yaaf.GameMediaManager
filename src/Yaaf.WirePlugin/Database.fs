@@ -18,20 +18,33 @@ module Database =
         [ pluginFolder; dbFileName ] |> pathCombine
     let connectString dbFile = 
         sprintf "Data Source=%s" dbFile
+    let private initDatabase (db:Database.LocalDataContext) = 
+        let initActions = 
+            [ "CopyToEslMatchmedia", 0      
+              "TypeFilter", 1               
+              "RegexPathFilter", 1          
+              "RegexNameFilter", 1          
+              "MapNameFilter", 1            
+              "TagFilter", 1                
+              "CopyMedia", 1                
+              "DeleteMedia", 0              
+              "DeleteSession", 0            
+              "ExtractMatchmedia", 0        
+              "ExternalToolEachMedia", 1    
+              "CopyToTempFolder",0          
+              "ExternalTool",1 ]            
+            |> Seq.map (fun (name, parameters) ->
+                Database.Action(Name=name,Parameters=byte parameters))
+        db.Actions.InsertAllOnSubmit initActions
+        db.SubmitChanges()          
+
     let private db = 
         let dbFile = (dbFile "")
-        let assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location
-        let currentPath = Path.GetDirectoryName assemblyPath
-
-        let dbFileName = Path.GetFileName dbFile
-        let sourceDbFilePath = Path.Combine(currentPath, dbFileName)
-        if not <| File.Exists dbFile then
-            if File.Exists sourceDbFilePath then
-                File.Copy(sourceDbFilePath, dbFile)
-            else
-                invalidOp "Source DB-File could not be found"
-
-        new Database.LocalDataContext(connectString dbFile)
+        let db = new Database.LocalDataContext(connectString dbFile)
+        if not <| db.DatabaseExists() then
+            db.CreateDatabase()
+            initDatabase db
+        db
          
         
     let private wrapper = 

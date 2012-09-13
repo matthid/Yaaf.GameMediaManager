@@ -322,11 +322,6 @@
     <None Include="Resources\reddragon_.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LocalDatabase.sdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
