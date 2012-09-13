@@ -114,41 +114,27 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         public ActionObject GetMoveToMatchmediaActionObject()
         {
-            var wasNotSet = false;
-            if (Settings.Default.DefaultEslWarAction == -1)
+            var defActionObjectName = "DefaultActionObject_CopyToEslMatchMedia";
+            var def = 
+                (from actionObject in context.ActionObjects 
+                 where actionObject.Name == defActionObjectName
+                 select actionObject).SingleOrDefault();
+            if (def == null)
             {
-                wasNotSet = true;
                 var contextCopy = Copy();
                 var copyAction = contextCopy.GetAction("CopyToEslMatchmedia");
 
                 var obj = new ActionObject();
                 obj.Action = copyAction;
-                obj.Name = "DefaultActionObject_CopyToEslMatchMedia";
+                obj.Name = defActionObjectName;
 
                 contextCopy.Context.ActionObjects.InsertOnSubmit(obj);
                 contextCopy.Context.SubmitChanges();
-                Settings.Default.DefaultEslWarAction = obj.Id;
-                Settings.Default.Save();
+                def = (from actionObject in context.ActionObjects
+                       where actionObject.Name == defActionObjectName
+                       select actionObject).Single();
             }
-
-            var id = Settings.Default.DefaultEslWarAction;
-            var t = (from tag in context.ActionObjects where tag.Id == id select tag);
-            try
-            {
-                return t.Single();
-            }
-            catch (InvalidOperationException e)
-            {
-                if (!wasNotSet)
-                {
-                    logger.LogError(
-                        "Could not find DefaultActionObject_CopyToEslMatchMedia object trying to reset (Error: {0}", e);
-                    Settings.Default.DefaultEslWarAction = -1;
-                    return GetMoveToMatchmediaActionObject();
-                }
-
-                throw;
-            }
+            return def;
         }
 
         private Database.Action GetAction(string name)

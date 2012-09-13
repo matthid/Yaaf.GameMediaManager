@@ -36,7 +36,7 @@ module Database =
             |> Seq.map (fun (name, parameters) ->
                 Database.Action(Name=name,Parameters=byte parameters))
         db.Actions.InsertAllOnSubmit initActions
-        db.SubmitChanges()          
+        db.SubmitChanges()
 
     let private db = 
         let dbFile = (dbFile "")

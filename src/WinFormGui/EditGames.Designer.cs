@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditGames));
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.gameDataGridView = new System.Windows.Forms.DataGridView();
             this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.shortnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,15 +45,15 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gameDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gameBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // gameDataGridView
             // 
-            this.dataGridView1.AutoGenerateColumns = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.gameDataGridView.AutoGenerateColumns = false;
+            this.gameDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gameDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.idDataGridViewTextBoxColumn,
             this.nameDataGridViewTextBoxColumn,
             this.shortnameDataGridViewTextBoxColumn,
@@ -63,11 +63,11 @@
             this.enableWarMatchFormDataGridViewCheckBoxColumn,
             this.warMatchFormSaveFilesDataGridViewCheckBoxColumn,
             this.publicMatchFormSaveFilesDataGridViewCheckBoxColumn});
-            this.dataGridView1.DataSource = this.gameBindingSource;
-            resources.ApplyResources(this.dataGridView1, "dataGridView1");
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridView1_UserAddedRow);
-            this.dataGridView1.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridView1_UserDeletedRow);
+            this.gameDataGridView.DataSource = this.gameBindingSource;
+            resources.ApplyResources(this.gameDataGridView, "gameDataGridView");
+            this.gameDataGridView.Name = "gameDataGridView";
+            this.gameDataGridView.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridView1_UserAddedRow);
+            this.gameDataGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
             // 
             // idDataGridViewTextBoxColumn
             // 
@@ -164,12 +164,12 @@
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.gameDataGridView);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "EditGames";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditGames_FormClosing);
             this.Load += new System.EventHandler(this.EditGames_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gameDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gameBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -177,7 +177,7 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView gameDataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn shortnameDataGridViewTextBoxColumn;

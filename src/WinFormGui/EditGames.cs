@@ -40,7 +40,12 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             Logging.setupLogging(logger);
             var games = from g in context.Games select g;
+
             old = new List<Game>(games);
+            foreach (var game in old)
+            {
+                game.MatchFormAction.Load();
+            }
             gameBindingSource.DataSource = new List<Game>(old);
         }
 
@@ -138,7 +143,6 @@ namespace Yaaf.WirePlugin.WinFormGui
                 }
                 // Setup default action for this game (add to matchmedia path)
                 var copyAction = wrapper.GetMoveToMatchmediaActionObject();
-
                 var assoc = new MatchFormAction();
                 assoc.ActionObject = copyAction;
                 assoc.Game = item;
@@ -153,13 +157,24 @@ namespace Yaaf.WirePlugin.WinFormGui
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-
-        private void dataGridView1_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
+        
+        private void dataGridView1_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            // TODO: Should we really delete all related Actions?
-            var item = (Game)e.Row.DataBoundItem;
-            item.MatchFormAction.Load();
-            context.MatchFormActions.DeleteAllOnSubmit(item.MatchFormAction);
+            try
+            {
+                // TODO: Should we really delete all related Actions?
+                var item = (Game)e.Row.DataBoundItem;
+                if (item == null)
+                {
+                    item = (Game)gameBindingSource.Current;
+                }
+
+                context.MatchFormActions.DeleteAllOnSubmit(item.MatchFormAction);
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Can't delete Associated Actions for game");
+            }
         }
     }
 }

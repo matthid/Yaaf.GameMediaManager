@@ -5,9 +5,6 @@
     <Setting Name="MatchMediaPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DefaultEslWarAction" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-1</Value>
-    </Setting>
     <Setting Name="DatabaseSchemaVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
