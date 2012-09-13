@@ -70,21 +70,14 @@ module WrapperDataTable =
             itemReferences.Add(data, row)  
             addCopyForRow row
         
-        let changes = new System.Collections.Generic.List<_>()
+        let updates = new System.Collections.Generic.List<_>()
         let inserts = new System.Collections.Generic.List<_>()
         let deletions = new System.Collections.Generic.List<_>()
         let mutable isListening = false
         let addData data = 
             let newRow = table.NewRow()
             updateRow data newRow
-            //if not isListening then
             addReferencesForNewItem newRow data
-//            else // force reference to be this
-//                let oldData = rowReferences.[newRow]
-//                rowReferences.[newRow] <- data
-//                itemReferences.Remove oldData |> ignore
-//                itemReferences.Add (data, newRow)
-//                updateItem (copyRowReferences.Item newRow) newRow
             table.Rows.Add(newRow)
 
 
@@ -92,9 +85,9 @@ module WrapperDataTable =
             for d in data do
                 addData d
 
-        let handleChanged row = 
-            if not <| changes.Contains row then
-                changes.Add row
+        let handleUpdate row = 
+            if not <| updates.Contains row && not <| inserts.Contains row then
+                updates.Add row
                 
             let copyItem = copyRowReferences.Item row
             updateItem copyItem row
@@ -111,6 +104,8 @@ module WrapperDataTable =
                 copyLinqData.Add (copyRowReferences.Item row) |> ignore
             else
                 inserts.Add row
+                if updates.Contains row then
+                    updates.Remove row |> ignore
                 if not <| rowReferences.ContainsKey row then
                     let newItem = new 'T()
                     initializer newItem
@@ -122,13 +117,14 @@ module WrapperDataTable =
             updateRow newItem row
 
         let startListen () =
+            table.AcceptChanges()
             table.RowChanged
                 |> Event.add 
                     (fun e ->
                         match e.Action with
                         | DataRowAction.Commit -> ()
                         | DataRowAction.Add -> handleInsertion e.Row
-                        | _ -> handleChanged e.Row)
+                        | _ -> handleUpdate e.Row)
             table.RowDeleted |> Event.add (fun e -> handleDeletion e.Row)
             table.TableNewRow|> Event.add (fun e -> handleNewRow e.Row)
             isListening <- true
@@ -136,7 +132,7 @@ module WrapperDataTable =
         
         let discardChangeData() = 
             deletions.Clear()
-            changes.Clear()
+            updates.Clear()
             inserts.Clear()
 
         let updateTable (table:System.Data.Linq.Table<'T>) = 
@@ -152,8 +148,12 @@ module WrapperDataTable =
                 |> Seq.map convert
             table.InsertAllOnSubmit(inserts |> updateAndConvert)
             table.DeleteAllOnSubmit(deletions |> Seq.map getInfo |> Seq.map convert)
-            changes |> updateAndConvert |> ignore
+            
+            let changeList =
+                System.Collections.Generic.List(updates |> updateAndConvert)
             discardChangeData()
+
+            changeList
         
         let updateFromChangedData copied = 
             let row = copyItemReferences.Item copied
@@ -162,18 +162,20 @@ module WrapperDataTable =
         let updateItem originalItem newItem = 
             let row = itemReferences.Item originalItem
             updateRow newItem row
+            let copy = copyRowReferences.Item row
+            updateItem copy row
 
         let importChanges (otherTable:WrapperTable<'T>) = 
             let mapToRow = Seq.map 
 
-            for item, copyItem in otherTable.Inserts |> Seq.map (fun (item, otherRow) -> item, otherTable.GetCopyItem otherRow) do
+            for item, copyItem in otherTable.Inserts |> Seq.map (fun (item, otherRow) -> item, otherTable.InternalGetCopyItem otherRow) do
                 addData item
                 updateItem item copyItem
 
             for currentRow in otherTable.Deletions |> Seq.map (fun (item, otherRow) -> itemReferences.Item item) do
                 currentRow.Delete()
 
-            for origItem, changedItem in otherTable.Updates |> Seq.map (fun (i,r) -> i, otherTable.GetCopyItem r) do
+            for origItem, changedItem in otherTable.Updates |> Seq.map (fun (i,r) -> i, otherTable.InternalGetCopyItem r) do
                 updateItem origItem changedItem
 
             table.AcceptChanges()
@@ -190,7 +192,7 @@ module WrapperDataTable =
                             copy, 
                             let row = copyItemReferences.Item copy
                             rowReferences.Item row) do
-                newTable.Add origData
+                newTable.InternalAdd origData
                 newTable.UpdateItem(origData, copyData)
 
             newTable.StartListening()
@@ -212,18 +214,29 @@ module WrapperDataTable =
             table.AcceptChanges()
 
         member x.UpdateItem (changedCopy) = updateFromChangedData(changedCopy)
-        member internal x.AddItems items = 
-            checkInit()
-            addAllData items
-        member internal x.Add item = 
-            checkInit()
+        member internal x.InternalAddItems items = addAllData items
+        member internal x.InternalAdd item = addData item
+        member x.Add item = 
             addData item
+            table.AcceptChanges()
+        member x.AddRange items = 
+            addAllData items
+            table.AcceptChanges()
+        member x.DeleteCopyItem item = 
+            let row = copyItemReferences.Item item
+            row.Delete()
+
         member internal x.DiscardChanges() = 
             checkInit()
             discardChangeData()
+            table.AcceptChanges()
         
         member x.UpdateTable table = updateTable table
-        member x.GetCopyItem row = copyRowReferences.Item row
+        member internal x.InternalGetCopyItem row = copyRowReferences.Item row
+        member x.GetCopyItem row = 
+            match copyRowReferences.TryGetValue row with
+            | true, v -> Some v
+            | _ -> None
         member x.Clone () = 
             checkInit()
             clone()
@@ -245,7 +258,7 @@ module WrapperDataTable =
         member internal x.Deletions 
             with get() = deletions |> Seq.map getInfo
         member internal x.Updates 
-            with get() = changes |> Seq.map getInfo
+            with get() = updates |> Seq.map getInfo
 
     
 
@@ -272,7 +285,7 @@ module WrapperDataTable =
         let props = getProps<'a> filter
         let wrapper = new WrapperTable<_>(props)
         wrapper.InitColumns()
-        wrapper.AddItems(data)
+        wrapper.InternalAddItems(data)
         wrapper.StartListening()
         wrapper
 

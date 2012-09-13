@@ -48,10 +48,6 @@ type ReplayWirePlugin() as x =
         let trace = Source "Yaaf.WirePlugin.ReplayWirePlugin" ""
         DefaultTracer trace "Initialization"
     
-    let interop = 
-        { new IFSharpInterop with
-            member x.GetMatchmediaPath media = 
-                Database.mediaPath media }
 
     let contextMenu = 
         let cm = 
@@ -86,14 +82,13 @@ type ReplayWirePlugin() as x =
             item Resources.Info Resources.i
                 (fun () -> new InfoForm(logger) |> showForm)
             item Resources.EditGames Resources.add
-                (fun () -> new EditGames(logger, Database.getContext())|> showForm)
+                (fun () -> new EditGames(logger)|> showForm)
             item Resources.MatchSessions Resources.favs
                 (fun () ->
-                    new ViewMatchSessions(logger, Database.getContext(), interop)|> showForm)
+                    new ViewMatchSessions(logger)|> showForm)
             item Resources.EditPlayers Resources.edit
                 (fun () ->
-                    let dbContext = Database.getContext()
-                    new ManagePlayers(logger, dbContext, Database.getIdentityPlayer dbContext.Context)|> showForm)
+                    new ManagePlayers(logger)|> showForm)
             seperator()
             item Resources.CloseMenu Resources.cancel id
         ]
@@ -141,7 +136,7 @@ type ReplayWirePlugin() as x =
                 return! loop grabbingNum newWaitingList
             }
         loop 0 [])
-            
+        
     let getGrabAction db matchSession link = 
         async  {
             try
@@ -206,17 +201,17 @@ type ReplayWirePlugin() as x =
                             Startdate = session.StartTime,
                             Duration = elapsedTime), false
                 
-                matchSession.MatchSessions_Player.Load()
-                matchSession.Matchmedia.Load()
                 if not sessionAdded then
                     // Add me to the session...
                     let me = Database.getIdentityPlayer db
                     let newPlayerAssociation = 
                         new Database.MatchSessions_Player(
+                            MatchSession = matchSession,
                             Cheating = false,
                             Player = me,
                             Skill = System.Nullable(100uy),
-                            Team = 1uy)
+                            Team = 11uy)
+                    newPlayerAssociation.SetLoaded()
                     matchSession.MatchSessions_Player.Add(newPlayerAssociation)
                     db.MatchSessions.InsertOnSubmit matchSession
                 
@@ -274,18 +269,17 @@ type ReplayWirePlugin() as x =
         waitGrabbing()
         let deleteData =
             if (session.IsEslMatch && game.EnableWarMatchForm) || (not session.IsEslMatch && game.EnableMatchForm) then
-                let formSession = 
-                    { new IMatchSession with
-                        member x.LoadEslPlayers link = 
-                            getGrabAction db matchSession link
-                        member x.Session 
-                            with get() = matchSession
-                        member x.IdentityPlayer 
-                            with get() = Database.getIdentityPlayer db
-                        }
-                let form = new MatchSessionEnd(logger, session.Context, formSession)
+                let mediaWrapper = WinFormGui.Helpers.GetWrapper(matchSession.Matchmedia)
+                let playerWrapper = WinFormGui.Helpers.GetWrapper(matchSession.MatchSessions_Player)
+                let form = new MatchSessionEnd(logger, session.Context,(mediaWrapper,playerWrapper), matchSession)
                 form.ShowDialog() |> ignore
-                form.DeleteMatchmedia
+                if form.DeleteMatchmedia.HasValue && not form.DeleteMatchmedia.Value then
+                    mediaWrapper.UpdateTable session.Context.Context.Matchmedias |> ignore
+                    session.Context.UpdateMatchSessionPlayerTable playerWrapper
+                if not <| form.DeleteMatchmedia.HasValue then
+                    false
+                else
+                    form.DeleteMatchmedia.Value
             else
                 // Could be changed in the meantime
                 (session.IsEslMatch && not game.WarMatchFormSaveFiles) || (not session.IsEslMatch && not game.PublicMatchFormSaveFiles)
@@ -346,7 +340,19 @@ type ReplayWirePlugin() as x =
                         MessageBoxIcon.Warning) 
                         |> ignore
                 
-            
+        
+    let interop = 
+        { new IFSharpInterop with
+            member x.GetMatchmediaPath media = 
+                Database.mediaPath media
+            member x.GetIdentityPlayer db = Database.getIdentityPlayer db.Context
+            member x.GetNewContext () = Database.getContext()     
+            member x.GetFetchPlayerTask link =
+                let asyncTask = async { return! EslGrabber.getMatchMembers link } 
+                Primitives.Task(asyncTask) :> Primitives.ITask<_> 
+            member x.FillWrapperTable(players, wrapperTable, mediaTable) = 
+                Database.fillWrapperTable players wrapperTable mediaTable }    
+
     do  logger.logVerb "Starting up Yaaf.WirePlugin (%s)" ProjectConstants.VersionString
     static do 
         Application.EnableVisualStyles()
@@ -394,13 +400,16 @@ type ReplayWirePlugin() as x =
     override x.init () =
         try 
             logger.logVerb "Init Plugin" 
+
+            FSharpInterop.Interop <- interop
+
             x.setIcon(Resources.bluedragon)
             gameInterface <- Some (InterfaceFactory.gameInterface())
         
             let task = DatabaseUpgrade.getUpgradeDatabaseTask logger
             match task with
             | Some (t, update) ->     
-                let t = Primitives.Task<_>(t, update)
+                let t = Primitives.Task<_>(t, update) :> Primitives.ITask<_>
                 WaitingForm.StartTask(logger, t, "Upgrading database...")
                 match t.ErrorObj with
                 | Some error ->

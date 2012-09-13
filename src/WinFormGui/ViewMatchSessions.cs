@@ -13,21 +13,20 @@ namespace Yaaf.WirePlugin.WinFormGui
 
     using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
-
+    using WrapperMatchmediaTable = Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>;
+    using WrapperPlayerTable = Primitives.WrapperDataTable.WrapperTable<Database.MatchSessions_Player>;
+    using SessionData = Tuple<Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>, Primitives.WrapperDataTable.WrapperTable<Database.MatchSessions_Player>>;
     public partial class ViewMatchSessions : Form
     {
         private readonly Logging.LoggingInterfaces.ITracer logger;
 
         private readonly LocalDatabaseWrapper context;
 
-        private readonly IFSharpInterop interop;
-
         public ViewMatchSessions(
-            Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, IFSharpInterop interop)
+            Logging.LoggingInterfaces.ITracer logger)
         {
             this.logger = logger;
-            this.context = context;
-            this.interop = interop;
+            this.context = FSharpInterop.Interop.GetNewContext();
             InitializeComponent();
         }
 
@@ -43,27 +42,23 @@ namespace Yaaf.WirePlugin.WinFormGui
                 Close();
             }
         }
-        private Dictionary<MatchSession, Primitives.WrapperDataTable.WrapperTable<Matchmedia>> sessionData = new Dictionary<MatchSession, WrapperDataTable.WrapperTable<Matchmedia>>(); 
+        private Dictionary<MatchSession, SessionData> sessionData = new Dictionary<MatchSession, SessionData>();
         private void matchSessionDataGridView_DoubleClick(object sender, EventArgs e)
         {
             try
             {
                 var selectedSession = (MatchSession)matchSessionBindingSource.Current;
                 if (selectedSession == null) return;
-                WrapperDataTable.WrapperTable<Matchmedia> wrapperTable;
+                SessionData wrapperTable;
                 if (!sessionData.TryGetValue(selectedSession, out wrapperTable))
                 {
-                    selectedSession.Matchmedia.Load();
-
-                    wrapperTable =
-                        WrapperDataTable.getWrapperDelegate(
-                            WrapperDataTable.getFilterDelegate<PropertyInfo>(
-                                new[] { "MyId", "Created", "Map", "Name", "Path", "Type", "PlayerId", "MatchsessionId" }),
-                            selectedSession.Matchmedia);
+                    var wrapperMatchmediaTable = Helpers.GetWrapper(selectedSession.Matchmedia);
+                    var wrapperPlayerTable = Helpers.GetWrapper(selectedSession.MatchSessions_Player);
+                    wrapperTable = Tuple.Create(wrapperMatchmediaTable, wrapperPlayerTable);
                     sessionData.Add(selectedSession, wrapperTable);
                 }
 
-                var editForm = new EditMatchSession(logger, context, wrapperTable, selectedSession);
+                var editForm = new EditMatchSession(logger, context, wrapperTable, selectedSession, false);
                 editForm.ShowDialog();
             }
             catch (Exception ex)
@@ -89,9 +84,12 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             try
             {
-                foreach (var wrapperTable in sessionData.Values)
+                foreach (var wrapperTables in sessionData.Values)
                 {
-                    wrapperTable.UpdateTable(context.Context.Matchmedias);
+                    var mediaTable = wrapperTables.Item1;
+                    mediaTable.UpdateTable(context.Context.Matchmedias);
+                    var playerTable = wrapperTables.Item2;
+                    context.UpdateMatchSessionPlayerTable(playerTable);
                 }
 
                 var changes = context.Context.GetChangeSet();
@@ -112,7 +110,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                 {
                     foreach (var media in mediaToCopy)
                     {
-                        var newPath = interop.GetMatchmediaPath(media);
+                        var newPath = FSharpInterop.Interop.GetMatchmediaPath(media);
                         if (System.IO.File.Exists(newPath))
                         {
                             throw new InvalidOperationException(string.Format("{0} should not exists, delete this file cleanup your database!", newPath));

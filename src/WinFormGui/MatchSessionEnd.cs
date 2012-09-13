@@ -1,30 +1,28 @@
 ﻿// ----------------------------------------------------------------------------
 // This file (MatchSessionEnd.cs) is subject to the terms and conditions defined in
 // file 'LICENSE.txt', which is part of this source code package (Yaaf.WirePlugin).
-// Last Modified: 2012/09/10 14:08
+// Last Modified: 2012/09/13 19:20
 // Created: 2012/08/26 20:57
 // ----------------------------------------------------------------------------
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
     using System;
-    using System.IO;
-    using System.Linq;
+    using System.Data;
     using System.Windows.Forms;
 
     using Microsoft.FSharp.Control;
     using Microsoft.FSharp.Core;
 
-    using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
 
-    public interface IMatchSession
-    {
-        MatchSession Session { get; }
+    using WrapperMatchmediaTable = Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>;
+    using WrapperPlayerTable = Primitives.WrapperDataTable.WrapperTable<Database.MatchSessions_Player>;
+    using SessionData =
+        System.Tuple
+            <Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>,
+                Primitives.WrapperDataTable.WrapperTable<Database.MatchSessions_Player>>;
 
-        Player IdentityPlayer { get; }
-        FSharpAsync<Unit> LoadEslPlayers(string link);
-    }
 
     public partial class MatchSessionEnd : Form
     {
@@ -32,71 +30,62 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private readonly Logging.LoggingInterfaces.ITracer logger;
 
-        private readonly IMatchSession myMatchSession;
+        private readonly WrapperMatchmediaTable matchmediaTableCopy;
+
+        private readonly WrapperPlayerTable playerTableCopy;
 
         private readonly MatchSession session;
 
-        private ManageMatchmediaHelper matchmediaHelper;
+        private readonly SessionData sessionData;
+
+        private Player primaryPlayer;
 
         public MatchSessionEnd(
-            Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, IMatchSession session)
+            Logging.LoggingInterfaces.ITracer logger,
+            LocalDatabaseWrapper context,
+            SessionData sessionData,
+            MatchSession session)
         {
             this.logger = logger;
             this.context = context;
-            myMatchSession = session;
-            this.session = session.Session;
-            InitializeComponent();
+            this.sessionData = sessionData;
+            matchmediaTableCopy = sessionData.Item1.Clone();
 
-            matchmediaHelper = new ManageMatchmediaHelper(
-                logger, context, session.Session, matchmediaBindingSource, matchmediaDataGridView);
+            playerTableCopy = sessionData.Item2.Clone();
+            this.session = session;
+            InitializeComponent();
         }
 
-        public bool DeleteMatchmedia { get; private set; }
+        public bool? DeleteMatchmedia { get; private set; }
 
         private void MatchSessionEnd_Load(object sender, EventArgs e)
         {
             Logging.setupLogging(logger);
+            try
+            {
+                primaryPlayer = FSharpInterop.Interop.GetIdentityPlayer(context);
+                matchmediaTableCopy.SetInitializer(
+                    m =>
+                        {
+                            m.MatchSessionId = session.Id;
+                            m.PlayerId = primaryPlayer.Id;
+                        });
 
-            session.MatchSessions_Tag.Load();
-
-            tagTextBox.Text = string.Join(
-                ",", (from assoc in session.MatchSessions_Tag select assoc.Tag.Name).ToArray());
-            eslMatchCheckBox.Checked = session.EslMatchLink != null;
-            EslMatchIdTextBox.Text = string.IsNullOrEmpty(session.EslMatchLink)
-                                         ? "http://www.esl.eu/"
-                                         : session.EslMatchLink;
-
-            EslMatchIdTextBox.Enabled = session.EslMatchLink != null;
-            matchmediaHelper.Load();
+                tagTextBox.Text = session.MyTags;
+                matchmediaBindingSource.DataSource = matchmediaTableCopy.SourceTable;
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Could not load SessionEnd-View");
+                Close();
+            }
         }
 
         private void saveMatchmediaButton_Click(object sender, EventArgs e)
         {
             try
             {
-                SetEslMatchId();
-
-                var tags = tagTextBox.Text.Split(',');
-                var toRemove = session.MatchSessions_Tag.ToDictionary(t => t.Tag.Name, t => t);
-                foreach (var tag in tags)
-                {
-                    toRemove.Remove(tag);
-                    if (!(from assoc in session.MatchSessions_Tag where assoc.Tag.Name == tag select assoc).Any())
-                    {
-                        var association = new MatchSessions_Tag();
-                        association.MatchSession = session;
-                        association.Tag = context.GetTag(tag);
-                        context.Context.MatchSessions_Tags.InsertOnSubmit(association);
-                        session.MatchSessions_Tag.Add(association);
-                    }
-                }
-                context.Context.MatchSessions_Tags.DeleteAllOnSubmit(toRemove.Values);
-                foreach (var matchSessionsTag in toRemove)
-                {
-                    session.MatchSessions_Tag.Remove(matchSessionsTag.Value);
-                }
-
-                matchmediaHelper.Save();
+                SaveData();
 
                 SetupRemember(true);
                 DeleteMatchmedia = false;
@@ -104,22 +93,15 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
             catch (Exception ex)
             {
-                logger.LogError("{0}", "Could not save Matchmedia, Ex: " + ex);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.ShowError(logger, "Could not save Matchmedia");
             }
         }
 
-        private void SetEslMatchId()
+        private void SaveData()
         {
-            if (eslMatchCheckBox.Checked)
-            {
-                new Uri(EslMatchIdTextBox.Text);
-                session.EslMatchLink = EslMatchIdTextBox.Text;
-            }
-            else
-            {
-                session.EslMatchLink = null;
-            }
+            session.MyTags = tagTextBox.Text;
+            sessionData.Item1.ImportChanges(matchmediaTableCopy);
+            sessionData.Item2.ImportChanges(playerTableCopy);
         }
 
         private void deleteMatchmediaButton_Click(object sender, EventArgs e)
@@ -130,7 +112,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void SetupRemember(bool saveData)
         {
-            if (!rememberCheckBox.Checked)
+            if (!rememberCheckBox.Checked || !rememberCheckBox.Enabled)
             {
                 return;
             }
@@ -149,75 +131,71 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
         }
 
-
-        private void eslMatchCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void AddMatchmedia(string safeFileName)
         {
-            EslMatchIdTextBox.Enabled = eslMatchCheckBox.Checked;
-        }
-
-        private void addMatchmediaButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var fod = new OpenFileDialog();
-                var res = fod.ShowDialog();
-                if (res == DialogResult.OK)
-                {
-                    AddMatchMedia(fod.FileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("{0}", "Could not add Matchmedia, Ex: " + ex);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void AddMatchMedia(string safeFileName)
-        {
-            var media = (Matchmedia)matchmediaBindingSource.AddNew();
-            if (media == null)
+            if (matchmediaTableCopy == null)
             {
                 throw new InvalidOperationException("Couldn't add new Matchmedia (was null)");
             }
-
-            media.Player = myMatchSession.IdentityPlayer;
+            var media = new Matchmedia();
             media.AddDataFromFile(safeFileName);
             media.MatchSession = session;
+            media.Player = primaryPlayer;
+            matchmediaTableCopy.Add(media);
         }
 
-        private void managePlayersButton_Click(object sender, EventArgs e)
+        private void switchToAdvancedViewButton_Click(object sender, EventArgs e)
         {
             try
             {
-                var managePlayer = new ManageMatchPlayers(logger, context, session);
+                SaveData();
+
+                var managePlayer = new EditMatchSession(logger, context, sessionData, session, true);
+                Visible = false;
                 managePlayer.ShowDialog();
+                DeleteMatchmedia = managePlayer.DeleteMatchmedia;
+                Close();
             }
             catch (Exception ex)
             {
-                logger.LogError("{0}", "Could not open ManageMatchPlayers, Ex: " + ex);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.ShowError(logger, "Could not open EditMatchSession");
             }
         }
 
-        private void EslMatchIdTextBox_Leave(object sender, EventArgs e)
+        private void fetchMatchDatabutton_Click(object sender, EventArgs e)
         {
             try
             {
-                // Load Enemies from ESL page and see if we can add new infos
-                SetEslMatchId();
-                var async = myMatchSession.LoadEslPlayers(session.EslMatchLink);
-                var task = new Task<Unit>(async);
-                task.Error +=
-                    (senderTask, eTask) =>
-                    MessageBox.Show(eTask.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                WaitingForm.StartTask(logger, task, "Loading Players...");
+                var players = Helpers.ShowLoadMatchDataDialog(logger, session.EslMatchLink);
+                FSharpInterop.Interop.FillWrapperTable(players, playerTableCopy, matchmediaTableCopy);
+                rememberCheckBox.Enabled = false;
             }
             catch (Exception ex)
             {
-                logger.LogError("{0}", "Could not start player grabbing task, Ex: " + ex);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.ShowError(logger, "Could not load data");
             }
+        }
+
+        private void matchmediaDataGridView_DragDrop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                foreach (var file in files)
+                {
+                    AddMatchmedia(file);
+                }
+                rememberCheckBox.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Drag&Drop error!");
+            }
+        }
+
+        private void matchmediaDataGridView_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
         }
     }
 }

@@ -20,9 +20,10 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 	using System.Linq.Expressions;
 	using System.ComponentModel;
 	using System;
-	
-	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="D:\\projects\\aktuell\\wireyaafcssplugin\\yaaf\\src\\WinFormGui\\LocalDatabase.sdf")]
+
+	using Yaaf.WirePlugin.Primitives;
+
+    [global::System.Data.Linq.Mapping.DatabaseAttribute(Name="D:\\projects\\aktuell\\wireyaafcssplugin\\yaaf\\src\\WinFormGui\\LocalDatabase.sdf")]
 	public partial class LocalDataContext : System.Data.Linq.DataContext
 	{
 		

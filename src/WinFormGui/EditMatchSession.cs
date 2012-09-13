@@ -1,83 +1,105 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿// ----------------------------------------------------------------------------
+// This file (EditMatchSession.cs) is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package (Yaaf.WirePlugin).
+// Last Modified: 2012/09/13 19:23
+// Created: 2012/09/13 08:49
+// ----------------------------------------------------------------------------
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
+    using System;
+    using System.Collections.Generic;
     using System.Collections.Specialized;
-    using System.Reflection;
+    using System.Data;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Windows.Forms;
 
     using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
 
+    using WrapperMatchmediaTable = Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>;
+    using WrapperPlayerTable = Primitives.WrapperDataTable.WrapperTable<Database.MatchSessions_Player>;
+    using SessionData =
+        System.Tuple
+            <Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>,
+                Primitives.WrapperDataTable.WrapperTable<Database.MatchSessions_Player>>;
+
     public partial class EditMatchSession : Form
     {
-        private readonly Logging.LoggingInterfaces.ITracer logger;
-
         private readonly LocalDatabaseWrapper context;
 
-        private readonly WrapperDataTable.WrapperTable<Matchmedia> matchmediaData;
+        private readonly Logging.LoggingInterfaces.ITracer logger;
+
+        private readonly bool matchEndMode;
+
+        private readonly WrapperMatchmediaTable matchmediaData;
+
+        private readonly WrapperMatchmediaTable matchmediaDataCopy;
+
+        private readonly WrapperPlayerTable playersData;
+
+        private readonly WrapperPlayerTable playersDataCopy;
 
         private readonly MatchSession session;
 
-        private ManagePlayersHelper helper;
-
-        private DataTableWatcher watcher;
-
-        private WrapperDataTable.WrapperTable<Matchmedia> oldWrapper;
-
-        private WrapperDataTable.WrapperTable<Matchmedia> matchmediaDataCopy;
+        private WrapperMatchmediaTable oldWrapper;
 
         private MatchSessions_Player primaryPlayer;
 
-        public EditMatchSession(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, WrapperDataTable.WrapperTable<Matchmedia> matchmediaData, MatchSession session)
+        public EditMatchSession(
+            Logging.LoggingInterfaces.ITracer logger,
+            LocalDatabaseWrapper context,
+            SessionData sessionData,
+            MatchSession session,
+            bool matchEndMode)
         {
             this.logger = logger;
             this.context = context;
-            this.matchmediaData = matchmediaData;
-            this.matchmediaDataCopy = matchmediaData.Clone();
+            matchmediaData = sessionData.Item1;
+            matchmediaDataCopy = matchmediaData.Clone();
+            playersData = sessionData.Item2;
+            playersDataCopy = playersData.Clone();
             this.session = session;
+            this.matchEndMode = matchEndMode;
             InitializeComponent();
-            helper =
-                new ManagePlayersHelper(
-                    context,
-                    session,
-                    matchPlayersDataGridView,
-                    matchSessionsPlayerBindingSource,
-                    teamDataGridViewTextBoxColumn,
-                    skillDataGridViewTextBoxColumn);
         }
+
+        public bool? DeleteMatchmedia { get; private set; }
 
         private void matchPlayersDataGridView_SelectionChanged(object sender, EventArgs e)
         {
+            RefreshMatchmediaView();
+        }
+
+        private void RefreshMatchmediaView()
+        {
             var matchSessionsPlayers = GetSelectedPlayers();
             primaryPlayer = matchSessionsPlayers.Item2;
-            primaryPlayerLabel.Text = primaryPlayer == null ? "None" : string.Format("{0} ({1})", primaryPlayer.Player.Name, primaryPlayer.PlayerId);
+            primaryPlayerLabel.Text = primaryPlayer == null
+                                          ? "None"
+                                          : string.Format("{0} ({1})", primaryPlayer.MyName, primaryPlayer.MyPlayerId);
 
             IEnumerable<Matchmedia> media = new Matchmedia[0];
-            media =
-                matchSessionsPlayers.Item1
-                    .Where(player1 => player1 != null)
-                    .Aggregate(
-                        media,
-                        (current, player1) => current.Union(from f in matchmediaDataCopy.CopyLinqData where f.PlayerId == player1.PlayerId select f));
+            media = matchSessionsPlayers.Item1.Where(player1 => player1 != null).Aggregate(
+                media,
+                (current, player1) =>
+                current.Union(from f in matchmediaDataCopy.CopyLinqData where f.PlayerId == player1.MyPlayerId select f));
 
             var value = matchmediaDataCopy.GetCopiedTable(media);
-            value.SetInitializer(mediaM =>
+            value.SetInitializer(
+                mediaM =>
                     {
-                        mediaM.Created = DateTime.Now; mediaM.MatchSession = session;
-                        mediaM.Player = primaryPlayer.Player;
+                        mediaM.Created = DateTime.Now;
+                        mediaM.MatchSession = session;
+                        mediaM.PlayerId = primaryPlayer.MyPlayerId;
                     });
-           
+
             SetNewWrapper(value);
         }
 
-        private void SetNewWrapper(WrapperDataTable.WrapperTable<Matchmedia> value)
+        private void SetNewWrapper(WrapperMatchmediaTable value)
         {
             if (oldWrapper != null)
             {
@@ -90,14 +112,39 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private Tuple<List<MatchSessions_Player>, MatchSessions_Player> GetSelectedPlayers()
         {
-            return matchPlayersDataGridView.GetSelection<MatchSessions_Player>(playerBindingSource);
+            return
+                matchPlayersDataGridView.GetSelection<DataRowView>(matchSessionsPlayerBindingSource).MapSelection(
+                    v => playersDataCopy.GetCopyItem(v.Row)).FilterSelection(v => v.IsSome()).MapSelection(v => v.Value);
         }
 
         private void EditMatchSession_Load(object sender, EventArgs e)
         {
             try
             {
-                helper.Load();
+                if (matchEndMode)
+                {
+                    saveButton.Text = "Save Matchmedia";
+                    cancelButton.Text = "Delete Matchmedia And Session";
+                }
+
+                Team.ValueType = typeof(PlayerTeam);
+                Team.DataSource = Helpers.GetEnumTable(typeof(PlayerTeam));
+                Team.ValueMember = "value";
+                Team.DisplayMember = "name";
+                Skill.ValueType = typeof(PlayerSkill);
+                Skill.DataSource = Helpers.GetEnumTable(typeof(PlayerSkill));
+                Skill.ValueMember = "value";
+                Skill.DisplayMember = "name";
+
+                matchSessionsPlayerBindingSource.DataSource = playersDataCopy.SourceTable;
+                playersDataCopy.SetInitializer(
+                    player =>
+                        {
+                            player.MyTeam = PlayerTeam.Team1;
+                            player.MySkill = PlayerSkill.Mid;
+                            player.MyMatchSessionId = session.Id;
+                        });
+                matchTagsTextBox.Text = session.MyTags;
             }
             catch (Exception ex)
             {
@@ -110,10 +157,12 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             try
             {
-                helper.Save();
                 matchmediaDataCopy.ImportChanges(oldWrapper);
                 matchmediaData.ImportChanges(matchmediaDataCopy);
+                playersData.ImportChanges(playersDataCopy);
 
+                session.MyTags = matchTagsTextBox.Text;
+                DeleteMatchmedia = false;
                 Close();
             }
             catch (Exception ex)
@@ -124,10 +173,11 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
+            DeleteMatchmedia = true;
             Close();
         }
 
-        private void dataGridView2_DragDrop(object sender, DragEventArgs e)
+        private void matchmediaDataGridView_DragDrop(object sender, DragEventArgs e)
         {
             try
             {
@@ -148,20 +198,29 @@ namespace Yaaf.WirePlugin.WinFormGui
                 ex.ShowError(logger, "Drag&Drop error!");
             }
         }
-        private void AddMatchmedia (string file)
+
+        private void matchmediaDataGridView_DragEnter(object sender, DragEventArgs e)
         {
-            var row = (System.Data.DataRowView)matchmediaBindingSource.AddNew();
-            if (row == null)
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void AddMatchmedia(string file)
+        {
+            if (oldWrapper == null)
             {
                 throw new InvalidOperationException("Couldn't add new Matchmedia (was null)");
-            } 
-            var media = oldWrapper.GetCopyItem(row.Row);
+            }
+            var media = new Matchmedia();
             media.AddDataFromFile(file);
-            oldWrapper.UpdateItem(media);
+            media.MatchSession = session;
+            media.PlayerId = primaryPlayer.MyPlayerId;
+            oldWrapper.Add(media);
         }
+
         private void showInExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try {
+            try
+            {
                 var row = (DataRowView)matchmediaBindingSource.Current;
                 if (row == null)
                 {
@@ -169,12 +228,18 @@ namespace Yaaf.WirePlugin.WinFormGui
                     return;
                 }
                 var matchmedia = oldWrapper.GetCopyItem(row.Row);
-                if (!System.IO.File.Exists(matchmedia.Path))
+                if (matchmedia.IsNone())
+                {
+                    MessageBox.Show("This row is not fully added!");
+                    return;
+                }
+                var path = matchmedia.Value.Path;
+                if (!File.Exists(path))
                 {
                     MessageBox.Show("Matchmedia was deleted!");
                     return;
                 }
-                System.Diagnostics.Process.Start(System.IO.Path.GetDirectoryName(matchmedia.Path));
+                Process.Start(Path.GetDirectoryName(path));
             }
             catch (Exception ex)
             {
@@ -186,9 +251,11 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             try
             {
-                var selection = playersDataGridView.GetSelection<DataRowView>(playerBindingSource);
+                var selection = matchmediaDataGridView.GetSelection<DataRowView>(matchmediaBindingSource);
                 var paths = new StringCollection();
-                paths.AddRange(selection.Item1.Select(r => oldWrapper.GetCopyItem(r.Row)).Select(m => m.Path).ToArray());
+                paths.AddRange(
+                    selection.Item1.Select(r => oldWrapper.GetCopyItem(r.Row)).Where(r => r.IsSome()).Select(
+                        r => r.Value).Select(m => m.Path).ToArray());
                 Clipboard.SetFileDropList(paths);
             }
             catch (Exception ex)
@@ -202,12 +269,20 @@ namespace Yaaf.WirePlugin.WinFormGui
             logger.LogWarning("{0}", "DataError: " + e.Exception);
         }
 
-        private void dataGridView2_DragEnter(object sender, DragEventArgs e)
+        private void loadMatchDataButton_Click(object sender, EventArgs e)
         {
-            e.Effect = DragDropEffects.Copy;
+            try
+            {
+                var players = Helpers.ShowLoadMatchDataDialog(logger, session.EslMatchLink);
+                matchmediaDataCopy.ImportChanges(oldWrapper);
+                oldWrapper = null;
+                FSharpInterop.Interop.FillWrapperTable(players, playersDataCopy, matchmediaDataCopy);
+                RefreshMatchmediaView();
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Could not load data");
+            }
         }
-
-
-        
     }
 }

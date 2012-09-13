@@ -14,8 +14,11 @@ namespace Yaaf.WirePlugin.WinFormGui
     using System.Diagnostics;
     using System.Linq;
 
+    using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
     using Yaaf.WirePlugin.WinFormGui.Properties;
+
+    using Action = Yaaf.WirePlugin.WinFormGui.Database.Action;
 
     public class LocalDatabaseWrapper
     {
@@ -137,7 +140,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             return def;
         }
 
-        private Database.Action GetAction(string name)
+        private Action GetAction(string name)
         {
             return (from tag in context.Actions where tag.Name == name select tag).Single();
         }
@@ -158,6 +161,16 @@ namespace Yaaf.WirePlugin.WinFormGui
                 logger.LogError("Exception: {0}", e);
                 throw;
             }
+        }
+
+        public void UpdateMatchSessionPlayerTable(WrapperDataTable.WrapperTable<MatchSessions_Player> playerTable)
+        {
+            var localDataContext = Context;
+            var removeTags =
+                playerTable.UpdateTable(localDataContext.MatchSessions_Players).Where(p => p.RemoveTags.Count > 0).Select(
+                    p => (IEnumerable<Player_Tag>)p.RemoveTags).Union(new[] { new Player_Tag[0] }).Aggregate(
+                        (left, right) => left.Union(right));
+            localDataContext.Player_Tags.DeleteAllOnSubmit(removeTags);
         }
     }
 }

@@ -285,50 +285,56 @@ module Database =
     let getIdentityPlayer (db:Context) = 
         let nick, eslId = getIdentityPlayerInfo()
         getPlayerByEslId db eslId nick
+    let fillWrapperTable
+        (players:EslGrabber.Player seq) 
+        (wrapperTable:Primitives.WrapperDataTable.WrapperTable<Database.MatchSessions_Player>)
+        (mediaTable:Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>)
+            = 
+        let data = wrapperTable.CopyLinqData
+
+        let copyData = new System.Collections.Generic.HashSet<_>( data )
+        let eslDict = new System.Collections.Generic.Dictionary<int,_>()
+        for key, value in
+            data |> Seq.filter (fun da -> da.MyEslId.HasValue)
+                 |> Seq.map (fun da -> da.MyEslId.Value, da) do
+            eslDict.Add(key, value)
+        players
+            |> Seq.iter 
+                (fun p -> 
+                    match eslDict.TryGetValue p.Id with
+                    | true, data -> 
+                        copyData.Remove data |> ignore
+                        data.MyName <- p.Nick
+                        data.Team <- byte p.Team
+                        wrapperTable.UpdateItem data
+                    | false, _ ->
+                        let newPlayer = 
+                            Database.MatchSessions_Player(
+                                MyName = p.Nick, MyEslId = System.Nullable(p.Id), Team = byte p.Team)
+                        wrapperTable.Add newPlayer)
+        let medias =
+            mediaTable.CopyLinqData
+        for item in copyData do
+            if medias |> Seq.exists (fun m -> m.PlayerId = item.MyPlayerId) |> not then
+                wrapperTable.DeleteCopyItem item
+            else
+                item.Team <- 11uy
+                wrapperTable.UpdateItem item
 
     let fillPlayers (db:Context) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
-        let addedPlayers =
-            seq {
-                for p in players do
-                    let player = getPlayerByEslId db p.Id p.Nick
+        let wrapper = WinFormGui.Helpers.GetWrapper(matchSession.MatchSessions_Player)
+        let medias = WinFormGui.Helpers.GetWrapper(matchSession.Matchmedia)
+        fillWrapperTable players wrapper medias
+        wrapper.UpdateTable db.MatchSessions_Players
 
-                    player.Name <- p.Nick
-                    let availableSessionPlayer = 
-                        match
-                            (matchSession.MatchSessions_Player 
-                                |> Seq.filter
-                                    (fun sessionPlayer ->
-                                        sessionPlayer.Player.EslPlayerId = System.Nullable(p.Id))
-                                |> Seq.tryHead) with
-                        | Some (s) -> s
-                        | None ->
-                            let s = 
-                                new Database.MatchSessions_Player(
-                                    Cheating = false,
-                                    MatchSession = matchSession,
-                                    Skill = System.Nullable(50uy))
-                            matchSession.MatchSessions_Player.Add(s)
-                            s
-
-                    availableSessionPlayer.Team <- byte p.Team
-                    player.MatchSessions_Player.Load()
-                    player.MatchSessions_Player.Add(availableSessionPlayer)
-                    availableSessionPlayer.Player <- player 
-                    yield availableSessionPlayer }
-                |> Set.ofSeq
-        let allPlayers = (matchSession.MatchSessions_Player |> Set.ofSeq)
-        (allPlayers - addedPlayers)
-            |> Seq.iter
-                (fun s -> 
-                    s.Player.MatchSessions_Player.Remove s |> ignore
-                    matchSession.MatchSessions_Player.Remove s |> ignore)
 
     let removeSession (db:Context) deleteFiles (matchSession:Database.MatchSession) = 
         for matchmedia in System.Collections.Generic.List<_> matchSession.Matchmedia do
             if deleteFiles && File.Exists matchmedia.Path then
                 File.Delete matchmedia.Path
             matchSession.Matchmedia.Remove matchmedia |> ignore
-                        
+            matchmedia.Player.Matchmedia.Remove matchmedia |> ignore
+
             for tag in System.Collections.Generic.List<_> matchmedia.Matchmedia_Tag do
                 matchmedia.Matchmedia_Tag.Remove tag |> ignore
                 tag.Tag.Matchmedia_Tag.Remove tag |> ignore

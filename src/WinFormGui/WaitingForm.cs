@@ -18,12 +18,12 @@ namespace Yaaf.WirePlugin.WinFormGui
     {
         private readonly Logging.LoggingInterfaces.ITracer logger;
 
-        private readonly Task<Unit> task;
+        private readonly ITask<object> task;
         private bool taskStarted = false;
 
         private string myTitle;
 
-        public WaitingForm(Logging.LoggingInterfaces.ITracer logger, Task<Unit> task, string title)
+        public WaitingForm(Logging.LoggingInterfaces.ITracer logger, ITask<object> task, string title)
         {
             this.logger = logger;
             this.task = task;
@@ -32,9 +32,9 @@ namespace Yaaf.WirePlugin.WinFormGui
             Text = title;
         }
 
-        public static void StartTask(Logging.LoggingInterfaces.ITracer logger, Task<Unit> task, string title)
+        public static void StartTask<T>(Logging.LoggingInterfaces.ITracer logger, ITask<T> task, string title)
         {
-            var form = new WaitingForm(logger, task, title);
+            var form = new WaitingForm(logger, task.MapTask(t => (object)t), title);
             form.ShowDialog();
         }
 
@@ -61,7 +61,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                         { Text = newTitle; }));
         }
 
-        private void task_Finished(object sender, Unit args)
+        private void task_Finished(object sender, object args)
         {
             logger.LogInformation("Task finished!");
             Invoke(new Action(Close));

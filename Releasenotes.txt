@@ -12,10 +12,13 @@ Features:
  - GUI Redesign (nicer look&feel and more intuitive)
 
  Code:
- - integrate Context in IFSharpInterop 
- - integrate IMatchSession in IFSharpInterop
  - Documentation
  - Refactoring some clump classes (WrapperDataTable)
+
+next Version 0.9.2.0
+ - Redesigned Matchedit Window, use same window on matchsession-end (advanced) and for edit
+ - integrate Context in IFSharpInterop 
+ - integrate IMatchSession in IFSharpInterop
  - Using WrapperDataTable instead of EntitySet to be able to sort in DataGridView
 
 13.09.2012 Version 0.9.1.0

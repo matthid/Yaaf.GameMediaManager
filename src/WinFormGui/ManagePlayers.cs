@@ -24,13 +24,12 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private Player me;
 
-        public ManagePlayers(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context, Player me)
+        public ManagePlayers(Logging.LoggingInterfaces.ITracer logger)
         {
             this.logger = logger;
 
             // this is a copy.. this way we can discard everything at the end, if we need to
-            wrapper = context;
-            this.me = me;
+            wrapper = FSharpInterop.Interop.GetNewContext();
             InitializeComponent();
         }
 
@@ -42,7 +41,7 @@ namespace Yaaf.WirePlugin.WinFormGui
         private void ManagePlayers_Load(object sender, EventArgs e)
         {
             playerBindingSource.DataSource = wrapper.Context.Players;
-            SetMe(me);
+            SetMe(FSharpInterop.Interop.GetIdentityPlayer(wrapper));
         }
         
         private void SetMe(Player player)

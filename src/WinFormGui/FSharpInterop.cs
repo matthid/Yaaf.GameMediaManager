@@ -7,7 +7,46 @@
 
 namespace Yaaf.WirePlugin.WinFormGui
 {
+    using System.Collections.Generic;
     using System.Diagnostics;
+
+    using Microsoft.FSharp.Core;
+
+    using Yaaf.WirePlugin.Primitives;
+    using Yaaf.WirePlugin.WinFormGui.Database;
+
+    public interface IFSharpInterop
+    {
+        string GetMatchmediaPath(Matchmedia media);
+
+        Player GetIdentityPlayer(LocalDatabaseWrapper context);
+
+        LocalDatabaseWrapper GetNewContext();
+
+        ITask<IEnumerable<EslGrabber.Player>> GetFetchPlayerTask(string link);
+
+        void FillWrapperTable(
+            IEnumerable<EslGrabber.Player> players, 
+            WrapperDataTable.WrapperTable<MatchSessions_Player> playerTable,
+            Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia> medias);
+    }
+
+   public static class FSharpInterop
+   {
+       private static IFSharpInterop interop;
+
+       public static IFSharpInterop Interop
+       {
+           get
+           {
+               return interop;
+           }
+           set
+           {
+               interop = value;
+           }
+       }
+   }
 
     public static class TracerExtensions
     {

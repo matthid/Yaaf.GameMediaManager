@@ -51,7 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTableWatcher.cs" />
     <Compile Include="EditGames.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,6 +62,12 @@
     </Compile>
     <Compile Include="EditMatchSession.Designer.cs">
       <DependentUpon>EditMatchSession.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FetchMatchdataDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FetchMatchdataDialog.Designer.cs">
+      <DependentUpon>FetchMatchdataDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FSharpInterop.cs" />
     <Compile Include="Helpers.cs" />
@@ -81,20 +86,12 @@
       <DependentUpon>LocalDatabase.dbml</DependentUpon>
     </Compile>
     <Compile Include="LocalDatabaseWrapper.cs" />
-    <Compile Include="ManageMatchmediaHelper.cs" />
-    <Compile Include="ManageMatchPlayers.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ManageMatchPlayers.Designer.cs">
-      <DependentUpon>ManageMatchPlayers.cs</DependentUpon>
-    </Compile>
     <Compile Include="ManagePlayers.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ManagePlayers.Designer.cs">
       <DependentUpon>ManagePlayers.cs</DependentUpon>
     </Compile>
-    <Compile Include="ManagePlayersHelper.cs" />
     <Compile Include="ManageWatchFolder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,6 +140,9 @@
     <EmbeddedResource Include="EditMatchSession.resx">
       <DependentUpon>EditMatchSession.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FetchMatchdataDialog.resx">
+      <DependentUpon>FetchMatchdataDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -170,9 +170,6 @@
     <None Include="LocalDatabase.dbml.layout">
       <DependentUpon>LocalDatabase.dbml</DependentUpon>
     </None>
-    <EmbeddedResource Include="ManageMatchPlayers.resx">
-      <DependentUpon>ManageMatchPlayers.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ManageWatchFolder.resx">
       <DependentUpon>ManageWatchFolder.cs</DependentUpon>
     </EmbeddedResource>

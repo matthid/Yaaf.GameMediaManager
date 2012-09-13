@@ -26,12 +26,12 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private bool saveData = false;
 
-        public EditGames(Logging.LoggingInterfaces.ITracer logger, LocalDatabaseWrapper context)
+        public EditGames(Logging.LoggingInterfaces.ITracer logger)
         {
             this.logger = logger;
 
             // this is a copy.. this way we can discard everything at the end, if we need to
-            wrapper = context;
+            wrapper = FSharpInterop.Interop.GetNewContext();
             this.context = wrapper.Context;
             InitializeComponent();
         }
