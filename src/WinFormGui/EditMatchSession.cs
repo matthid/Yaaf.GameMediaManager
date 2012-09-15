@@ -64,9 +64,25 @@ namespace Yaaf.WirePlugin.WinFormGui
             playersData = sessionData.Item2;
             playersDataCopy = playersData.Clone();
             playersDataCopy.ItemChanged += playersDataCopy_ItemChanged;
+            playersDataCopy.DeletedRow += playersDataCopy_DeletedRow;
             this.session = session;
             this.matchEndMode = matchEndMode;
             InitializeComponent();
+        }
+
+        void playersDataCopy_DeletedRow(object sender, MatchSessions_Player args)
+        {
+            var originalPlayer = playersDataCopy.get_CopyItemToOriginal(args);
+            var count = (from matchmediaCopy in matchmediaDataCopy.CopyLinqData
+                         let original = matchmediaDataCopy.get_CopyItemToOriginal(matchmediaCopy)
+                         where original.MyMatchSessionsPlayer == originalPlayer
+                         select original).Count();
+
+            if (count > 0)
+            {
+                MessageBox.Show("Please delete all matchmedias for this player!");
+                throw new InvalidOperationException("Can't delete row with matchmedia!");
+            }
         }
 
         public bool? DeleteMatchmedia { get; private set; }
@@ -207,6 +223,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void EditMatchSession_Load(object sender, EventArgs e)
         {
+            Logging.setupLogging(logger);
             try
             {
                 if (matchEndMode)
@@ -224,6 +241,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                 Skill.ValueMember = "value";
                 Skill.DisplayMember = "name";
 
+                matchnameTextBox.Text = session.Name;
                 matchSessionsPlayerBindingSource.DataSource = playersDataCopy.SourceTable;
                 linkLabel.Text = session.EslMatchLink;
                 playersDataCopy.InitRow += playersDataCopy_InitRow;
@@ -246,22 +264,7 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             try
             {
-                matchmediaDataCopy.ImportChanges(oldWrapper);
-                matchmediaData.ImportChanges(matchmediaDataCopy);
-                var playerData = from copyData in playersDataCopy.CopyLinqData
-                                 let row = playersDataCopy.get_CopyItemToRow(copyData)
-                                 let original = playersDataCopy.GetItem(row)
-                                 select original;
-                foreach (var p in playerData)
-                {
-                    p.MatchSession = session;
-                }
-
-                playersData.ImportChanges(playersDataCopy);
-
-
-                session.EslMatchLink = linkLabel.Text;
-                session.MyTags = matchTagsTextBox.Text;
+                SaveData();
                 DeleteMatchmedia = false;
                 Close();
             }
@@ -271,8 +274,37 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
         }
 
+        private void SaveData()
+        {
+            matchmediaDataCopy.ImportChanges(oldWrapper);
+            matchmediaData.ImportChanges(matchmediaDataCopy);
+            var playerData = from copyData in playersDataCopy.CopyLinqData
+                             let row = playersDataCopy.get_CopyItemToRow(copyData)
+                             let original = playersDataCopy.GetItem(row)
+                             select original;
+            foreach (var p in playerData)
+            {
+                p.MatchSession = session;
+            }
+
+            if (matchnameTextBox.Text.Length > 100)
+            {
+                throw new InvalidOperationException("Matchname can't exceed 100 characters!");
+            }
+
+            session.Name = matchnameTextBox.Text;
+            playersData.ImportChanges(playersDataCopy);
+
+            session.EslMatchLink = linkLabel.Text;
+            session.MyTags = matchTagsTextBox.Text;
+        }
+
         private void cancelButton_Click(object sender, EventArgs e)
         {
+            if (matchEndMode)
+            {
+                SaveData();
+            }
             DeleteMatchmedia = true;
             Close();
         }

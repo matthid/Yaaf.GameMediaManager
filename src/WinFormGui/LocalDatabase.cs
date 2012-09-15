@@ -14,6 +14,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     using Yaaf.WirePlugin.Primitives;
     partial class Player : Helpers.ILinqEntity
     {
+        public override string ToString()
+        {
+            return string.Format("Player(MyId: {0}, MyTags: {1}, Id: {2}, Name: {3}, EslPlayerId: {4})", MyId, MyTags, Id, Name, EslPlayerId);
+        }
+
         partial void OnLoaded()
         {
             if (Id != 0)
@@ -130,6 +135,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 
     partial class MatchSession : Helpers.ILinqEntity
     {
+        public override string ToString()
+        {
+            return string.Format("MatchSession(MyId: {0}, MyTags: {1}, Id: {2}, GameId: {3}, Startdate: {4}, Duration: {5}, EslMatchLink: {6}, Name: {7})", MyId, MyTags, Id, GameId, Startdate, Duration, EslMatchLink, Name);
+        }
+
         private MyIdHelper myId;
 
         private string myTags;
@@ -215,6 +225,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 
     partial class Matchmedia : Helpers.ILinqEntity
     {
+        public override string ToString()
+        {
+            return string.Format("Matchmedia(MyId: {0}, MyTags: {1}, Id: {2}, Name: {3}, Type: {4}, Map: {5}, MatchSessionId: {6}, Path: {7}, Created: {8}, PlayerId: {9})", MyId, MyTags, Id, Name, Type, Map, MatchSessionId, Path, Created, PlayerId);
+        }
+
         private MyIdHelper myId ;
 
         private string myTags;
@@ -321,6 +336,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 
     partial class Game
     {
+        public override string ToString()
+        {
+            return string.Format("Game(Id: {0}, Name: {1}, Shortname: {2}, EnableNotification: {3}, EnableMatchForm: {4}, EnablePublicNotification: {5}, EnableWarMatchForm: {6}, WarMatchFormSaveFiles: {7}, PublicMatchFormSaveFiles: {8})", Id, Name, Shortname, EnableNotification, EnableMatchForm, EnablePublicNotification, EnableWarMatchForm, WarMatchFormSaveFiles, PublicMatchFormSaveFiles);
+        }
+
         partial void OnCreated()
         {
             EnableMatchForm = true;
@@ -334,6 +354,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 
     partial class MatchSessions_Player
     {
+        public override string ToString()
+        {
+            return string.Format("MatchSessions_Player(MyTeam: {0}, MySkill: {1}, MatchSessionId: {2}, PlayerId: {3}, Team: {4}, Skill: {5}, Description: {6}, Cheating: {7})", MyTeam, MySkill, MatchSessionId, PlayerId, Team, Skill, Description, Cheating);
+        }
+
         partial void OnLoaded()
         {
             if (PlayerId != 0 && MatchSessionId != 0)
@@ -428,6 +453,11 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 
     partial class WatchFolder
     {
+        public override string ToString()
+        {
+            return string.Format("WatchFolder(MyId: {0}, Id: {1}, GameId: {2}, Folder: {3}, NotifyOnInactivity: {4}, Filter: {5})", MyId, Id, GameId, Folder, NotifyOnInactivity, Filter);
+        }
+
         private MyIdHelper myId;
         partial void OnCreated()
         {

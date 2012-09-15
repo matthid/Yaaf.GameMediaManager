@@ -101,6 +101,10 @@
         {
             FieldInfo fEvent = obj.GetType().GetField("PropertyChanging", BindingFlags.NonPublic | BindingFlags.Instance);
             MulticastDelegate dEvent = (MulticastDelegate)fEvent.GetValue(obj);
+            if (dEvent == null)
+            {
+                throw new ArgumentException("Entity is not attached!");
+            }
             Delegate[] onChangingHandlers = dEvent.GetInvocationList();
 
             // Obtain the ChangeTracker
@@ -119,7 +123,7 @@
             }
 
             // Not found
-            throw new Exception("Error reflecting object");
+            throw new ArgumentException("Entity is not attached!");
         }
 
         public static WrapperDataTable.WrapperTable<MatchSessions_Player> GetWrapper(this IEnumerable<MatchSessions_Player> players)

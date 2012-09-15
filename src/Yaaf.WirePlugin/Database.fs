@@ -348,12 +348,12 @@ module Database =
             if deleteFiles && File.Exists matchmedia.Path then
                 File.Delete matchmedia.Path
             matchSession.Matchmedia.Remove matchmedia |> ignore
-            matchmedia.Player.Matchmedia.Remove matchmedia |> ignore
+            matchmedia.MatchSessions_Player.Player.Matchmedia.Remove matchmedia |> ignore
             
             if db.Matchmedias.GetOriginalEntityState(matchmedia) <> null then
                 db.Matchmedias.DeleteOnSubmit matchmedia
+
             for tag in System.Collections.Generic.List<_> matchmedia.Matchmedia_Tag do
-                
                 matchmedia.Matchmedia_Tag.Remove tag |> ignore
                 tag.Tag.Matchmedia_Tag.Remove tag |> ignore
                 
@@ -369,7 +369,6 @@ module Database =
                 db.MatchSessions_Players.DeleteOnSubmit player
 
         for tag in System.Collections.Generic.List<_> matchSession.MatchSessions_Tag do
-            db.MatchSessions_Tags.DeleteOnSubmit tag
             matchSession.MatchSessions_Tag.Remove tag |> ignore
             tag.Tag.MatchSessions_Tag.Remove tag |> ignore
             

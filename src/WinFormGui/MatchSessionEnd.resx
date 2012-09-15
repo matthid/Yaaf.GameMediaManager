@@ -119,7 +119,7 @@
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="tagTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>201, 304</value>
+    <value>203, 362</value>
   </data>
   <data name="tagTextBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>328, 20</value>
@@ -138,7 +138,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;tagTextBox.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>11</value>
   </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -148,7 +148,7 @@
     <value>NoControl</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>10, 307</value>
+    <value>12, 365</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>160, 13</value>
@@ -169,7 +169,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>10</value>
   </data>
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -178,7 +178,7 @@
     <value>NoControl</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 42</value>
+    <value>12, 84</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>261, 13</value>
@@ -199,13 +199,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>9</value>
   </data>
   <data name="saveMatchmediaButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="saveMatchmediaButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>339, 357</value>
+    <value>400, 412</value>
   </data>
   <data name="saveMatchmediaButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>196, 30</value>
@@ -226,13 +226,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;saveMatchmediaButton.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>8</value>
   </data>
   <data name="deleteMatchmediaButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="deleteMatchmediaButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 364</value>
+    <value>12, 416</value>
   </data>
   <data name="deleteMatchmediaButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>178, 23</value>
@@ -253,16 +253,16 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;deleteMatchmediaButton.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>7</value>
   </data>
   <data name="switchToAdvancedViewButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="switchToAdvancedViewButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>364, 11</value>
+    <value>420, 12</value>
   </data>
   <data name="switchToAdvancedViewButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 23</value>
+    <value>176, 28</value>
   </data>
   <data name="switchToAdvancedViewButton.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -280,7 +280,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;switchToAdvancedViewButton.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>6</value>
   </data>
   <data name="rememberCheckBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -289,7 +289,7 @@
     <value>NoControl</value>
   </data>
   <data name="rememberCheckBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 338</value>
+    <value>12, 393</value>
   </data>
   <data name="rememberCheckBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>227, 17</value>
@@ -310,7 +310,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;rememberCheckBox.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="nameDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Name</value>
@@ -343,10 +343,10 @@
     <value>17, 17</value>
   </metadata>
   <data name="matchmediaDataGridView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 58</value>
+    <value>12, 107</value>
   </data>
   <data name="matchmediaDataGridView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>516, 231</value>
+    <value>584, 249</value>
   </data>
   <data name="matchmediaDataGridView.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
@@ -361,13 +361,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;matchmediaDataGridView.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="fetchMatchDatabutton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="fetchMatchDatabutton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 11</value>
+    <value>12, 52</value>
   </data>
   <data name="fetchMatchDatabutton.Size" type="System.Drawing.Size, System.Drawing">
     <value>168, 23</value>
@@ -388,13 +388,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;fetchMatchDatabutton.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="linkLabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="linkLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>186, 16</value>
+    <value>213, 52</value>
   </data>
   <data name="linkLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>0, 13</value>
@@ -412,7 +412,61 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;linkLabel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label3.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 12pt</value>
+  </data>
+  <data name="label3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 15</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>93, 20</value>
+  </data>
+  <data name="label3.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>Matchname</value>
+  </data>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
+  </data>
+  <data name="&gt;&gt;label3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="matchNameTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>117, 17</value>
+  </data>
+  <data name="matchNameTextBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>263, 20</value>
+  </data>
+  <data name="matchNameTextBox.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;matchNameTextBox.Name" xml:space="preserve">
+    <value>matchNameTextBox</value>
+  </data>
+  <data name="&gt;&gt;matchNameTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;matchNameTextBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;matchNameTextBox.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -421,7 +475,7 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>547, 396</value>
+    <value>608, 454</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -1793,22 +1847,25 @@
         b9Db6gxGcw2v36PhjVGcEVuRcnDfLAH3xP5t+39NzIaquRBT5AAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Match Session End</value>
   </data>
-  <data name="&gt;&gt;Tags.Name" xml:space="preserve">
-    <value>Tags</value>
+  <data name="&gt;&gt;matchmediaBindingSource.Name" xml:space="preserve">
+    <value>matchmediaBindingSource</value>
   </data>
-  <data name="&gt;&gt;Tags.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;matchmediaBindingSource.Type" xml:space="preserve">
+    <value>System.Windows.Forms.BindingSource, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;nameDataGridViewTextBoxColumn.Name" xml:space="preserve">
     <value>nameDataGridViewTextBoxColumn</value>
   </data>
   <data name="&gt;&gt;nameDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Tags.Name" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="&gt;&gt;Tags.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;typeDataGridViewTextBoxColumn.Name" xml:space="preserve">
@@ -1828,12 +1885,6 @@
   </data>
   <data name="&gt;&gt;createdDataGridViewTextBoxColumn.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;matchmediaBindingSource.Name" xml:space="preserve">
-    <value>matchmediaBindingSource</value>
-  </data>
-  <data name="&gt;&gt;matchmediaBindingSource.Type" xml:space="preserve">
-    <value>System.Windows.Forms.BindingSource, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>MatchSessionEnd</value>

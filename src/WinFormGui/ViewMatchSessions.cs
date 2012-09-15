@@ -32,6 +32,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void ViewMatchSessions_Load(object sender, EventArgs e)
         {
+            Logging.setupLogging(logger);
             try
             {
                 matchSessionBindingSource.DataSource = context.Context.MatchSessions;

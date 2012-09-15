@@ -307,6 +307,13 @@ module WrapperDataTable =
                 checkValid()
                 itemReferences.Item item
 
+        /// Gets the original item from the copy item
+        member x.CopyItemToOriginal
+            with get (copy ) = 
+                checkValid()
+                let row = copyItemReferences.Item copy
+                rowReferences.Item row
+
         /// Gets the item for the given row
         member x.GetItem row = 
             checkValid()
@@ -472,28 +479,22 @@ module WrapperDataTable =
         getWrapper filter.Invoke data
 
     let updateTable (table:System.Data.Linq.Table<'T>) (wrapper:WrapperTable<'T>) = 
-        let update = 
-            (fun itemData -> 
-                let copy = itemData.Copy
-                wrapper.ImportChangesToOriginal itemData.Original itemData.Copy
-                itemData)
-        let convert = (fun itemData -> itemData.Original)
-        let updateAndConvert e = 
-            e 
-            |> Seq.map update
-            |> Seq.map convert
-        table.InsertAllOnSubmit(wrapper.Inserts |> updateAndConvert)
-            
-        for d in wrapper.Deletions |> Seq.map convert do
+        let getOriginal = (fun itemData -> itemData.Original)
+        let importchanges seq = 
+            for orig, copy in seq |> Seq.map (fun data -> data.Original, data.Copy) do
+                wrapper.ImportChangesToOriginal orig copy
+
+        let inserts = wrapper.Inserts
+        table.InsertAllOnSubmit(inserts |> Seq.map getOriginal)
+        importchanges inserts
+
+        for d in wrapper.Deletions |> Seq.map getOriginal do
             if table.GetOriginalEntityState(d) <> null then
                 table.DeleteOnSubmit(d)
-            
-        let changeList =
-            System.Collections.Generic.List(wrapper.Updates |> updateAndConvert)
-        
-        wrapper.Invalidate()
 
-        changeList
+        importchanges wrapper.Updates
+
+        wrapper.Invalidate()
 
     [<AutoOpen>]
     module WrapperTableExtensions = 

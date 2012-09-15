@@ -459,7 +459,7 @@ module DatabaseUpgrade =
                 copyTableOnSubmit db.MatchSessions old.MatchSessions 
                     (fun a -> 
                         NewMatchSession(GameId = getGameId a.Game, Startdate = a.Startdate,
-                                        Duration = a.Duration, EslMatchLink = a.EslMatchLink)
+                                        Duration = a.Duration, EslMatchLink = a.EslMatchLink, Name = "")
                         |> Some)
             let getMatchSessionId (old:OldMatchSession) = (getMatchSession old).Id
 
@@ -526,7 +526,7 @@ module DatabaseUpgrade =
                             with exn -> 
                                 ()
 
-                        NewMatchmedia(MatchSessionId = matchSession.Id, Name = a.Name, Type = a.Type,
+                        NewMatchmedia(MatchSessionId = matchSession.Id, Name = (if a.Name = null then "" else a.Name), Type = a.Type,
                                         Map = a.Map, Path = a.Path, Created = a.Created, PlayerId = player.Id)
                         |> Some)
             

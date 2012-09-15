@@ -76,7 +76,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                     }
                 }
                 tagTextBox.Text = session.MyTags;
-
+                matchNameTextBox.Text = session.Name;
                 linkLabel.Text = session.EslMatchLink;
                 matchmediaBindingSource.DataSource = matchmediaTableCopy.SourceTable;
             }
@@ -108,6 +108,11 @@ namespace Yaaf.WirePlugin.WinFormGui
             session.SetOriginal();
             session.MyTags = tagTextBox.Text;
             session.EslMatchLink = linkLabel.Text;
+            if (matchNameTextBox.Text.Length > 100)
+            {
+                throw new InvalidOperationException("Matchname can't exceed 100 characters!");
+            }
+            session.Name = matchNameTextBox.Text;
             sessionData.Item1.ImportChanges(matchmediaTableCopy);
             sessionData.Item2.ImportChanges(playerTableCopy);
         }

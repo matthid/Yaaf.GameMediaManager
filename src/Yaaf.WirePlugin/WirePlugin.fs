@@ -193,12 +193,14 @@ type ReplayWirePlugin() as x =
                         | Some (availableMatch) -> availableMatch, true
                         | None ->
                         new Database.MatchSession(
+                            Name = "",
                             Game = game,
                             Startdate = session.StartTime,
                             Duration = elapsedTime,
                             EslMatchLink = eslMatchLink), false       
                     | None ->
                         new Database.MatchSession(
+                            Name = "",
                             Game = game,
                             Startdate = session.StartTime,
                             Duration = elapsedTime), false
@@ -286,11 +288,15 @@ type ReplayWirePlugin() as x =
                         original.MatchSessions_Player <- null
                         original.Player <- null
                         original.MatchSession <- null
+                    for original in mediaWrapper.Inserts |> getOriginal do
+                        matchSession.Matchmedia.Add original
                     mediaWrapper.UpdateTable session.Context.Context.Matchmedias |> ignore
 
                     for original in playerWrapper.Deletions |> getOriginal do
                         original.Player <- null
                         original.MatchSession <- null
+                    for original in playerWrapper.Inserts |> getOriginal do
+                        matchSession.MatchSessions_Player.Add original
                     session.Context.UpdateMatchSessionPlayerTable playerWrapper
                 if not <| form.DeleteMatchmedia.HasValue then
                     false

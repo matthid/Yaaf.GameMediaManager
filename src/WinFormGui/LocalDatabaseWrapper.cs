@@ -10,9 +10,11 @@ namespace Yaaf.WirePlugin.WinFormGui
     using System;
     using System.Collections.Generic;
     using System.Data.Linq;
+    using System.Data.Linq.Mapping;
     using System.Data.SqlClient;
     using System.Diagnostics;
     using System.Linq;
+    using System.Reflection;
 
     using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
@@ -131,21 +133,16 @@ namespace Yaaf.WirePlugin.WinFormGui
             try
             {
                 var changes = Context.GetChangeSet();
-                var allchanges = 
-                        changes.Inserts
-                        .Union(changes.Updates)
-                        .ToList();
+                var allchanges = changes.Inserts.Union(changes.Updates).ToList();
 
-                var matchSessionsPlayers =
-                    allchanges
-                        .Select(o => o as MatchSessions_Player)
-                        .Where(o => o != null);
-                
+                var matchSessionsPlayers = allchanges.Select(o => o as MatchSessions_Player).Where(o => o != null);
+
                 foreach (var matchSessionsPlayer in matchSessionsPlayers)
                 {
                     if (matchSessionsPlayer.Player.MyId != 0)
                     {
-                        var newPlayer = FSharpInterop.Interop.Database.GetPlayerById(this, matchSessionsPlayer.Player.MyId);
+                        var newPlayer = FSharpInterop.Interop.Database.GetPlayerById(
+                            this, matchSessionsPlayer.Player.MyId);
                         var oldPlayer = matchSessionsPlayer.Player;
                         if (newPlayer != null)
                         {
@@ -168,11 +165,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                         }
                     }
                 }
-                var matchmedias =
-                    allchanges
-                        .Select(o => o as Matchmedia)
-                        .Where(o => o != null)
-                        .Cache();
+                var matchmedias = allchanges.Select(o => o as Matchmedia).Where(o => o != null).Cache();
 
                 foreach (var matchmedia in matchmedias)
                 {
@@ -182,16 +175,41 @@ namespace Yaaf.WirePlugin.WinFormGui
                     }
                 }
 
-                var deletedSessions = 
-                    changes.Deletes
-                        .Select(o => o as MatchSession)
-                        .Where(o => o != null);
+                var deletedSessions = changes.Deletes.Select(o => o as MatchSession).Where(o => o != null);
                 foreach (var deletedSession in deletedSessions)
                 {
                     FSharpInterop.Interop.Database.DeleteMatchSession(this, true, deletedSession);
                 }
 
-                Context.SubmitChanges();
+                try
+                {
+                    Context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                }
+                catch (ChangeConflictException e)
+                {
+                    logger.LogError("Recognized a ChangeConflict! Error: {0}", e);
+                    foreach (ObjectChangeConflict occ in Context.ChangeConflicts)
+                    {
+                        MetaTable metatable = Context.Mapping.GetTable(occ.Object.GetType());
+                        var entityInConflict = occ.Object;
+                        logger.LogInformation("Table name: {0}", metatable.TableName);
+                        logger.LogInformation("Object: {0}", entityInConflict);
+                        foreach (MemberChangeConflict mcc in occ.MemberConflicts)
+                        {
+                            object currVal = mcc.CurrentValue;
+                            object origVal = mcc.OriginalValue;
+                            object databaseVal = mcc.DatabaseValue;
+                            MemberInfo mi = mcc.Member;
+                            logger.LogInformation("Member: {0}", mi.Name);
+                            logger.LogInformation("current value: {0}", currVal);
+                            logger.LogInformation("original value: {0}", origVal);
+                            logger.LogInformation("database value: {0}", databaseVal);
+                        }
+                        occ.Resolve(RefreshMode.KeepChanges);
+                    }
+                }
+
+                Context.SubmitChanges(ConflictMode.FailOnFirstConflict);
             }
             catch (SqlException e)
             {
@@ -220,9 +238,8 @@ namespace Yaaf.WirePlugin.WinFormGui
         public void UpdateMatchSessionPlayerTable(WrapperDataTable.WrapperTable<MatchSessions_Player> playerTable)
         {
             var localDataContext = Context;
-            var changedPlayers =
-                playerTable
-                    .UpdateTable(localDataContext.MatchSessions_Players);
+            playerTable
+                .UpdateTable(localDataContext.MatchSessions_Players);
             // TODO: check if we have to delete "player" references
         }
     }

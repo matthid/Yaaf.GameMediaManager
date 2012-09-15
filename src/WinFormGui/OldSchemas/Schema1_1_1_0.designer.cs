@@ -1150,7 +1150,7 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_1_0
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -1632,6 +1632,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_1_0
 		
 		private string _EslMatchLink;
 		
+		private string _Name;
+		
 		private EntitySet<Matchmedia> _Matchmedia;
 		
 		private EntitySet<MatchSessions_Player> _MatchSessions_Player;
@@ -1654,6 +1656,8 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_1_0
     partial void OnDurationChanged();
     partial void OnEslMatchLinkChanging(string value);
     partial void OnEslMatchLinkChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
     #endregion
 		
 		public MatchSession()
@@ -1765,6 +1769,26 @@ namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_1_0
 					this._EslMatchLink = value;
 					this.SendPropertyChanged("EslMatchLink");
 					this.OnEslMatchLinkChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
 				}
 			}
 		}
