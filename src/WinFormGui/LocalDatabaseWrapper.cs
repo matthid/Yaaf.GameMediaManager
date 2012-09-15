@@ -93,26 +93,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         public LocalDatabaseWrapper Copy()
         {
-            var newContext = new LocalDatabaseWrapper(new LocalDataContext(context.Connection));
-            //var newChanges = context.GetChangeSet();
-            //foreach (var d in newChanges.Deletes)
-            //{
-            //    var table = newContext.Context.GetTable(d.GetType());
-            //    table.DeleteOnSubmit(d);
-            //} 
-            //foreach (var i in newChanges.Inserts)
-            //{
-            //    var table = newContext.Context.GetTable(i.GetType());
-            //    table.InsertOnSubmit(i);
-            //} 
-            //foreach (var u in newChanges.Updates)
-            //{
-            //    var table = newContext.Context.GetTable(u.GetType());
-            //    var changes =
-            //        table.GetModifiedMembers(u);
-
-            //}
-            return newContext;
+            return new LocalDatabaseWrapper(new LocalDataContext(context.Connection));
         }
 
         public ActionObject GetMoveToMatchmediaActionObject()
@@ -149,6 +130,67 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             try
             {
+                var changes = Context.GetChangeSet();
+                var allchanges = 
+                        changes.Inserts
+                        .Union(changes.Updates)
+                        .ToList();
+
+                var matchSessionsPlayers =
+                    allchanges
+                        .Select(o => o as MatchSessions_Player)
+                        .Where(o => o != null);
+                
+                foreach (var matchSessionsPlayer in matchSessionsPlayers)
+                {
+                    if (matchSessionsPlayer.Player.MyId != 0)
+                    {
+                        var newPlayer = FSharpInterop.Interop.Database.GetPlayerById(this, matchSessionsPlayer.Player.MyId);
+                        var oldPlayer = matchSessionsPlayer.Player;
+                        if (newPlayer != null)
+                        {
+                            UpdateMatchSessionPlayer(oldPlayer, newPlayer, matchSessionsPlayer);
+                        }
+                        else
+                        {
+                            matchSessionsPlayer.PlayerId = 0;
+                        }
+                    }
+
+                    if (matchSessionsPlayer.Player.EslPlayerId.HasValue && matchSessionsPlayer.PlayerId == 0)
+                    {
+                        var newPlayer = FSharpInterop.Interop.Database.GetPlayerByEslId(
+                            this, matchSessionsPlayer.Player.EslPlayerId.Value);
+                        var oldPlayer = matchSessionsPlayer.Player;
+                        if (newPlayer != null)
+                        {
+                            UpdateMatchSessionPlayer(oldPlayer, newPlayer, matchSessionsPlayer);
+                        }
+                    }
+                }
+                var matchmedias =
+                    allchanges
+                        .Select(o => o as Matchmedia)
+                        .Where(o => o != null)
+                        .Cache();
+
+                foreach (var matchmedia in matchmedias)
+                {
+                    if (matchmedia.MyMatchSessionsPlayer != null)
+                    {
+                        matchmedia.MatchSessions_Player = matchmedia.MyMatchSessionsPlayer;
+                    }
+                }
+
+                var deletedSessions = 
+                    changes.Deletes
+                        .Select(o => o as MatchSession)
+                        .Where(o => o != null);
+                foreach (var deletedSession in deletedSessions)
+                {
+                    FSharpInterop.Interop.Database.DeleteMatchSession(this, true, deletedSession);
+                }
+
                 Context.SubmitChanges();
             }
             catch (SqlException e)
@@ -163,14 +205,33 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
         }
 
+        private void UpdateMatchSessionPlayer(Player oldPlayer, Player newPlayer, MatchSessions_Player matchSessionsPlayer)
+        {
+            matchSessionsPlayer.Player = newPlayer;
+            newPlayer.EslPlayerId = oldPlayer.EslPlayerId;
+            newPlayer.MyTags = oldPlayer.MyTags;
+            newPlayer.Name = oldPlayer.Name;
+            if (oldPlayer.Id == 0)
+            {
+                Context.Players.DeleteOnSubmit(oldPlayer);
+            }
+        }
+
         public void UpdateMatchSessionPlayerTable(WrapperDataTable.WrapperTable<MatchSessions_Player> playerTable)
         {
             var localDataContext = Context;
-            var removeTags =
-                playerTable.UpdateTable(localDataContext.MatchSessions_Players).Where(p => p.RemoveTags.Count > 0).Select(
-                    p => (IEnumerable<Player_Tag>)p.RemoveTags).Union(new[] { new Player_Tag[0] }).Aggregate(
-                        (left, right) => left.Union(right));
-            localDataContext.Player_Tags.DeleteAllOnSubmit(removeTags);
+            //var modifiedPlayers = 
+                playerTable
+                    .UpdateTable(localDataContext.MatchSessions_Players);
+
+            //var removeTags =
+            //    modifiedPlayers
+            //        .Select(p => p.Player)
+            //        .Where(p => p.RemoveTags.Count > 0)
+            //        .Select(p => (IEnumerable<Player_Tag>)p.RemoveTags)
+            //        .Union(new[] { new Player_Tag[0] })
+            //        .Aggregate((left, right) => left.Union(right));
+            //localDataContext.Player_Tags.DeleteAllOnSubmit(removeTags);
         }
     }
 }

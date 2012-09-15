@@ -104,6 +104,14 @@
     <Compile Include="MatchSessionEnd.Designer.cs">
       <DependentUpon>MatchSessionEnd.cs</DependentUpon>
     </Compile>
+    <Compile Include="OldSchemas\Schema1_1_1_0.cs">
+      <DependentUpon>Schema1_1_1_0.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="OldSchemas\Schema1_1_1_0.designer.cs">
+      <DependentUpon>Schema1_1_1_0.dbml</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="OldSchemas\Schema1_1_0_0.cs">
       <DependentUpon>Schema1_1_0_0.dbml</DependentUpon>
     </Compile>
@@ -149,6 +157,11 @@
     <EmbeddedResource Include="ManagePlayers.resx">
       <DependentUpon>ManagePlayers.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="OldSchemas\Schema1_1_1_0.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>Schema1_1_1_0.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="OldSchemas\Schema1_1_0_0.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>Schema1_1_0_0.designer.cs</LastGenOutput>
@@ -159,6 +172,9 @@
     </None>
     <None Include="OldSchemas\Schema1_1_0_0.dbml.layout">
       <DependentUpon>Schema1_1_0_0.dbml</DependentUpon>
+    </None>
+    <None Include="OldSchemas\Schema1_1_1_0.dbml.layout">
+      <DependentUpon>Schema1_1_1_0.dbml</DependentUpon>
     </None>
     <EmbeddedResource Include="ViewMatchSessions.resx">
       <DependentUpon>ViewMatchSessions.cs</DependentUpon>

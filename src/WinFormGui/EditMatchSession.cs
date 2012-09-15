@@ -1,7 +1,7 @@
 ﻿// ----------------------------------------------------------------------------
 // This file (EditMatchSession.cs) is subject to the terms and conditions defined in
 // file 'LICENSE.txt', which is part of this source code package (Yaaf.WirePlugin).
-// Last Modified: 2012/09/13 19:23
+// Last Modified: 2012/09/14 15:53
 // Created: 2012/09/13 08:49
 // ----------------------------------------------------------------------------
 
@@ -15,6 +15,8 @@ namespace Yaaf.WirePlugin.WinFormGui
     using System.IO;
     using System.Linq;
     using System.Windows.Forms;
+
+    using Microsoft.FSharp.Core;
 
     using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
@@ -61,6 +63,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             matchmediaDataCopy = matchmediaData.Clone();
             playersData = sessionData.Item2;
             playersDataCopy = playersData.Clone();
+            playersDataCopy.ItemChanged += playersDataCopy_ItemChanged;
             this.session = session;
             this.matchEndMode = matchEndMode;
             InitializeComponent();
@@ -68,35 +71,117 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         public bool? DeleteMatchmedia { get; private set; }
 
+        private void playersDataCopy_ItemChanged(
+            object sender, Tuple<MatchSessions_Player, MatchSessions_Player, FSharpRef<bool>> tuple)
+        {
+            var copyItem = tuple.Item2;
+
+            var changedCopyItem = false;
+            if (copyItem.Player.MyId != 0)
+            {
+                var player = FSharpInterop.Interop.Database.GetPlayerById(context, copyItem.Player.MyId);
+                if (player != null)
+                {
+                    if (!copyItem.Player.EslPlayerId.HasValue || copyItem.Player.EslPlayerId.Value != player.EslPlayerId)
+                    {
+                        copyItem.Player.EslPlayerId = player.EslPlayerId;
+                        changedCopyItem = true;
+                    }
+
+                    if (ChangeCopyItem(player, copyItem))
+                    {
+                        changedCopyItem = true;
+                    }
+                }
+                else
+                {
+                    copyItem.Player.MyId = 0;
+                    changedCopyItem = true;
+                }
+            }
+
+            if (copyItem.Player.MyId == 0 && copyItem.Player.EslPlayerId.HasValue)
+            {
+                var player = FSharpInterop.Interop.Database.GetPlayerByEslId(context, copyItem.Player.EslPlayerId.Value);
+                if (player != null)
+                {
+                    if (copyItem.Player.MyId != player.Id)
+                    {
+                        copyItem.Player.MyId = player.Id;
+                        changedCopyItem = true;
+                    }
+                    if (ChangeCopyItem(player, copyItem))
+                    {
+                        changedCopyItem = true;
+                    }
+                }
+            }
+
+            if (changedCopyItem)
+            {
+                tuple.Item3.Value = true;
+            }
+        }
+
+        private bool ChangeCopyItem(Player player, MatchSessions_Player copyItem)
+        {
+            var changedCopyItem = false;
+            if (string.IsNullOrEmpty(copyItem.Player.Name) || copyItem.Player.Name == "unknown")
+            {
+                copyItem.Player.Name = player.Name;
+                changedCopyItem = true;
+            }
+
+            if (string.IsNullOrEmpty(copyItem.Player.MyTags))
+            {
+                copyItem.Player.MyTags = player.MyTags;
+                changedCopyItem = true;
+            }
+            return changedCopyItem;
+        }
+
         private void matchPlayersDataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            RefreshMatchmediaView();
+            if (!matchmediaDataCopy.IsInvalidated)
+            {
+                RefreshMatchmediaView();
+            }
         }
 
         private void RefreshMatchmediaView()
         {
             var matchSessionsPlayers = GetSelectedPlayers();
-            primaryPlayer = matchSessionsPlayers.Item2;
-            primaryPlayerLabel.Text = primaryPlayer == null
+            primaryPlayer = matchSessionsPlayers.Item2 != null ? matchSessionsPlayers.Item2.Original : null;
+            var changedPrimaryPlayer = matchSessionsPlayers.Item2 != null ? matchSessionsPlayers.Item2.Copy : null;
+            primaryPlayerLabel.Text = changedPrimaryPlayer == null
                                           ? "None"
-                                          : string.Format("{0} ({1})", primaryPlayer.MyName, primaryPlayer.MyPlayerId);
+                                          : string.Format("{0} ({1})", changedPrimaryPlayer.Player.Name, changedPrimaryPlayer.Player.MyId);
 
             IEnumerable<Matchmedia> media = new Matchmedia[0];
-            media = matchSessionsPlayers.Item1.Where(player1 => player1 != null).Aggregate(
-                media,
-                (current, player1) =>
-                current.Union(from f in matchmediaDataCopy.CopyLinqData where f.PlayerId == player1.MyPlayerId select f));
+            media = 
+                matchSessionsPlayers.Item1
+                    .Aggregate(media, (current, selectedPlayer) =>
+                        current.Union(from copy in matchmediaDataCopy.CopyLinqData
+                                      let row = matchmediaDataCopy.GetRowFromCopy(copy)
+                                      let orig = matchmediaDataCopy.GetItem(row)
+                                      where orig.MatchSessions_Player == primaryPlayer
+                                      select copy));
 
-            var value = matchmediaDataCopy.GetCopiedTable(media);
-            value.SetInitializer(
-                mediaM =>
-                    {
-                        mediaM.Created = DateTime.Now;
-                        mediaM.MatchSession = session;
-                        mediaM.PlayerId = primaryPlayer.MyPlayerId;
-                    });
+            var value = matchmediaDataCopy.GetCopiedTableFromCopyData(media);
+            value.InitRow += value_InitRow;
+            value.UserAddedRow += value_UserAddedRow;
 
             SetNewWrapper(value);
+        }
+
+        private void value_UserAddedRow(object sender, Matchmedia media)
+        {
+            media.PlayerId = primaryPlayer.PlayerId;
+        }
+
+        private void value_InitRow(object sender, Matchmedia media)
+        {
+            media.Created = DateTime.Now;
         }
 
         private void SetNewWrapper(WrapperMatchmediaTable value)
@@ -110,11 +195,14 @@ namespace Yaaf.WirePlugin.WinFormGui
             matchmediaBindingSource.DataSource = value.SourceTable;
         }
 
-        private Tuple<List<MatchSessions_Player>, MatchSessions_Player> GetSelectedPlayers()
+        private Tuple<List<WrapperDataTable.ItemData<MatchSessions_Player>>, WrapperDataTable.ItemData<MatchSessions_Player>> GetSelectedPlayers()
         {
             return
-                matchPlayersDataGridView.GetSelection<DataRowView>(matchSessionsPlayerBindingSource).MapSelection(
-                    v => playersDataCopy.GetCopyItem(v.Row)).FilterSelection(v => v.IsSome()).MapSelection(v => v.Value);
+                matchPlayersDataGridView
+                    .GetSelection<DataRowView>(matchSessionsPlayerBindingSource)
+                    .MapSelection(v => playersDataCopy.GetRowData(v.Row))
+                    .FilterSelection(v => v.IsSome())
+                    .MapSelection(v => v.Value);
         }
 
         private void EditMatchSession_Load(object sender, EventArgs e)
@@ -137,13 +225,8 @@ namespace Yaaf.WirePlugin.WinFormGui
                 Skill.DisplayMember = "name";
 
                 matchSessionsPlayerBindingSource.DataSource = playersDataCopy.SourceTable;
-                playersDataCopy.SetInitializer(
-                    player =>
-                        {
-                            player.MyTeam = PlayerTeam.Team1;
-                            player.MySkill = PlayerSkill.Mid;
-                            player.MyMatchSessionId = session.Id;
-                        });
+                linkLabel.Text = session.EslMatchLink;
+                playersDataCopy.InitRow += playersDataCopy_InitRow;
                 matchTagsTextBox.Text = session.MyTags;
             }
             catch (Exception ex)
@@ -152,6 +235,12 @@ namespace Yaaf.WirePlugin.WinFormGui
                 Close();
             }
         }
+        
+        private void playersDataCopy_InitRow(object sender, MatchSessions_Player player)
+        {
+            player.MyTeam = PlayerTeam.Team1;
+            player.MySkill = PlayerSkill.Mid;
+        }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
@@ -159,8 +248,19 @@ namespace Yaaf.WirePlugin.WinFormGui
             {
                 matchmediaDataCopy.ImportChanges(oldWrapper);
                 matchmediaData.ImportChanges(matchmediaDataCopy);
+                var playerData = from copyData in playersDataCopy.CopyLinqData
+                                 let row = playersDataCopy.get_CopyItemToRow(copyData)
+                                 let original = playersDataCopy.GetItem(row)
+                                 select original;
+                foreach (var p in playerData)
+                {
+                    p.MatchSession = session;
+                }
+
                 playersData.ImportChanges(playersDataCopy);
 
+
+                session.EslMatchLink = linkLabel.Text;
                 session.MyTags = matchTagsTextBox.Text;
                 DeleteMatchmedia = false;
                 Close();
@@ -212,8 +312,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
             var media = new Matchmedia();
             media.AddDataFromFile(file);
-            media.MatchSession = session;
-            media.PlayerId = primaryPlayer.MyPlayerId;
+            media.MyMatchSessionsPlayer = primaryPlayer;
             oldWrapper.Add(media);
         }
 
@@ -276,7 +375,8 @@ namespace Yaaf.WirePlugin.WinFormGui
                 var players = Helpers.ShowLoadMatchDataDialog(logger, session.EslMatchLink);
                 matchmediaDataCopy.ImportChanges(oldWrapper);
                 oldWrapper = null;
-                FSharpInterop.Interop.FillWrapperTable(players, playersDataCopy, matchmediaDataCopy);
+                FSharpInterop.Interop.FillWrapperTable(players.Item1, playersDataCopy, matchmediaDataCopy);
+                linkLabel.Text = players.Item2;
                 RefreshMatchmediaView();
             }
             catch (Exception ex)

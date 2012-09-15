@@ -9,7 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Yaaf.WirePlugin.WinFormGui.Database
+namespace Yaaf.WirePlugin.WinFormGui.Database.OldSchemas.v1_1_1_0
 {
 	using System.Data.Linq;
 	using System.Data.Linq.Mapping;

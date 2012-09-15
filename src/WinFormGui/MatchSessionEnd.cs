@@ -63,15 +63,11 @@ namespace Yaaf.WirePlugin.WinFormGui
             Logging.setupLogging(logger);
             try
             {
-                primaryPlayer = FSharpInterop.Interop.GetIdentityPlayer(context);
-                matchmediaTableCopy.SetInitializer(
-                    m =>
-                        {
-                            m.MatchSessionId = session.Id;
-                            m.PlayerId = primaryPlayer.Id;
-                        });
+                primaryPlayer = FSharpInterop.Interop.Database.GetIdentityPlayer(context);
 
                 tagTextBox.Text = session.MyTags;
+
+                linkLabel.Text = session.EslMatchLink;
                 matchmediaBindingSource.DataSource = matchmediaTableCopy.SourceTable;
             }
             catch (Exception ex)
@@ -100,14 +96,23 @@ namespace Yaaf.WirePlugin.WinFormGui
         private void SaveData()
         {
             session.MyTags = tagTextBox.Text;
+            session.EslMatchLink = linkLabel.Text;
             sessionData.Item1.ImportChanges(matchmediaTableCopy);
             sessionData.Item2.ImportChanges(playerTableCopy);
         }
 
         private void deleteMatchmediaButton_Click(object sender, EventArgs e)
         {
-            SetupRemember(false);
-            DeleteMatchmedia = true;
+            try
+            {
+                SaveData();
+                SetupRemember(false);
+                DeleteMatchmedia = true;
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Could not delete Matchmedia");
+            }
         }
 
         private void SetupRemember(bool saveData)
@@ -167,7 +172,8 @@ namespace Yaaf.WirePlugin.WinFormGui
             try
             {
                 var players = Helpers.ShowLoadMatchDataDialog(logger, session.EslMatchLink);
-                FSharpInterop.Interop.FillWrapperTable(players, playerTableCopy, matchmediaTableCopy);
+                FSharpInterop.Interop.FillWrapperTable(players.Item1, playerTableCopy, matchmediaTableCopy);
+                linkLabel.Text = players.Item2;
                 rememberCheckBox.Enabled = false;
             }
             catch (Exception ex)

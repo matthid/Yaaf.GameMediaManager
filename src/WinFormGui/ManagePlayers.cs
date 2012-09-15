@@ -40,8 +40,17 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void ManagePlayers_Load(object sender, EventArgs e)
         {
-            playerBindingSource.DataSource = wrapper.Context.Players;
-            SetMe(FSharpInterop.Interop.GetIdentityPlayer(wrapper));
+            var task = Primitives.Task.FromDelegate(
+                () =>
+                    {
+                        foreach (var player in wrapper.Context.Players)
+                        {
+                        }
+                        return wrapper.Context.Players;
+                    });
+            WaitingForm.StartTask(logger,  task, "loading players...");
+            playerBindingSource.DataSource = task.Result.Value;
+            SetMe(FSharpInterop.Interop.Database.GetIdentityPlayer(wrapper));
         }
         
         private void SetMe(Player player)

@@ -15,11 +15,19 @@ namespace Yaaf.WirePlugin.WinFormGui
     using Yaaf.WirePlugin.Primitives;
     using Yaaf.WirePlugin.WinFormGui.Database;
 
+    public interface IFSharpDatabase
+    {
+        Player GetIdentityPlayer(LocalDatabaseWrapper context);
+        Player GetPlayerByEslId(LocalDatabaseWrapper context, int eslId);
+        Player GetPlayerById(LocalDatabaseWrapper context, int id);
+
+        void DeleteMatchSession(LocalDatabaseWrapper context, bool deleteFiles, MatchSession session);
+    }
+
     public interface IFSharpInterop
     {
+        IFSharpDatabase Database { get; }
         string GetMatchmediaPath(Matchmedia media);
-
-        Player GetIdentityPlayer(LocalDatabaseWrapper context);
 
         LocalDatabaseWrapper GetNewContext();
 

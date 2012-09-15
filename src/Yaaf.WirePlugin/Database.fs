@@ -257,6 +257,20 @@ module Database =
         | None -> f()
         | Some (s) -> s
 
+    let tryGetPlayerById (db:Context) id =
+        tryGetSingle
+            <@ seq {
+                for a in db.Players do
+                    if a.Id = id then
+                        yield a } @>
+
+    let tryGetPlayerByEslId (db:Context) eslId =
+        tryGetSingle
+            <@ seq {
+                for a in db.Players do
+                    if a.EslPlayerId = System.Nullable(eslId) then
+                        yield a } @>
+
     let getPlayerByEslId (db:Context) id nick = 
         let mid = System.Nullable(id)
         let myQuery = 
@@ -295,8 +309,8 @@ module Database =
         let copyData = new System.Collections.Generic.HashSet<_>( data )
         let eslDict = new System.Collections.Generic.Dictionary<int,_>()
         for key, value in
-            data |> Seq.filter (fun da -> da.MyEslId.HasValue)
-                 |> Seq.map (fun da -> da.MyEslId.Value, da) do
+            data |> Seq.filter (fun da -> da.Player.EslPlayerId.HasValue)
+                 |> Seq.map (fun da -> da.Player.EslPlayerId.Value, da) do
             eslDict.Add(key, value)
         players
             |> Seq.iter 
@@ -304,18 +318,18 @@ module Database =
                     match eslDict.TryGetValue p.Id with
                     | true, data -> 
                         copyData.Remove data |> ignore
-                        data.MyName <- p.Nick
+                        data.Player.Name <- p.Nick
                         data.Team <- byte p.Team
                         wrapperTable.UpdateItem data
                     | false, _ ->
                         let newPlayer = 
                             Database.MatchSessions_Player(
-                                MyName = p.Nick, MyEslId = System.Nullable(p.Id), Team = byte p.Team)
+                                Team = byte p.Team, Player = Database.Player(Name = p.Nick, EslPlayerId = System.Nullable(p.Id)))
                         wrapperTable.Add newPlayer)
         let medias =
             mediaTable.CopyLinqData
         for item in copyData do
-            if medias |> Seq.exists (fun m -> m.PlayerId = item.MyPlayerId) |> not then
+            if medias |> Seq.exists (fun m -> m.PlayerId = item.PlayerId) |> not then
                 wrapperTable.DeleteCopyItem item
             else
                 item.Team <- 11uy
@@ -334,17 +348,31 @@ module Database =
                 File.Delete matchmedia.Path
             matchSession.Matchmedia.Remove matchmedia |> ignore
             matchmedia.Player.Matchmedia.Remove matchmedia |> ignore
-
+            
+            if db.Matchmedias.GetOriginalEntityState(matchmedia) <> null then
+                db.Matchmedias.DeleteOnSubmit matchmedia
             for tag in System.Collections.Generic.List<_> matchmedia.Matchmedia_Tag do
+                
                 matchmedia.Matchmedia_Tag.Remove tag |> ignore
                 tag.Tag.Matchmedia_Tag.Remove tag |> ignore
+                
+                if db.Matchmedia_Tags.GetOriginalEntityState(tag) <> null then
+                    db.Matchmedia_Tags.DeleteOnSubmit tag
+                
 
         for player in System.Collections.Generic.List<_> matchSession.MatchSessions_Player do
             matchSession.MatchSessions_Player.Remove player |> ignore
             player.Player.MatchSessions_Player.Remove player |> ignore
+            
+            if db.MatchSessions_Players.GetOriginalEntityState(player) <> null then
+                db.MatchSessions_Players.DeleteOnSubmit player
 
         for tag in System.Collections.Generic.List<_> matchSession.MatchSessions_Tag do
+            db.MatchSessions_Tags.DeleteOnSubmit tag
             matchSession.MatchSessions_Tag.Remove tag |> ignore
             tag.Tag.MatchSessions_Tag.Remove tag |> ignore
-                                
+            
+            if db.MatchSessions_Tags.GetOriginalEntityState(tag) <> null then
+                db.MatchSessions_Tags.DeleteOnSubmit tag
+
         db.MatchSessions.DeleteOnSubmit(matchSession)

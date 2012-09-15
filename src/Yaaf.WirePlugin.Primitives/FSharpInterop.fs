@@ -18,6 +18,10 @@ module Interop =
     [<System.Runtime.CompilerServices.Extension>]
     let IsSome o = 
         not <| IsNone o
+        
+    [<System.Runtime.CompilerServices.Extension>]
+    let Cache seq = 
+        Seq.cache seq
 
 type ITask<'T> = 
     abstract member Start : unit -> unit
@@ -98,7 +102,9 @@ type Task<'T>(a:Async<'T>, update:IEvent<string>) =
         member x.Finished = finishedEvent.Publish
 
     member x.Async with get() = a
-    static member FromDelegate (func:Func<_>)  = 
+
+module Task =
+    let FromDelegate (func:Func<_>)  = 
         let asyncTask = async { return func.Invoke() }
         Task(asyncTask) :> ITask<_>
 

@@ -16,6 +16,7 @@ open Yaaf.WirePlugin.WinFormGui.Properties
 type GameData = {
         Game : Database.Game
         Watcher : MatchmediaWatcher
+        DefaultPlayer : Database.MatchSessions_Player
         MatchSession : Database.MatchSession
     }
 type Session = {
@@ -201,25 +202,28 @@ type ReplayWirePlugin() as x =
                             Startdate = session.StartTime,
                             Duration = elapsedTime), false
                 
-                if not sessionAdded then
-                    // Add me to the session...
-                    let me = Database.getIdentityPlayer db
-                    let newPlayerAssociation = 
-                        new Database.MatchSessions_Player(
-                            MatchSession = matchSession,
-                            Cheating = false,
-                            Player = me,
-                            Skill = System.Nullable(100uy),
-                            Team = 11uy)
-                    newPlayerAssociation.SetLoaded()
-                    matchSession.MatchSessions_Player.Add(newPlayerAssociation)
-                    db.MatchSessions.InsertOnSubmit matchSession
+                let playerAssoc = 
+                    if not sessionAdded then
+                        // Add me to the session...
+                        let me = Database.getIdentityPlayer db
+                        let newPlayerAssociation = 
+                            new Database.MatchSessions_Player(
+                                MatchSession = matchSession,
+                                Cheating = false,
+                                Player = me,
+                                Skill = System.Nullable(100uy),
+                                Team = 11uy)
+                        matchSession.MatchSessions_Player.Add(newPlayerAssociation)
+                        db.MatchSessions.InsertOnSubmit matchSession
+                        newPlayerAssociation
+                    else
+                       matchSession.MatchSessions_Player |> Seq.head
                 
                 if (session.IsEslMatch) then
                     getGrabAction db matchSession matchSession.EslMatchLink
                     |> Async.Start
 
-                Some { Watcher = w; Game = game; MatchSession = matchSession }
+                Some { Watcher = w; Game = game; MatchSession = matchSession; DefaultPlayer = playerAssoc }
             | None -> None
 
         { session with GameData = gameData }
@@ -251,14 +255,16 @@ type ReplayWirePlugin() as x =
         watcher.FoundMedia
             |> Seq.mapi  
                 (fun i (lNum, mediaDate, m) -> 
-                    new Database.Matchmedia(
-                        Player = me,
-                        Created = mediaDate, 
-                        MatchSession = matchSession,
-                        Map = (MediaAnalyser.analyseMedia m).Map,
-                        Name = Path.GetFileNameWithoutExtension m,
-                        Type = Path.GetExtension m,
-                        Path = m))
+                        new Database.Matchmedia(
+                            MatchSessions_Player = data.DefaultPlayer,
+                            Player = me,
+                            Created = mediaDate, 
+                            MatchSession = matchSession,
+                            Map = (MediaAnalyser.analyseMedia m).Map,
+                            Name = Path.GetFileNameWithoutExtension m,
+                            Type = Path.GetExtension m,
+                            Path = m)
+                    )
             |> Seq.iter (fun s -> matchSession.Matchmedia.Add(s))
         let waitGrabbing () = 
             let finishTask = 
@@ -273,7 +279,7 @@ type ReplayWirePlugin() as x =
                 let playerWrapper = WinFormGui.Helpers.GetWrapper(matchSession.MatchSessions_Player)
                 let form = new MatchSessionEnd(logger, session.Context,(mediaWrapper,playerWrapper), matchSession)
                 form.ShowDialog() |> ignore
-                if form.DeleteMatchmedia.HasValue && not form.DeleteMatchmedia.Value then
+                if form.DeleteMatchmedia.HasValue then
                     mediaWrapper.UpdateTable session.Context.Context.Matchmedias |> ignore
                     session.Context.UpdateMatchSessionPlayerTable playerWrapper
                 if not <| form.DeleteMatchmedia.HasValue then
@@ -342,10 +348,23 @@ type ReplayWirePlugin() as x =
                 
         
     let interop = 
+        let dataBaseInterop = 
+            { new IFSharpDatabase with
+                member x.GetIdentityPlayer db = Database.getIdentityPlayer db.Context
+                member x.GetPlayerByEslId (db, eslId) = 
+                    match Database.tryGetPlayerByEslId db.Context eslId with
+                    | Some s -> s
+                    | None -> null
+                member x.GetPlayerById (db, id) = 
+                    match Database.tryGetPlayerById db.Context id with
+                    | Some s -> s
+                    | None -> null 
+                member x.DeleteMatchSession (db, delFiles,session) = 
+                    Database.removeSession db.Context delFiles session }
         { new IFSharpInterop with
             member x.GetMatchmediaPath media = 
                 Database.mediaPath media
-            member x.GetIdentityPlayer db = Database.getIdentityPlayer db.Context
+            member x.Database with get() = dataBaseInterop
             member x.GetNewContext () = Database.getContext()     
             member x.GetFetchPlayerTask link =
                 let asyncTask = async { return! EslGrabber.getMatchMembers link } 

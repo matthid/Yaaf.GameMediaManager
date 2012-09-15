@@ -33,10 +33,16 @@ namespace Yaaf.WirePlugin.WinFormGui
             this.context = context;
             this.wrapperTable = wrapperTable;
             this.wrapperTableCopy = wrapperTable.Clone();
-            wrapperTableCopy.SetInitializer(w => w.GameId = game.Id);
+            wrapperTableCopy.UserAddedRow += wrapperTableCopy_UserAddedRow;
             this.game = game;
             InitializeComponent();
         }
+
+        void wrapperTableCopy_UserAddedRow(object sender, WatchFolder args)
+        {
+            args.GameId = game.Id;
+        }
+
 
         private void ManageWatchFolder_Load(object sender, EventArgs e)
         {

@@ -31,11 +31,18 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditMatchSession));
             this.matchPlayersDataGridView = new System.Windows.Forms.DataGridView();
+            this.matchSessionsPlayerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.matchmediaDataGridView = new System.Windows.Forms.DataGridView();
+            this.nameDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MatchmediaTagsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.mapDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.createdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.matchmediaContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showInExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -47,13 +54,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.matchTagsTextBox = new System.Windows.Forms.TextBox();
             this.loadMatchDataButton = new System.Windows.Forms.Button();
-            this.nameDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.mapDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.createdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.matchSessionsPlayerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.PlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.EslPlayerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -62,11 +62,12 @@
             this.Skill = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Team = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Cheating = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.linkLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.matchPlayersDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.matchSessionsPlayerBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaDataGridView)).BeginInit();
             this.matchmediaContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.matchSessionsPlayerBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // matchPlayersDataGridView
@@ -89,6 +90,10 @@
             this.matchPlayersDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.matchPlayersDataGridView_DataError);
             this.matchPlayersDataGridView.SelectionChanged += new System.EventHandler(this.matchPlayersDataGridView_SelectionChanged);
             // 
+            // matchSessionsPlayerBindingSource
+            // 
+            this.matchSessionsPlayerBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.MatchSessions_Player);
+            // 
             // matchmediaDataGridView
             // 
             this.matchmediaDataGridView.AllowDrop = true;
@@ -109,12 +114,48 @@
             this.matchmediaDataGridView.DragDrop += new System.Windows.Forms.DragEventHandler(this.matchmediaDataGridView_DragDrop);
             this.matchmediaDataGridView.DragEnter += new System.Windows.Forms.DragEventHandler(this.matchmediaDataGridView_DragEnter);
             // 
+            // nameDataGridViewTextBoxColumn1
+            // 
+            this.nameDataGridViewTextBoxColumn1.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn1.FillWeight = 90F;
+            resources.ApplyResources(this.nameDataGridViewTextBoxColumn1, "nameDataGridViewTextBoxColumn1");
+            this.nameDataGridViewTextBoxColumn1.Name = "nameDataGridViewTextBoxColumn1";
+            // 
             // MatchmediaTagsColumn
             // 
             this.MatchmediaTagsColumn.DataPropertyName = "MyTags";
             this.MatchmediaTagsColumn.FillWeight = 90F;
             resources.ApplyResources(this.MatchmediaTagsColumn, "MatchmediaTagsColumn");
             this.MatchmediaTagsColumn.Name = "MatchmediaTagsColumn";
+            // 
+            // typeDataGridViewTextBoxColumn
+            // 
+            this.typeDataGridViewTextBoxColumn.DataPropertyName = "Type";
+            this.typeDataGridViewTextBoxColumn.FillWeight = 70F;
+            resources.ApplyResources(this.typeDataGridViewTextBoxColumn, "typeDataGridViewTextBoxColumn");
+            this.typeDataGridViewTextBoxColumn.Name = "typeDataGridViewTextBoxColumn";
+            this.typeDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // mapDataGridViewTextBoxColumn
+            // 
+            this.mapDataGridViewTextBoxColumn.DataPropertyName = "Map";
+            this.mapDataGridViewTextBoxColumn.FillWeight = 70F;
+            resources.ApplyResources(this.mapDataGridViewTextBoxColumn, "mapDataGridViewTextBoxColumn");
+            this.mapDataGridViewTextBoxColumn.Name = "mapDataGridViewTextBoxColumn";
+            // 
+            // pathDataGridViewTextBoxColumn
+            // 
+            this.pathDataGridViewTextBoxColumn.DataPropertyName = "Path";
+            this.pathDataGridViewTextBoxColumn.FillWeight = 200F;
+            resources.ApplyResources(this.pathDataGridViewTextBoxColumn, "pathDataGridViewTextBoxColumn");
+            this.pathDataGridViewTextBoxColumn.Name = "pathDataGridViewTextBoxColumn";
+            this.pathDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // createdDataGridViewTextBoxColumn
+            // 
+            this.createdDataGridViewTextBoxColumn.DataPropertyName = "Created";
+            resources.ApplyResources(this.createdDataGridViewTextBoxColumn, "createdDataGridViewTextBoxColumn");
+            this.createdDataGridViewTextBoxColumn.Name = "createdDataGridViewTextBoxColumn";
             // 
             // matchmediaContextMenuStrip
             // 
@@ -135,6 +176,10 @@
             this.showInExplorerToolStripMenuItem.Name = "showInExplorerToolStripMenuItem";
             resources.ApplyResources(this.showInExplorerToolStripMenuItem, "showInExplorerToolStripMenuItem");
             this.showInExplorerToolStripMenuItem.Click += new System.EventHandler(this.showInExplorerToolStripMenuItem_Click);
+            // 
+            // matchmediaBindingSource
+            // 
+            this.matchmediaBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.Matchmedia);
             // 
             // saveButton
             // 
@@ -197,74 +242,29 @@
             this.loadMatchDataButton.UseVisualStyleBackColor = true;
             this.loadMatchDataButton.Click += new System.EventHandler(this.loadMatchDataButton_Click);
             // 
-            // nameDataGridViewTextBoxColumn1
-            // 
-            this.nameDataGridViewTextBoxColumn1.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn1.FillWeight = 90F;
-            resources.ApplyResources(this.nameDataGridViewTextBoxColumn1, "nameDataGridViewTextBoxColumn1");
-            this.nameDataGridViewTextBoxColumn1.Name = "nameDataGridViewTextBoxColumn1";
-            // 
-            // typeDataGridViewTextBoxColumn
-            // 
-            this.typeDataGridViewTextBoxColumn.DataPropertyName = "Type";
-            this.typeDataGridViewTextBoxColumn.FillWeight = 70F;
-            resources.ApplyResources(this.typeDataGridViewTextBoxColumn, "typeDataGridViewTextBoxColumn");
-            this.typeDataGridViewTextBoxColumn.Name = "typeDataGridViewTextBoxColumn";
-            // 
-            // mapDataGridViewTextBoxColumn
-            // 
-            this.mapDataGridViewTextBoxColumn.DataPropertyName = "Map";
-            this.mapDataGridViewTextBoxColumn.FillWeight = 70F;
-            resources.ApplyResources(this.mapDataGridViewTextBoxColumn, "mapDataGridViewTextBoxColumn");
-            this.mapDataGridViewTextBoxColumn.Name = "mapDataGridViewTextBoxColumn";
-            // 
-            // pathDataGridViewTextBoxColumn
-            // 
-            this.pathDataGridViewTextBoxColumn.DataPropertyName = "Path";
-            this.pathDataGridViewTextBoxColumn.FillWeight = 200F;
-            resources.ApplyResources(this.pathDataGridViewTextBoxColumn, "pathDataGridViewTextBoxColumn");
-            this.pathDataGridViewTextBoxColumn.Name = "pathDataGridViewTextBoxColumn";
-            this.pathDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // createdDataGridViewTextBoxColumn
-            // 
-            this.createdDataGridViewTextBoxColumn.DataPropertyName = "Created";
-            resources.ApplyResources(this.createdDataGridViewTextBoxColumn, "createdDataGridViewTextBoxColumn");
-            this.createdDataGridViewTextBoxColumn.Name = "createdDataGridViewTextBoxColumn";
-            // 
-            // matchmediaBindingSource
-            // 
-            this.matchmediaBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.Matchmedia);
-            // 
-            // matchSessionsPlayerBindingSource
-            // 
-            this.matchSessionsPlayerBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.MatchSessions_Player);
-            // 
             // PlayerId
             // 
-            this.PlayerId.DataPropertyName = "MyPlayerId";
+            this.PlayerId.DataPropertyName = "Id";
             this.PlayerId.FillWeight = 50F;
             resources.ApplyResources(this.PlayerId, "PlayerId");
             this.PlayerId.Name = "PlayerId";
-            this.PlayerId.ReadOnly = true;
             // 
             // EslPlayerId
             // 
-            this.EslPlayerId.DataPropertyName = "MyEslId";
+            this.EslPlayerId.DataPropertyName = "EslId";
             this.EslPlayerId.FillWeight = 75F;
             resources.ApplyResources(this.EslPlayerId, "EslPlayerId");
             this.EslPlayerId.Name = "EslPlayerId";
-            this.EslPlayerId.ReadOnly = true;
             // 
             // PlayerName
             // 
-            this.PlayerName.DataPropertyName = "MyName";
+            this.PlayerName.DataPropertyName = "Name";
             resources.ApplyResources(this.PlayerName, "PlayerName");
             this.PlayerName.Name = "PlayerName";
             // 
             // Tags
             // 
-            this.Tags.DataPropertyName = "MyTags";
+            this.Tags.DataPropertyName = "Tags";
             resources.ApplyResources(this.Tags, "Tags");
             this.Tags.Name = "Tags";
             // 
@@ -277,7 +277,7 @@
             // 
             // Skill
             // 
-            this.Skill.DataPropertyName = "MySkill";
+            this.Skill.DataPropertyName = "Skill";
             this.Skill.FillWeight = 70F;
             resources.ApplyResources(this.Skill, "Skill");
             this.Skill.Name = "Skill";
@@ -286,7 +286,7 @@
             // 
             // Team
             // 
-            this.Team.DataPropertyName = "MyTeam";
+            this.Team.DataPropertyName = "Team";
             this.Team.FillWeight = 70F;
             resources.ApplyResources(this.Team, "Team");
             this.Team.Name = "Team";
@@ -300,10 +300,16 @@
             resources.ApplyResources(this.Cheating, "Cheating");
             this.Cheating.Name = "Cheating";
             // 
+            // linkLabel
+            // 
+            resources.ApplyResources(this.linkLabel, "linkLabel");
+            this.linkLabel.Name = "linkLabel";
+            // 
             // EditMatchSession
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.linkLabel);
             this.Controls.Add(this.matchmediaDataGridView);
             this.Controls.Add(this.loadMatchDataButton);
             this.Controls.Add(this.MatchnameTextBox);
@@ -321,10 +327,10 @@
             this.Name = "EditMatchSession";
             this.Load += new System.EventHandler(this.EditMatchSession_Load);
             ((System.ComponentModel.ISupportInitialize)(this.matchPlayersDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.matchSessionsPlayerBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaDataGridView)).EndInit();
             this.matchmediaContextMenuStrip.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.matchSessionsPlayerBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -364,5 +370,6 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn Skill;
         private System.Windows.Forms.DataGridViewComboBoxColumn Team;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Cheating;
+        private System.Windows.Forms.Label linkLabel;
     }
 }

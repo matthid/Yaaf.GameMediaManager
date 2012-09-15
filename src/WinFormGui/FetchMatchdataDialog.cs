@@ -40,7 +40,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                     }
                     throw new TargetException("Task produced an error: " + task.ErrorObj.Value.Message, task.ErrorObj.Value);
                 }
-                Result = task.Result.Value;
+                Result = Tuple.Create(task.Result.Value, linkString);
 
                 Close();
             }
@@ -50,7 +50,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             }
         }
 
-        public IEnumerable<EslGrabber.Player> Result { get; private set; }
+        public Tuple<IEnumerable<EslGrabber.Player>, string> Result { get; private set; }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {

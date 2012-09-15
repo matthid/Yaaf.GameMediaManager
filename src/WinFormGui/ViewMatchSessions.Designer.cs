@@ -106,7 +106,6 @@
             this.gameIdDataGridViewTextBoxColumn.FillWeight = 60F;
             resources.ApplyResources(this.gameIdDataGridViewTextBoxColumn, "gameIdDataGridViewTextBoxColumn");
             this.gameIdDataGridViewTextBoxColumn.Name = "gameIdDataGridViewTextBoxColumn";
-            this.gameIdDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // startdateDataGridViewTextBoxColumn
             // 

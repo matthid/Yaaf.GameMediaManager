@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Data;
+    using System.Data.Linq;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -64,7 +66,7 @@
             return Tuple.Create(original.Item1.Where(filter).ToList(), original.Item2 != null && filter(original.Item2) ? original.Item2 : null);
         }
 
-        public static IEnumerable<EslGrabber.Player> ShowLoadMatchDataDialog(Logging.LoggingInterfaces.ITracer logger, string defaultLink)
+        public static Tuple<IEnumerable<EslGrabber.Player>, string> ShowLoadMatchDataDialog(Logging.LoggingInterfaces.ITracer logger, string defaultLink)
         {
             var form = new FetchMatchdataDialog(logger, defaultLink);
             form.ShowDialog();
@@ -84,27 +86,100 @@
             }
             return dataTable;
         }
-        public static Primitives.WrapperDataTable.WrapperTable<MatchSessions_Player> GetWrapper(IEnumerable<MatchSessions_Player> players)
+
+        public interface ILinqEntity : INotifyPropertyChanging
         {
-            return
-                WrapperDataTable.getWrapperDelegate(
-                    WrapperDataTable.getFilterDelegate<PropertyInfo>(
-                        new[]
-                            {
-                                "MyTags", "MyName", "MyEslId", "MyMatchSessionId", "MyPlayerId", "MyTeam", "MySkill",
-                                "Description", "Cheating"
-                            }),
-                    players);
-        } 
+            // This is just a marker interface for Extension Methods
+        }
+
+        /// <summary>
+        /// Obtain the DataContext providing this entity
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static LocalDataContext GetContext(this ILinqEntity obj)
+        {
+            FieldInfo fEvent = obj.GetType().GetField("PropertyChanging", BindingFlags.NonPublic | BindingFlags.Instance);
+            MulticastDelegate dEvent = (MulticastDelegate)fEvent.GetValue(obj);
+            Delegate[] onChangingHandlers = dEvent.GetInvocationList();
+
+            // Obtain the ChangeTracker
+            foreach (Delegate handler in onChangingHandlers)
+            {
+                if (handler.Target.GetType().Name == "StandardChangeTracker")
+                {
+                    // Obtain the 'services' private field of the 'tracker'
+                    object tracker = handler.Target;
+                    object services = tracker.GetType().GetField("services", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(tracker);
+
+                    // Get the Context
+                    var context = services.GetType().GetProperty("Context").GetValue(services, null) as LocalDataContext;
+                    return context;
+                }
+            }
+
+            // Not found
+            throw new Exception("Error reflecting object");
+        }
+
+        public static WrapperDataTable.WrapperTable<MatchSessions_Player> GetWrapper(this IEnumerable<MatchSessions_Player> players)
+        {
+            var createColumns =
+                new Func<IEnumerable<DataColumn>>(
+                    () => new[] {
+                            new DataColumn("Name", typeof(string)), new DataColumn("Tags", typeof(string)),
+                            new DataColumn("EslId", typeof(int)), new DataColumn("Id", typeof(int)),
+                            new DataColumn("Team", typeof(PlayerTeam)), new DataColumn("Skill", typeof(PlayerSkill)),
+                            new DataColumn("Description", typeof(string)), new DataColumn("Cheating", typeof(bool)),
+                        });
+
+            WrapperDataTable.WrapperTable<MatchSessions_Player> table = null;
+            table = players.CreateTable(
+                createColumns,
+                (initOriginal) => new MatchSessions_Player(){Player = new Player()},
+                (player, row) =>
+                    {
+                        row["Name"] = player.Player.Name.ConvertValueToDb();
+                        row["EslId"] = player.Player.EslPlayerId.ConvertValueToDb();
+                        row["Team"] = player.MyTeam.ConvertValueToDb();
+                        row["Description"] = player.Description.ConvertValueToDb();
+                        row["Tags"] = player.Player.MyTags.ConvertValueToDb();
+                        row["Id"] = player.Player.MyId.ConvertValueToDb();
+                        row["Skill"] = player.MySkill.ConvertValueToDb();
+                        row["Cheating"] = player.Cheating.ConvertValueToDb();
+                    },
+                (row, player) =>
+                    {
+                        player.Player.Name = row["Name"].ConvertValueBack("");
+                        player.Player.EslPlayerId = row["EslId"].ConvertValueBack((int?)null);
+                        player.MyTeam = row["Team"].ConvertValueBack(PlayerTeam.Team11);
+                        player.Description = row["Description"].ConvertValueBack("");
+                        player.Player.MyTags = row["Tags"].ConvertValueBack("");
+                        player.Player.MyId = row["Id"].ConvertValueBack(0);
+                        player.MySkill = row["Skill"].ConvertValueBack(PlayerSkill.Unknown);
+                        player.Cheating = row["Cheating"].ConvertValueBack(false);
+                    },
+                (isOriginal, targetPlayer, sourcePlayer) =>
+                    {
+                        targetPlayer.Player.EslPlayerId = sourcePlayer.Player.EslPlayerId;
+                        targetPlayer.Player.Name = sourcePlayer.Player.Name;
+                        targetPlayer.Player.MyTags = sourcePlayer.Player.MyTags;
+                        targetPlayer.MyTeam = sourcePlayer.MyTeam;
+                        targetPlayer.Player.MyId = sourcePlayer.Player.MyId;
+                        targetPlayer.Description = sourcePlayer.Description;
+                        targetPlayer.MySkill = sourcePlayer.MySkill;
+                        targetPlayer.Cheating = sourcePlayer.Cheating;
+                    });
+            table.DeletedRow += (sender, args) => { args.Player = null; };
+            return table;
+        }
 
         public static Primitives.WrapperDataTable.WrapperTable<Matchmedia> GetWrapper(IEnumerable<Matchmedia> medias)
         {
             return
-                WrapperDataTable.getWrapperDelegate(
+                medias.GetWrapper(
                     WrapperDataTable.getFilterDelegate<PropertyInfo>(
-                        new[]
-                            { "MyTags", "MyId", "Created", "Map", "Name", "Path", "Type", "PlayerId", "MatchsessionId" }),
-                    medias);
+                        new[] { "MyTags", "MyId", "Created", "Map", "Name", "Path", "Type" }));
         } 
     }
 }

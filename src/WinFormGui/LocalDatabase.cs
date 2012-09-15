@@ -12,6 +12,87 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
     using System.Linq;
 
     using Yaaf.WirePlugin.Primitives;
+    partial class Player : Helpers.ILinqEntity
+    {
+        partial void OnLoaded()
+        {
+            if (Id != 0)
+            {
+                isOriginal = true;
+            }
+        }
+
+        partial void OnCreated()
+        {
+            myId = new MyIdHelper(() => Id);
+        }
+
+        public int MyId
+        {
+            get
+            {
+                return myId.MyId;
+            }
+            set
+            {
+                myId.MyId = value;
+            }
+        }
+
+        private string myTags = null;
+
+        private MyIdHelper myId;
+        
+        private bool isOriginal;
+
+        public string MyTags
+        {
+            get
+            {
+                if (myTags == null)
+                {
+                    if (isOriginal)
+                    {
+                        myTags = string.Join(",", Player_Tag.Select(mt => mt.Tag.Name).ToArray());
+                    }
+                }
+                return myTags ?? "";
+            }
+            set
+            {
+                myTags = value;
+                if (isOriginal)
+                {
+                    var playerTags = (myTags ?? "").Split(',');
+                    Player_Tag.Load();
+                    var toRemove = this.Player_Tag.ToDictionary(t => t.Tag.Name, t => t);
+                    var othercontext = FSharpInterop.Interop.GetNewContext();
+                    var currentContext = this.GetContext();
+                    foreach (var tag in playerTags)
+                    {
+                        toRemove.Remove(tag);
+                        if (!(from assoc in Player_Tag where assoc.Tag.Name == tag select assoc).Any())
+                        {
+                            var association = new Player_Tag();
+                            association.Player = this;
+                            var newTag = othercontext.GetTag(tag); 
+                            association.Tag = (from t in currentContext.Tags where t.Id == newTag.Id select t).Single();
+                            
+                            Player_Tag.Add(association);
+                        }
+                    }
+
+                    
+                    foreach (var playertag in toRemove.Values)
+                    {
+                        playertag.Player.Player_Tag.Remove(playertag);
+                        playertag.Tag.Player_Tag.Remove(playertag);
+                        currentContext.Player_Tags.DeleteOnSubmit(playertag);
+                    }
+                }
+            }
+        }
+    }
 
     class MyIdHelper
     {
@@ -43,26 +124,24 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
         }
     }
 
-    partial class MatchSession
+    partial class MatchSession : Helpers.ILinqEntity
     {
         private MyIdHelper myId;
 
         private string myTags;
-
-        private bool isLoaded;
+        
+        private bool isOriginal;
 
         partial void OnLoaded()
         {
             if (Id != 0)
             {
-                MyTags = string.Join(",", MatchSessions_Tag.Select(mt => mt.Tag.Name).ToArray());
-                isLoaded = true;
+                isOriginal = true;
             }
         }
         partial void OnCreated()
         {
             myId = new MyIdHelper(() => Id);
-            MyTags = "";
         }
 
         public int MyId
@@ -81,17 +160,26 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
         {
             get
             {
-                return myTags;
+                if (myTags == null)
+                {
+                    if (isOriginal)
+                    {
+                        myTags = string.Join(",", MatchSessions_Tag.Select(mt => mt.Tag.Name).ToArray());
+                    }
+                }
+                return myTags ?? "";
             }
             set
             {
                 myTags = value;
-                if (isLoaded)
+                if (isOriginal)
                 {
-                    var media_tags = (myTags ?? "").Split(',');
+                    var mediaTags = (myTags ?? "").Split(',');
+                    MatchSessions_Tag.Load();
                     var toRemove = this.MatchSessions_Tag.ToDictionary(t => t.Tag.Name, t => t);
                     var context = FSharpInterop.Interop.GetNewContext();
-                    foreach (var tag in media_tags)
+                    var currentContext = this.GetContext();
+                    foreach (var tag in mediaTags)
                     {
                         toRemove.Remove(tag);
                         if (!(from assoc in MatchSessions_Tag where assoc.Tag.Name == tag select assoc).Any())
@@ -99,40 +187,44 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
                             var association = new MatchSessions_Tag();
                             association.MatchSession = this;
                             var newTag = context.GetTag(tag);
-                            association.TagId = newTag.Id;
+                            association.Tag = (from t in currentContext.Tags where t.Id == newTag.Id select t).Single();
                             MatchSessions_Tag.Add(association);
                         }
                     }
 
                     foreach (var matchSessionsTag in toRemove.Values)
                     {
-                        MatchSessions_Tag.Remove(matchSessionsTag);
+                        matchSessionsTag.Tag.MatchSessions_Tag.Remove(matchSessionsTag);
+                        matchSessionsTag.MatchSession.MatchSessions_Tag.Remove(matchSessionsTag);
+                        currentContext.MatchSessions_Tags.DeleteOnSubmit(matchSessionsTag);
                     }
                 }
             }
         }
     }
 
-    partial class Matchmedia
+    partial class Matchmedia : Helpers.ILinqEntity
     {
-        
         private MyIdHelper myId ;
 
         private string myTags;
+        
+        private MatchSessions_Player myMatchsessionPlayer;
 
-        private bool isLoaded;
+        private bool isOriginal;
+        
         partial void OnLoaded()
         {
             if (Id != 0)
             {
-                MyTags = string.Join(",", Matchmedia_Tag.Select(mt => mt.Tag.Name).ToArray());
-                isLoaded = true;
+                isOriginal = true;
+                MyMatchSessionsPlayer = MatchSessions_Player;
             }
         }
+
         partial void OnCreated()
         {
             myId = new MyIdHelper(() => Id);
-            MyTags = "";
         }
 
         public int MyId
@@ -151,16 +243,25 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
         {
             get
             {
-                return myTags;
+                if (myTags == null)
+                {
+                    if (isOriginal)
+                    {
+                        myTags = string.Join(",", Matchmedia_Tag.Select(mt => mt.Tag.Name).ToArray());
+                    }
+                }
+                return myTags ?? "";
             }
             set
             {
                 myTags = value;
-                if (isLoaded)
+                if (isOriginal)
                 {
                     var mediaTags = (myTags ?? "").Split(',');
+                    Matchmedia_Tag.Load();
                     var toRemove = this.Matchmedia_Tag.ToDictionary(t => t.Tag.Name, t => t);
                     var context = FSharpInterop.Interop.GetNewContext();
+                    var currentContext = this.GetContext();
                     foreach (var tag in mediaTags)
                     {
                         toRemove.Remove(tag);
@@ -169,14 +270,35 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
                             var association = new Matchmedia_Tag();
                             association.Matchmedia = this;
                             var newTag = context.GetTag(tag);
-                            association.TagId = newTag.Id;
+                            association.Tag = (from t in currentContext.Tags where t.Id == newTag.Id select t).Single();
                             Matchmedia_Tag.Add(association);
                         }
                     }
 
-                    foreach (var matchSessionsTag in toRemove.Values)
+                    foreach (var tagToRemove in toRemove.Values)
                     {
-                        Matchmedia_Tag.Remove(matchSessionsTag);
+                        tagToRemove.Matchmedia.Matchmedia_Tag.Remove(tagToRemove);
+                        tagToRemove.Tag.Matchmedia_Tag.Remove(tagToRemove);
+                        currentContext.Matchmedia_Tags.DeleteOnSubmit(tagToRemove);
+                    }
+                }
+            }
+        }
+
+        public MatchSessions_Player MyMatchSessionsPlayer
+        {
+            get
+            {
+                return myMatchsessionPlayer;
+            }
+            set
+            {
+                myMatchsessionPlayer = value;
+                if (isOriginal)
+                {
+                    if (value != null)
+                    {
+                        MatchSessions_Player = myMatchsessionPlayer;
                     }
                 }
             }
@@ -198,100 +320,18 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
 
     partial class MatchSessions_Player
     {
-        private MyIdHelper myPlayerId;
-
-        private MyIdHelper myMatchSessionId;
-
-        private string myTags;
-
-        private bool isLoaded;
-
-
         partial void OnLoaded()
         {
             if (PlayerId != 0 && MatchSessionId != 0)
             {
-                SetLoaded();
             }
         }
-
-        public void SetLoaded()
-        {
-            if (isLoaded) return;
-            MyTags = string.Join(",", this.Player.Player_Tag.Select(mt => mt.Tag.Name).ToArray());
-            MyName = Player.Name;
-            MyEslId = Player.EslPlayerId;
-            isLoaded = true;
-            removeTags = new List<Player_Tag>();
-        }
+        
 
         partial void OnCreated()
         {
-            myPlayerId = new MyIdHelper(() => PlayerId);
-            myMatchSessionId = new MyIdHelper(() => MatchSessionId);
-
-            MyTags = "";
-            MyName = "unknown";
-            MyEslId = null;
         }
 
-        public int MyPlayerId
-        {
-            get
-            {
-                return myPlayerId.MyId;
-            }
-            set
-            {
-                myPlayerId.MyId = value;
-            }
-        }
-
-        public int MyMatchSessionId
-        {
-            get
-            {
-                return myMatchSessionId.MyId;
-            }
-            set
-            {
-                myMatchSessionId.MyId = value;
-            }
-        }
-        private List<Player_Tag> removeTags = null;
-        public string MyTags
-        {
-            get
-            {
-                return myTags;
-            }
-            set
-            {
-                myTags = value;
-                if (isLoaded)
-                {
-                    var playerTags = (myTags ?? "").Split(',');
-                    var toRemove = this.Player.Player_Tag.ToDictionary(t => t.Tag.Name, t => t);
-                    var context = FSharpInterop.Interop.GetNewContext();
-                    foreach (var tag in playerTags)
-                    {
-                        toRemove.Remove(tag);
-                        if (!(from assoc in Player.Player_Tag where assoc.Tag.Name == tag select assoc).Any())
-                        {
-                            var association = new Player_Tag();
-                            association.Player = Player;
-                            var newTag = context.GetTag(tag);
-                            association.TagId = newTag.Id;
-                            Player.Player_Tag.Add(association);
-                        }
-                    }
-                    RemoveTags.AddRange(toRemove.Values);
-                }
-            }
-        }
-
-        public string MyName { get; set; }
-        public int? MyEslId { get; set; }
         public PlayerTeam MyTeam
         {
             get
@@ -339,13 +379,6 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
             }
         }
 
-        internal List<Player_Tag> RemoveTags
-        {
-            get
-            {
-                return removeTags;
-            }
-        }
     }
 
     public enum PlayerSkill : byte

@@ -38,13 +38,14 @@
             this.switchToAdvancedViewButton = new System.Windows.Forms.Button();
             this.rememberCheckBox = new System.Windows.Forms.CheckBox();
             this.matchmediaDataGridView = new System.Windows.Forms.DataGridView();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Tags = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fetchMatchDatabutton = new System.Windows.Forms.Button();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mapDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.createdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.fetchMatchDatabutton = new System.Windows.Forms.Button();
+            this.linkLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -93,6 +94,7 @@
             // 
             // matchmediaDataGridView
             // 
+            this.matchmediaDataGridView.AllowDrop = true;
             this.matchmediaDataGridView.AllowUserToAddRows = false;
             this.matchmediaDataGridView.AutoGenerateColumns = false;
             this.matchmediaDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -108,17 +110,24 @@
             this.matchmediaDataGridView.DragDrop += new System.Windows.Forms.DragEventHandler(this.matchmediaDataGridView_DragDrop);
             this.matchmediaDataGridView.DragEnter += new System.Windows.Forms.DragEventHandler(this.matchmediaDataGridView_DragEnter);
             // 
+            // Tags
+            // 
+            resources.ApplyResources(this.Tags, "Tags");
+            this.Tags.Name = "Tags";
+            // 
+            // fetchMatchDatabutton
+            // 
+            resources.ApplyResources(this.fetchMatchDatabutton, "fetchMatchDatabutton");
+            this.fetchMatchDatabutton.Name = "fetchMatchDatabutton";
+            this.fetchMatchDatabutton.UseVisualStyleBackColor = true;
+            this.fetchMatchDatabutton.Click += new System.EventHandler(this.fetchMatchDatabutton_Click);
+            // 
             // nameDataGridViewTextBoxColumn
             // 
             this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
             this.nameDataGridViewTextBoxColumn.FillWeight = 150F;
             resources.ApplyResources(this.nameDataGridViewTextBoxColumn, "nameDataGridViewTextBoxColumn");
             this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            // 
-            // Tags
-            // 
-            resources.ApplyResources(this.Tags, "Tags");
-            this.Tags.Name = "Tags";
             // 
             // typeDataGridViewTextBoxColumn
             // 
@@ -144,12 +153,10 @@
             // 
             this.matchmediaBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.Matchmedia);
             // 
-            // fetchMatchDatabutton
+            // linkLabel
             // 
-            resources.ApplyResources(this.fetchMatchDatabutton, "fetchMatchDatabutton");
-            this.fetchMatchDatabutton.Name = "fetchMatchDatabutton";
-            this.fetchMatchDatabutton.UseVisualStyleBackColor = true;
-            this.fetchMatchDatabutton.Click += new System.EventHandler(this.fetchMatchDatabutton_Click);
+            resources.ApplyResources(this.linkLabel, "linkLabel");
+            this.linkLabel.Name = "linkLabel";
             // 
             // MatchSessionEnd
             // 
@@ -157,6 +164,7 @@
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.deleteMatchmediaButton;
+            this.Controls.Add(this.linkLabel);
             this.Controls.Add(this.fetchMatchDatabutton);
             this.Controls.Add(this.matchmediaDataGridView);
             this.Controls.Add(this.rememberCheckBox);
@@ -193,5 +201,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn mapDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn createdDataGridViewTextBoxColumn;
         private System.Windows.Forms.Button fetchMatchDatabutton;
+        private System.Windows.Forms.Label linkLabel;
     }
 }
