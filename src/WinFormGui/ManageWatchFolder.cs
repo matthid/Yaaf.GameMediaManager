@@ -34,13 +34,19 @@ namespace Yaaf.WirePlugin.WinFormGui
             this.wrapperTable = wrapperTable;
             this.wrapperTableCopy = wrapperTable.Clone();
             wrapperTableCopy.UserAddedRow += wrapperTableCopy_UserAddedRow;
+            wrapperTableCopy.DeletedRow += wrapperTableCopy_DeletedRow;
             this.game = game;
             InitializeComponent();
         }
 
+        void wrapperTableCopy_DeletedRow(object sender, WatchFolder args)
+        {
+            wrapperTableCopy.get_CopyItemToOriginal(args).Game = null;
+        }
+
         void wrapperTableCopy_UserAddedRow(object sender, WatchFolder args)
         {
-            args.GameId = game.Id;
+            args.MyGame = game;
         }
 
 

@@ -15,6 +15,9 @@ Wish List
 
 |Code:
  - Documentation
+ 
+15.09.2012 Version 0.9.2.1
+ - Watchfolder bug
 
 15.09.2012 Version 0.9.2.0
  - Redesigned Matchedit Window, use same window on matchsession-end (advanced) and for edit

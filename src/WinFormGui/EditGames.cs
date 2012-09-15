@@ -116,7 +116,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
                     wrapperTable =
                         game.WatchFolder.GetWrapper(WrapperDataTable.getFilterDelegate<PropertyInfo>(
-                            new[] { "MyId", "GameId", "Folder", "Filter", "NotifyOnInactivity" }));
+                            new[] { "MyId", "Folder", "Filter", "NotifyOnInactivity" }));
                     gameWatchFolders.Add(game, wrapperTable);
                 }
                 return new ManageWatchFolder(logger, wrapper, wrapperTable, game);

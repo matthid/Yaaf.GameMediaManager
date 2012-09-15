@@ -459,10 +459,29 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
         }
 
         private MyIdHelper myId;
+
+        private Game myGame;
+
+        private bool isOriginal;
+
         partial void OnCreated()
         {
             myId = new MyIdHelper(() => Id);
         }
+        partial void OnLoaded()
+        {
+            if(Id != 0)
+            {
+                SetOriginal();
+                MyGame = Game;
+            }
+        }
+
+        public void SetOriginal()
+        {
+            isOriginal = true;
+        }
+
         public int MyId
         {
             get
@@ -472,6 +491,25 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
             set
             {
                 myId.MyId = value;
+            }
+        }
+
+        public Game MyGame
+        {
+            get
+            {
+                return myGame;
+            }
+            set
+            {
+                myGame = value; 
+                if (isOriginal)
+                {
+                    if (value != null)
+                    {
+                        Game = value;
+                    }
+                }
             }
         }
     }

@@ -173,6 +173,16 @@ namespace Yaaf.WirePlugin.WinFormGui
                     {
                         matchmedia.MatchSessions_Player = matchmedia.MyMatchSessionsPlayer;
                     }
+                } 
+                
+                var watchFolders = allchanges.Select(o => o as WatchFolder).Where(o => o != null).Cache();
+
+                foreach (var watchFolder in watchFolders)
+                {
+                    if (watchFolder.MyGame != null)
+                    {
+                        watchFolder.Game = watchFolder.MyGame;
+                    }
                 }
 
                 var deletedSessions = changes.Deletes.Select(o => o as MatchSession).Where(o => o != null);
