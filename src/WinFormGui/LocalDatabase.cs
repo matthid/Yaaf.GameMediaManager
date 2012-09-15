@@ -18,8 +18,12 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
         {
             if (Id != 0)
             {
-                isOriginal = true;
+                SetOriginal();
             }
+        }
+        public void SetOriginal()
+        {
+            isOriginal = true;
         }
 
         partial void OnCreated()
@@ -136,9 +140,15 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
         {
             if (Id != 0)
             {
-                isOriginal = true;
+                SetOriginal();
             }
         }
+
+        public void SetOriginal()
+        {
+            isOriginal = true;
+        }
+
         partial void OnCreated()
         {
             myId = new MyIdHelper(() => Id);
@@ -217,9 +227,13 @@ namespace Yaaf.WirePlugin.WinFormGui.Database
         {
             if (Id != 0)
             {
-                isOriginal = true;
+                SetOriginal();
                 MyMatchSessionsPlayer = MatchSessions_Player;
             }
+        }
+        public void SetOriginal()
+        {
+            isOriginal = true;
         }
 
         partial void OnCreated()

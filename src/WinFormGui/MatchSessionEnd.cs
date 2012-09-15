@@ -9,6 +9,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 {
     using System;
     using System.Data;
+    using System.Linq;
     using System.Windows.Forms;
 
     using Microsoft.FSharp.Control;
@@ -38,7 +39,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private readonly SessionData sessionData;
 
-        private Player primaryPlayer;
+        private MatchSessions_Player primaryPlayer;
 
         public MatchSessionEnd(
             Logging.LoggingInterfaces.ITracer logger,
@@ -63,8 +64,17 @@ namespace Yaaf.WirePlugin.WinFormGui
             Logging.setupLogging(logger);
             try
             {
-                primaryPlayer = FSharpInterop.Interop.Database.GetIdentityPlayer(context);
-
+                var me = FSharpInterop.Interop.Database.GetIdentityPlayer(context);
+                primaryPlayer = session.MatchSessions_Player.FirstOrDefault(p => p.Player == me);
+                if (primaryPlayer == null)
+                {
+                    primaryPlayer = session.MatchSessions_Player.FirstOrDefault();
+                    if (primaryPlayer == null)
+                    {
+                        primaryPlayer = new MatchSessions_Player(){Player = me, MatchSession = session};
+                        playerTableCopy.Add(primaryPlayer);
+                    }
+                }
                 tagTextBox.Text = session.MyTags;
 
                 linkLabel.Text = session.EslMatchLink;
@@ -95,6 +105,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void SaveData()
         {
+            session.SetOriginal();
             session.MyTags = tagTextBox.Text;
             session.EslMatchLink = linkLabel.Text;
             sessionData.Item1.ImportChanges(matchmediaTableCopy);
@@ -142,10 +153,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             {
                 throw new InvalidOperationException("Couldn't add new Matchmedia (was null)");
             }
-            var media = new Matchmedia();
-            media.AddDataFromFile(safeFileName);
-            media.MatchSession = session;
-            media.Player = primaryPlayer;
+            var media = Helpers.MediaFromFile(safeFileName, primaryPlayer);
             matchmediaTableCopy.Add(media);
         }
 

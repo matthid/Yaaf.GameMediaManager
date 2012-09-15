@@ -12,6 +12,7 @@ open System.Drawing
 open System.Diagnostics
 open Yaaf.Logging
 open Yaaf.WirePlugin.WinFormGui
+open Yaaf.WirePlugin.Primitives
 open Yaaf.WirePlugin.WinFormGui.Properties
 type GameData = {
         Game : Database.Game
@@ -220,7 +221,7 @@ type ReplayWirePlugin() as x =
                        matchSession.MatchSessions_Player |> Seq.head
                 
                 if (session.IsEslMatch) then
-                    getGrabAction db matchSession matchSession.EslMatchLink
+                    getGrabAction session.Context matchSession matchSession.EslMatchLink
                     |> Async.Start
 
                 Some { Watcher = w; Game = game; MatchSession = matchSession; DefaultPlayer = playerAssoc }
@@ -280,7 +281,16 @@ type ReplayWirePlugin() as x =
                 let form = new MatchSessionEnd(logger, session.Context,(mediaWrapper,playerWrapper), matchSession)
                 form.ShowDialog() |> ignore
                 if form.DeleteMatchmedia.HasValue then
+                    let getOriginal d = Seq.map (fun itemData -> itemData.Original) d
+                    for original in mediaWrapper.Deletions |> getOriginal do
+                        original.MatchSessions_Player <- null
+                        original.Player <- null
+                        original.MatchSession <- null
                     mediaWrapper.UpdateTable session.Context.Context.Matchmedias |> ignore
+
+                    for original in playerWrapper.Deletions |> getOriginal do
+                        original.Player <- null
+                        original.MatchSession <- null
                     session.Context.UpdateMatchSessionPlayerTable playerWrapper
                 if not <| form.DeleteMatchmedia.HasValue then
                     false

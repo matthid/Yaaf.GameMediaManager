@@ -220,18 +220,10 @@ namespace Yaaf.WirePlugin.WinFormGui
         public void UpdateMatchSessionPlayerTable(WrapperDataTable.WrapperTable<MatchSessions_Player> playerTable)
         {
             var localDataContext = Context;
-            //var modifiedPlayers = 
+            var changedPlayers =
                 playerTable
                     .UpdateTable(localDataContext.MatchSessions_Players);
-
-            //var removeTags =
-            //    modifiedPlayers
-            //        .Select(p => p.Player)
-            //        .Where(p => p.RemoveTags.Count > 0)
-            //        .Select(p => (IEnumerable<Player_Tag>)p.RemoveTags)
-            //        .Union(new[] { new Player_Tag[0] })
-            //        .Aggregate((left, right) => left.Union(right));
-            //localDataContext.Player_Tags.DeleteAllOnSubmit(removeTags);
+            // TODO: check if we have to delete "player" references
         }
     }
 }

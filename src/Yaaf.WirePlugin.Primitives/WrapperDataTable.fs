@@ -5,6 +5,7 @@
 namespace Yaaf.WirePlugin.Primitives
 
 [<System.Runtime.CompilerServices.Extension>]
+[<AutoOpen>]
 module WrapperDataTable = 
     open System.Data
     open System
@@ -27,7 +28,7 @@ module WrapperDataTable =
                     /// Update item from another item (isDestOriginal -> dest -> source -> ())
                     importChangesFun: bool -> 'T -> 'T -> unit,
                     /// Init the data (initOriginal -> data)
-                    initFun: bool -> 'T) as x =   
+                    initFun: bool -> 'T) =   
         let table = new DataTable()  
         let itemChanged = new Event<'T * 'T * bool ref>()
         let initRow = new Event<'T>()
@@ -173,31 +174,6 @@ module WrapperDataTable =
             if invalidated then
                 invalidOp "This object has been invalidated!"
 
-        let updateTable (table:System.Data.Linq.Table<'T>) = 
-            let update = 
-                (fun (item, r) -> 
-                    let copy = copyRowReferences.Item r
-                    importToOriginal item copy
-                    item, r)
-            let convert = (fun (item, r) -> item)
-            let updateAndConvert e = 
-                e 
-                |> Seq.map getInfo 
-                |> Seq.map update
-                |> Seq.map convert
-            table.InsertAllOnSubmit(inserts |> updateAndConvert)
-            
-            for d in deletions |> Seq.map getInfo |> Seq.map convert do
-                if table.GetOriginalEntityState(d) <> null then
-                    table.DeleteOnSubmit(d)
-            
-            let changeList =
-                System.Collections.Generic.List(updates |> updateAndConvert)
-
-            invalidate()
-
-            changeList
-        
         let updateFromChangedData copied = 
             let row = copyItemReferences.Item copied
             updateRowWithUpdate copied row 
@@ -212,15 +188,18 @@ module WrapperDataTable =
         let importChanges (otherTable:WrapperTable<'T>) = 
             let mapToRow = Seq.map 
 
-            for item, copyItem in otherTable.Inserts |> Seq.map (fun (item, otherRow) -> item, otherTable.InternalGetCopyItem otherRow) do
-                addData item
-                updateItem item copyItem
+            for itemInfo in otherTable.Inserts  do
+                addData itemInfo.Original
+                updateItem itemInfo.Original itemInfo.Copy
 
-            for currentRow in otherTable.Deletions |> Seq.map (fun (item, otherRow) -> itemReferences.Item item) do
+            for currentRow in 
+                    otherTable.Deletions 
+                        |> Seq.map (fun (itemRef) -> itemRef.Original)
+                        |> Seq.map (fun (item) -> itemReferences.Item item) do
                 currentRow.Delete()
 
-            for origItem, changedItem in otherTable.Updates |> Seq.map (fun (i,r) -> i, otherTable.InternalGetCopyItem r) do
-                updateItem origItem changedItem
+            for itemInfo in otherTable.Updates  do
+                updateItem itemInfo.Original itemInfo.Copy
 
             table.AcceptChanges()
             otherTable.Invalidate()
@@ -278,7 +257,8 @@ module WrapperDataTable =
             let row = itemReferences.Item item
             row.Delete()
 
-        member internal x.Invalidate() = 
+        /// Invalidates the current table (use this wenn you processed the changes)
+        member x.Invalidate() = 
             table.Clear()
             table.AcceptChanges()
             invalidate()
@@ -287,10 +267,10 @@ module WrapperDataTable =
         member x.IsInvalidated
             with get () = invalidated
             
-        /// Update the given table from the saved changes (will finally write through into the items)
-        member x.UpdateTable table = 
+        /// Update the given original item from the saved changes (will finally write through into the items)
+        member x.ImportChangesToOriginal dest source = 
             checkValid()
-            updateTable table
+            importToOriginal dest source
 
         member internal x.InternalGetCopyItem row = copyRowReferences.Item row
 
@@ -385,12 +365,12 @@ module WrapperDataTable =
                 copyLinqData :> seq<_>
 
 
-        member internal x.Inserts 
-            with get() = inserts |> Seq.map getInfo
-        member internal x.Deletions 
-            with get() = deletions |> Seq.map getInfo
-        member internal x.Updates 
-            with get() = updates |> Seq.map getInfo
+        member x.Inserts 
+            with get() = inserts |> Seq.map (fun row -> x.[row].Value) |> Seq.cache
+        member x.Deletions 
+            with get() = deletions  |> Seq.map (fun row -> x.[row].Value) |> Seq.cache
+        member x.Updates 
+            with get() = updates |> Seq.map (fun row -> x.[row].Value) |> Seq.cache
 
     
     let getProps<'a> filter = 
@@ -490,4 +470,35 @@ module WrapperDataTable =
     [<System.Runtime.CompilerServices.Extension>]
     let GetWrapper (data:'a seq) (filter:Func<_,_>) = 
         getWrapper filter.Invoke data
-    
+
+    let updateTable (table:System.Data.Linq.Table<'T>) (wrapper:WrapperTable<'T>) = 
+        let update = 
+            (fun itemData -> 
+                let copy = itemData.Copy
+                wrapper.ImportChangesToOriginal itemData.Original itemData.Copy
+                itemData)
+        let convert = (fun itemData -> itemData.Original)
+        let updateAndConvert e = 
+            e 
+            |> Seq.map update
+            |> Seq.map convert
+        table.InsertAllOnSubmit(wrapper.Inserts |> updateAndConvert)
+            
+        for d in wrapper.Deletions |> Seq.map convert do
+            if table.GetOriginalEntityState(d) <> null then
+                table.DeleteOnSubmit(d)
+            
+        let changeList =
+            System.Collections.Generic.List(wrapper.Updates |> updateAndConvert)
+        
+        wrapper.Invalidate()
+
+        changeList
+
+    [<AutoOpen>]
+    module WrapperTableExtensions = 
+        type WrapperTable<'T when 'T : not struct and 'T : equality and 'T : null> with
+            member x.UpdateTable table = x |> updateTable table
+
+    [<System.Runtime.CompilerServices.Extension>]
+    let UpdateTable (wrapper:WrapperTable<_>) table = wrapper |> updateTable table

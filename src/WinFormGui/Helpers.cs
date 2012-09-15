@@ -174,12 +174,21 @@
             return table;
         }
 
-        public static Primitives.WrapperDataTable.WrapperTable<Matchmedia> GetWrapper(IEnumerable<Matchmedia> medias)
+        public static WrapperDataTable.WrapperTable<Matchmedia> GetWrapper(IEnumerable<Matchmedia> medias)
         {
             return
                 medias.GetWrapper(
                     WrapperDataTable.getFilterDelegate<PropertyInfo>(
                         new[] { "MyTags", "MyId", "Created", "Map", "Name", "Path", "Type" }));
-        } 
+        }
+
+        public static Matchmedia MediaFromFile(string safeFileName, MatchSessions_Player myMatchSessionsPlayer)
+        {
+            var media = new Matchmedia();
+            media.SetOriginal();
+            media.AddDataFromFile(safeFileName);
+            media.MyMatchSessionsPlayer = myMatchSessionsPlayer;
+            return media;
+        }
     }
 }

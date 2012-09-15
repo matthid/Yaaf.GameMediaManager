@@ -7,6 +7,7 @@ namespace Yaaf.WirePlugin
 module Database = 
     open System.IO
     open Microsoft.FSharp.Linq
+    open Yaaf.WirePlugin.Primitives
     open Yaaf.WirePlugin.WinFormGui
     type Context = Database.LocalDataContext
     let pluginFolder =
@@ -335,11 +336,11 @@ module Database =
                 item.Team <- 11uy
                 wrapperTable.UpdateItem item
 
-    let fillPlayers (db:Context) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
+    let fillPlayers (db:LocalDatabaseWrapper) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
         let wrapper = WinFormGui.Helpers.GetWrapper(matchSession.MatchSessions_Player)
         let medias = WinFormGui.Helpers.GetWrapper(matchSession.Matchmedia)
         fillWrapperTable players wrapper medias
-        wrapper.UpdateTable db.MatchSessions_Players
+        db.UpdateMatchSessionPlayerTable(wrapper)
 
 
     let removeSession (db:Context) deleteFiles (matchSession:Database.MatchSession) = 

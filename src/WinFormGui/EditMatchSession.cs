@@ -310,9 +310,7 @@ namespace Yaaf.WirePlugin.WinFormGui
             {
                 throw new InvalidOperationException("Couldn't add new Matchmedia (was null)");
             }
-            var media = new Matchmedia();
-            media.AddDataFromFile(file);
-            media.MyMatchSessionsPlayer = primaryPlayer;
+            var media = Helpers.MediaFromFile(file, primaryPlayer);
             oldWrapper.Add(media);
         }
 
