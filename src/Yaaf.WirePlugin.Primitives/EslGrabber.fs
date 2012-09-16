@@ -36,7 +36,7 @@ module EslGrabber =
 
     let eslUrl = "http://www.esl.eu"
     let asyncUnit = async { return () }
-    let getPlayerFromLink team link nick = async {
+    let getPlayerFromLink team nick link = async {
         match System.Int32.TryParse(idRegex.Match(link).ToString()) with
         | (true, id) ->
             return {
@@ -74,7 +74,7 @@ module EslGrabber =
             allLinks 
                 |> Seq.map getLinkAndNickFromNode
                 |> Seq.mapi 
-                    (fun i (link, nick) -> getPlayerFromLink (if i < linkCount / 2 then 1 else 2) link nick)
+                    (fun i (link, nick) -> getPlayerFromLink (if i < linkCount / 2 then 1 else 2) nick link)
                 |> Async.Parallel 
         return players :> Player seq}
     
@@ -87,7 +87,7 @@ module EslGrabber =
             |> Seq.map getLinkAndNickFromNode
             |> Seq.filter (fun (link, nick) -> not <| link.Contains "playercard")
             //|> Seq.map (fun (link, node) -> link, )
-            |> Seq.map (fun (link, nick) -> getPlayerFromLink team link nick)
+            |> Seq.map (fun (link, nick) -> getPlayerFromLink team nick link)
             |> Async.Parallel
         }
         
@@ -96,8 +96,14 @@ module EslGrabber =
         let teamLinkNodes = matchDocument.GetElementbyId "main_content"
         let getTeamLink team nodeString = 
             let teamLink = teamLinkNodes.SelectSingleNode nodeString
-            eslUrl + teamLink.Attributes.["href"].Value
-            |> getTeamMembers team
+            let teamOrPlayerlink,nick = getLinkAndNickFromNode teamLink
+            if link.Contains "/1on1/" then
+                async {
+                    let! player = getPlayerFromLink team nick teamOrPlayerlink
+                    return [| player |]
+                }
+            else
+                getTeamMembers team teamOrPlayerlink
         
         let! teamplayers = 
             [ getTeamLink 1 "./table/tr[3]/td[1]/table/tr[2]/td[1]/a[1]";
@@ -114,3 +120,4 @@ module EslGrabber =
                 getVersusMatchMembers
             else getRegularMatchMembers
         fetchFun link
+    

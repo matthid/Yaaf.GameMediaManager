@@ -118,8 +118,10 @@ type ReplayWirePlugin() as x =
             let! msg = inbox.Receive()
             match msg with
             | GrabberProcMsg.StartGrabbing ->
+                logger.logInfo "StartGrabbing..."
                 return! loop (grabbingNum + 1) waitingList
             | GrabberProcMsg.StoppedGrabbing ->
+                logger.logInfo "StoppedGrabbing..."
                 let newWaitingList = 
                     if grabbingNum = 1 then
                         waitingList
@@ -128,10 +130,12 @@ type ReplayWirePlugin() as x =
                     else waitingList
                 return! loop (grabbingNum - 1) newWaitingList
             | GrabberProcMsg.WaitForFinish(replyChannel) ->
+                logger.logInfo "WaitForFinish..."
                 let newWaitingList =
                     if grabbingNum = 0 then
                         waitingList
                             |> List.iter (fun w -> w.Reply())
+                        logger.logInfo "Send Reply..."
                         replyChannel.Reply()
                         []
                     else replyChannel :: waitingList
@@ -139,16 +143,18 @@ type ReplayWirePlugin() as x =
             }
         loop 0 [])
         
-    let getGrabAction db matchSession link = 
+    let getGrabAction db (logger:ITracer) matchSession link = 
         async  {
             try
                 try
+                    logger.logInfo "Starting grabbing..."
                     grabberProcessor.Post GrabberProcMsg.StartGrabbing
                     let! players = EslGrabber.getMatchMembers link
                     Database.fillPlayers db matchSession players
                 with exn ->
                     logger.logErr "Could not grab esl-infos: %O" exn    
             finally
+                logger.logInfo "Finished grabbing..."
                 grabberProcessor.Post GrabberProcMsg.StoppedGrabbing    
             return ()
         }
@@ -162,7 +168,7 @@ type ReplayWirePlugin() as x =
             | None ->
                 logger.logInfo "Ignoring unknown game: %d, %s" gameId gamePath
                 None
-            | Some (game) ->
+            | Some (game) ->                
                 if (session.IsEslMatch && not game.EnableWarMatchForm && not game.WarMatchFormSaveFiles) ||
                    (not session.IsEslMatch && not game.EnableMatchForm && not game.PublicMatchFormSaveFiles) then
                     logger.logWarn "Not saving data becaue it is disabled for game: %d" gameId
@@ -223,7 +229,7 @@ type ReplayWirePlugin() as x =
                        matchSession.MatchSessions_Player |> Seq.head
                 
                 if (session.IsEslMatch) then
-                    getGrabAction session.Context matchSession matchSession.EslMatchLink
+                    getGrabAction session.Context logger matchSession matchSession.EslMatchLink
                     |> Async.Start
 
                 Some { Watcher = w; Game = game; MatchSession = matchSession; DefaultPlayer = playerAssoc }
@@ -269,15 +275,19 @@ type ReplayWirePlugin() as x =
                             Path = m)
                     )
             |> Seq.iter (fun s -> matchSession.Matchmedia.Add(s))
+        logger.logInfo "Waiting for running grabbing tasks"
         let waitGrabbing () = 
             let finishTask = 
                 grabberProcessor.PostAndAsyncReply(fun channel -> GrabberProcMsg.WaitForFinish(channel))
             let task = Primitives.Task<_> finishTask
             WaitingForm.StartTask(logger, task, "Waiting for Grabbing Players...")
         
+            logger.logInfo "grabbing tasks fininshed"
+
         waitGrabbing()
         let deleteData =
             if (session.IsEslMatch && game.EnableWarMatchForm) || (not session.IsEslMatch && game.EnableMatchForm) then
+                logger.logInfo "opening MatchSessionEnd form"
                 let mediaWrapper = WinFormGui.Helpers.GetWrapper(matchSession.Matchmedia)
                 let playerWrapper = WinFormGui.Helpers.GetWrapper(matchSession.MatchSessions_Player)
                 let form = new MatchSessionEnd(logger, session.Context,(mediaWrapper,playerWrapper), matchSession)
@@ -304,6 +314,7 @@ type ReplayWirePlugin() as x =
                     form.DeleteMatchmedia.Value
             else
                 // Could be changed in the meantime
+                logger.logInfo "jumping over the MatchSessionEnd form"
                 (session.IsEslMatch && not game.WarMatchFormSaveFiles) || (not session.IsEslMatch && not game.PublicMatchFormSaveFiles)
 
         let doCustomAction = 

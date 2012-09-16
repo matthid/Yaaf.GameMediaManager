@@ -117,7 +117,6 @@ module WrapperDataTable =
             let copyItem = copyRowReferences.Item row
             deletedRow.Trigger copyItem
             if inserts.Contains row then
-                invalidOp "can't revive dead row"
                 inserts.Remove row |> ignore
             else
                 updates.Remove row |> ignore
@@ -126,6 +125,7 @@ module WrapperDataTable =
 
         let handleInsertion row = 
             if deletions.Contains row then
+                invalidOp "can't revive dead row"
                 deletions.Remove row |> ignore
                 copyLinqData.Add (copyRowReferences.Item row) |> ignore
             else
