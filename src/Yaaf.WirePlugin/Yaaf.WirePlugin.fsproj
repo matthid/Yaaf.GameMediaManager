@@ -24,7 +24,7 @@
     <DocumentationFile>bin\Debug\Yaaf.WirePlugin.XML</DocumentationFile>
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\EslWire\pluginContainer\wire-plugin.exe</StartProgram>
-    <StartArguments>"C:\Users\Nicki\proj\WirePlugin\src\Yaaf.WirePlugin\bin\Debug\Yaaf.WirePlugin.dll"</StartArguments>
+    <StartArguments>"D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\Yaaf.WirePlugin\bin\Debug\Yaaf.WirePlugin.dll"</StartArguments>
     <StartWorkingDirectory>
     </StartWorkingDirectory>
   </PropertyGroup>
