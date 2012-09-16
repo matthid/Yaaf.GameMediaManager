@@ -53,14 +53,15 @@
             // 
             this.playerDataGridView.AllowUserToAddRows = false;
             this.playerDataGridView.AllowUserToDeleteRows = false;
+            resources.ApplyResources(this.playerDataGridView, "playerDataGridView");
             this.playerDataGridView.AutoGenerateColumns = false;
+            this.playerDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.playerDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.playerDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Id,
             this.eslPlayerIdDataGridViewTextBoxColumn,
             this.nameDataGridViewTextBoxColumn});
             this.playerDataGridView.DataSource = this.playerBindingSource;
-            resources.ApplyResources(this.playerDataGridView, "playerDataGridView");
             this.playerDataGridView.Name = "playerDataGridView";
             this.playerDataGridView.ReadOnly = true;
             // 

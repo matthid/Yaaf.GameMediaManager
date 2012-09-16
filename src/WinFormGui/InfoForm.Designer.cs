@@ -72,8 +72,6 @@
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.linkLabel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
             this.Name = "InfoForm";
             this.Load += new System.EventHandler(this.InfoForm_Load);
             this.ResumeLayout(false);

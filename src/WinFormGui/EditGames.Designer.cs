@@ -51,7 +51,13 @@
             // 
             // gameDataGridView
             // 
+            resources.ApplyResources(this.gameDataGridView, "gameDataGridView");
             this.gameDataGridView.AutoGenerateColumns = false;
+            this.gameDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+<<<<<<< HEAD
+            this.gameDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+=======
+>>>>>>> fe6d0b0... made window View Players resizeable
             this.gameDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gameDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.idDataGridViewTextBoxColumn,
@@ -64,7 +70,6 @@
             this.warMatchFormSaveFilesDataGridViewCheckBoxColumn,
             this.publicMatchFormSaveFilesDataGridViewCheckBoxColumn});
             this.gameDataGridView.DataSource = this.gameBindingSource;
-            resources.ApplyResources(this.gameDataGridView, "gameDataGridView");
             this.gameDataGridView.Name = "gameDataGridView";
             this.gameDataGridView.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridView1_UserAddedRow);
             this.gameDataGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
@@ -165,8 +170,10 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.gameDataGridView);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+<<<<<<< HEAD
+=======
+
+>>>>>>> fe6d0b0... made window View Players resizeable
             this.Name = "EditGames";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditGames_FormClosing);
             this.Load += new System.EventHandler(this.EditGames_Load);

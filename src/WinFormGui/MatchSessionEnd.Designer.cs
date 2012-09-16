@@ -99,6 +99,7 @@
             this.matchmediaDataGridView.AllowDrop = true;
             this.matchmediaDataGridView.AllowUserToAddRows = false;
             this.matchmediaDataGridView.AutoGenerateColumns = false;
+            this.matchmediaDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.matchmediaDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.matchmediaDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameDataGridViewTextBoxColumn,

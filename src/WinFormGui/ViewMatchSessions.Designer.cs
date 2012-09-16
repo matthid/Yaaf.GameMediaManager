@@ -48,7 +48,9 @@
             // matchSessionDataGridView
             // 
             this.matchSessionDataGridView.AllowUserToOrderColumns = true;
+            resources.ApplyResources(this.matchSessionDataGridView, "matchSessionDataGridView");
             this.matchSessionDataGridView.AutoGenerateColumns = false;
+            this.matchSessionDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.matchSessionDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.matchSessionDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.idDataGridViewTextBoxColumn,
@@ -58,7 +60,6 @@
             this.durationDataGridViewTextBoxColumn,
             this.eslMatchLinkDataGridViewTextBoxColumn});
             this.matchSessionDataGridView.DataSource = this.matchSessionBindingSource;
-            resources.ApplyResources(this.matchSessionDataGridView, "matchSessionDataGridView");
             this.matchSessionDataGridView.Name = "matchSessionDataGridView";
             this.matchSessionDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.matchSessionDataGridView_CellClick);
             this.matchSessionDataGridView.DoubleClick += new System.EventHandler(this.matchSessionDataGridView_DoubleClick);
@@ -134,8 +135,7 @@
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.matchSessionDataGridView);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+
             this.Name = "ViewMatchSessions";
             this.Load += new System.EventHandler(this.ViewMatchSessions_Load);
             ((System.ComponentModel.ISupportInitialize)(this.matchSessionDataGridView)).EndInit();

@@ -117,30 +117,131 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="matchPlayersDataGridView.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
   <metadata name="PlayerId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="PlayerId.HeaderText" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="PlayerId.Width" type="System.Int32, mscorlib">
+    <value>41</value>
+  </data>
   <metadata name="EslPlayerId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="EslPlayerId.HeaderText" xml:space="preserve">
+    <value>EslPlayerId</value>
+  </data>
+  <data name="EslPlayerId.Width" type="System.Int32, mscorlib">
+    <value>84</value>
+  </data>
   <metadata name="PlayerName.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="PlayerName.HeaderText" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PlayerName.Width" type="System.Int32, mscorlib">
+    <value>60</value>
+  </data>
   <metadata name="Tags.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="Tags.HeaderText" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Tags.Width" type="System.Int32, mscorlib">
+    <value>56</value>
+  </data>
   <metadata name="Description.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="Description.HeaderText" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Description.Width" type="System.Int32, mscorlib">
+    <value>85</value>
+  </data>
   <metadata name="Skill.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="Skill.HeaderText" xml:space="preserve">
+    <value>Skill</value>
+  </data>
+  <data name="Skill.Width" type="System.Int32, mscorlib">
+    <value>51</value>
+  </data>
   <metadata name="Team.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="Team.HeaderText" xml:space="preserve">
+    <value>Team</value>
+  </data>
+  <data name="Team.Width" type="System.Int32, mscorlib">
+    <value>59</value>
+  </data>
   <metadata name="Cheating.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="Cheating.HeaderText" xml:space="preserve">
+    <value>Cheating</value>
+  </data>
+  <data name="Cheating.Width" type="System.Int32, mscorlib">
+    <value>55</value>
+  </data>
+  <data name="matchSessionIdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>MatchSessionId</value>
+  </data>
+  <data name="matchSessionIdDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>108</value>
+  </data>
+  <data name="playerIdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>PlayerId</value>
+  </data>
+  <data name="playerIdDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>70</value>
+  </data>
+  <data name="teamDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Team</value>
+  </data>
+  <data name="teamDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>59</value>
+  </data>
+  <data name="skillDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Skill</value>
+  </data>
+  <data name="skillDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>51</value>
+  </data>
+  <data name="descriptionDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="descriptionDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>85</value>
+  </data>
+  <data name="cheatingDataGridViewCheckBoxColumn.HeaderText" xml:space="preserve">
+    <value>Cheating</value>
+  </data>
+  <data name="cheatingDataGridViewCheckBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>55</value>
+  </data>
+  <data name="matchSessionDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>MatchSession</value>
+  </data>
+  <data name="matchSessionDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>99</value>
+  </data>
+  <data name="playerDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="playerDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>61</value>
+  </data>
   <metadata name="matchSessionsPlayerBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>379, 17</value>
   </metadata>
@@ -151,7 +252,6 @@
   <data name="matchPlayersDataGridView.Size" type="System.Drawing.Size, System.Drawing">
     <value>786, 203</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="matchPlayersDataGridView.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
@@ -167,104 +267,11 @@
   <data name="&gt;&gt;matchPlayersDataGridView.ZOrder" xml:space="preserve">
     <value>13</value>
   </data>
-  <metadata name="PlayerId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="PlayerId.HeaderText" xml:space="preserve">
-    <value>Id</value>
+  <data name="matchmediaDataGridView.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left, Right</value>
   </data>
-  <data name="PlayerId.Width" type="System.Int32, mscorlib">
-    <value>50</value>
-  </data>
-  <metadata name="EslPlayerId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="EslPlayerId.HeaderText" xml:space="preserve">
-    <value>EslPlayerId</value>
-  </data>
-  <data name="EslPlayerId.Width" type="System.Int32, mscorlib">
-    <value>70</value>
-  </data>
-  <metadata name="PlayerName.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="PlayerName.HeaderText" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <metadata name="Tags.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="Tags.HeaderText" xml:space="preserve">
-    <value>Tags</value>
-  </data>
-  <metadata name="Description.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="Description.HeaderText" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="Description.Width" type="System.Int32, mscorlib">
-    <value>200</value>
-  </data>
-  <metadata name="Skill.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="Skill.HeaderText" xml:space="preserve">
-    <value>Skill</value>
-  </data>
-  <data name="Skill.Width" type="System.Int32, mscorlib">
-    <value>70</value>
-  </data>
-  <metadata name="Team.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="Team.HeaderText" xml:space="preserve">
-    <value>Team</value>
-  </data>
-  <data name="Team.Width" type="System.Int32, mscorlib">
-    <value>70</value>
-  </data>
-  <metadata name="Cheating.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="Cheating.HeaderText" xml:space="preserve">
-    <value>Cheating</value>
-  </data>
-  <data name="Cheating.Width" type="System.Int32, mscorlib">
-    <value>50</value>
-  </data>
-  <data name="matchSessionIdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>MatchSessionId</value>
-  </data>
-  <data name="playerIdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>PlayerId</value>
-  </data>
-  <data name="teamDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>Team</value>
-  </data>
-  <data name="skillDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>Skill</value>
-  </data>
-  <data name="descriptionDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="cheatingDataGridViewCheckBoxColumn.HeaderText" xml:space="preserve">
-    <value>Cheating</value>
-  </data>
-  <data name="matchSessionDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>MatchSession</value>
-  </data>
-  <data name="playerDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>Player</value>
-  </data>
-  <metadata name="matchSessionsPlayerBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>379, 17</value>
-  </metadata>
   <data name="nameDataGridViewTextBoxColumn1.HeaderText" xml:space="preserve">
     <value>Name</value>
-  </data>
-  <data name="nameDataGridViewTextBoxColumn1.Width" type="System.Int32, mscorlib">
-    <value>90</value>
   </data>
   <metadata name="MatchmediaTagsColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -272,26 +279,14 @@
   <data name="MatchmediaTagsColumn.HeaderText" xml:space="preserve">
     <value>Tags</value>
   </data>
-  <data name="MatchmediaTagsColumn.Width" type="System.Int32, mscorlib">
-    <value>90</value>
-  </data>
   <data name="typeDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Type</value>
-  </data>
-  <data name="typeDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
-    <value>70</value>
   </data>
   <data name="mapDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Map</value>
   </data>
-  <data name="mapDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
-    <value>70</value>
-  </data>
   <data name="pathDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Path</value>
-  </data>
-  <data name="pathDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
-    <value>200</value>
   </data>
   <data name="createdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Created</value>
@@ -299,6 +294,18 @@
   <metadata name="matchmediaContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>622, 17</value>
   </metadata>
+  <data name="copyFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 22</value>
+  </data>
+  <data name="copyFileToolStripMenuItem.Text" xml:space="preserve">
+    <value>Copy File</value>
+  </data>
+  <data name="showInExplorerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 22</value>
+  </data>
+  <data name="showInExplorerToolStripMenuItem.Text" xml:space="preserve">
+    <value>Show in Explorer</value>
+  </data>
   <data name="matchmediaContextMenuStrip.Size" type="System.Drawing.Size, System.Drawing">
     <value>162, 48</value>
   </data>
@@ -332,19 +339,9 @@
   <data name="&gt;&gt;matchmediaDataGridView.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="copyFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>161, 22</value>
+  <data name="saveButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Right</value>
   </data>
-  <data name="copyFileToolStripMenuItem.Text" xml:space="preserve">
-    <value>Copy File</value>
-  </data>
-  <data name="showInExplorerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>161, 22</value>
-  </data>
-  <data name="showInExplorerToolStripMenuItem.Text" xml:space="preserve">
-    <value>Show in Explorer</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="saveButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -371,6 +368,9 @@
   </data>
   <data name="&gt;&gt;saveButton.ZOrder" xml:space="preserve">
     <value>12</value>
+  </data>
+  <data name="cancelButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
   </data>
   <data name="cancelButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -573,6 +573,9 @@
   <data name="&gt;&gt;matchnameTextBox.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
+  <data name="label5.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
   <data name="label5.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -603,6 +606,9 @@
   <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
+  <data name="matchTagsTextBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
   <data name="matchTagsTextBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>635, 14</value>
   </data>
@@ -623,6 +629,9 @@
   </data>
   <data name="&gt;&gt;matchTagsTextBox.ZOrder" xml:space="preserve">
     <value>6</value>
+  </data>
+  <data name="loadMatchDataButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top</value>
   </data>
   <data name="loadMatchDataButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>

@@ -342,9 +342,6 @@
   <data name="nameDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Name</value>
   </data>
-  <data name="nameDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
-    <value>150</value>
-  </data>
   <metadata name="Tags.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -354,14 +351,8 @@
   <data name="typeDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="typeDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
-    <value>50</value>
-  </data>
   <data name="mapDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Map</value>
-  </data>
-  <data name="mapDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
-    <value>70</value>
   </data>
   <data name="createdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
     <value>Created</value>
