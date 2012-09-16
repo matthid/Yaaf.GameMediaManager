@@ -390,6 +390,7 @@
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.matchPlayersDataGridView);
             this.Controls.Add(this.cancelButton);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "EditMatchSession";
             this.Load += new System.EventHandler(this.EditMatchSession_Load);
