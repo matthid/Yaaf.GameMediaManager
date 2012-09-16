@@ -81,7 +81,10 @@
             // matchPlayersDataGridView
             // 
             this.matchPlayersDataGridView.AllowUserToOrderColumns = true;
+            resources.ApplyResources(this.matchPlayersDataGridView, "matchPlayersDataGridView");
             this.matchPlayersDataGridView.AutoGenerateColumns = false;
+            this.matchPlayersDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            this.matchPlayersDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.matchPlayersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.matchPlayersDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.PlayerId,
@@ -101,7 +104,6 @@
             this.matchSessionDataGridViewTextBoxColumn,
             this.playerDataGridViewTextBoxColumn});
             this.matchPlayersDataGridView.DataSource = this.matchSessionsPlayerBindingSource;
-            resources.ApplyResources(this.matchPlayersDataGridView, "matchPlayersDataGridView");
             this.matchPlayersDataGridView.Name = "matchPlayersDataGridView";
             this.matchPlayersDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.matchPlayersDataGridView_DataError);
             this.matchPlayersDataGridView.SelectionChanged += new System.EventHandler(this.matchPlayersDataGridView_SelectionChanged);
@@ -220,7 +222,9 @@
             // 
             this.matchmediaDataGridView.AllowDrop = true;
             this.matchmediaDataGridView.AllowUserToAddRows = false;
+            resources.ApplyResources(this.matchmediaDataGridView, "matchmediaDataGridView");
             this.matchmediaDataGridView.AutoGenerateColumns = false;
+            this.matchmediaDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.matchmediaDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.matchmediaDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameDataGridViewTextBoxColumn1,
@@ -231,7 +235,6 @@
             this.createdDataGridViewTextBoxColumn});
             this.matchmediaDataGridView.ContextMenuStrip = this.matchmediaContextMenuStrip;
             this.matchmediaDataGridView.DataSource = this.matchmediaBindingSource;
-            resources.ApplyResources(this.matchmediaDataGridView, "matchmediaDataGridView");
             this.matchmediaDataGridView.Name = "matchmediaDataGridView";
             this.matchmediaDataGridView.DragDrop += new System.Windows.Forms.DragEventHandler(this.matchmediaDataGridView_DragDrop);
             this.matchmediaDataGridView.DragEnter += new System.Windows.Forms.DragEventHandler(this.matchmediaDataGridView_DragEnter);
@@ -387,7 +390,6 @@
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.matchPlayersDataGridView);
             this.Controls.Add(this.cancelButton);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "EditMatchSession";
             this.Load += new System.EventHandler(this.EditMatchSession_Load);
