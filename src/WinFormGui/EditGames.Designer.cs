@@ -54,7 +54,10 @@
             resources.ApplyResources(this.gameDataGridView, "gameDataGridView");
             this.gameDataGridView.AutoGenerateColumns = false;
             this.gameDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+<<<<<<< HEAD
             this.gameDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+=======
+>>>>>>> fe6d0b0... made window View Players resizeable
             this.gameDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gameDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.idDataGridViewTextBoxColumn,
@@ -167,6 +170,10 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.gameDataGridView);
+<<<<<<< HEAD
+=======
+
+>>>>>>> fe6d0b0... made window View Players resizeable
             this.Name = "EditGames";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditGames_FormClosing);
             this.Load += new System.EventHandler(this.EditGames_Load);
