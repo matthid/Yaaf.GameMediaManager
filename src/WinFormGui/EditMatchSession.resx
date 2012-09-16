@@ -120,10 +120,59 @@
   <metadata name="PlayerId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <metadata name="EslPlayerId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="PlayerName.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Tags.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Description.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Skill.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Team.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Cheating.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="matchSessionsPlayerBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>379, 17</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="matchPlayersDataGridView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 84</value>
+  </data>
+  <data name="matchPlayersDataGridView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>786, 203</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="matchPlayersDataGridView.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;matchPlayersDataGridView.Name" xml:space="preserve">
+    <value>matchPlayersDataGridView</value>
+  </data>
+  <data name="&gt;&gt;matchPlayersDataGridView.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;matchPlayersDataGridView.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;matchPlayersDataGridView.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <metadata name="PlayerId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <data name="PlayerId.HeaderText" xml:space="preserve">
     <value>Id</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="PlayerId.Width" type="System.Int32, mscorlib">
     <value>50</value>
   </data>
@@ -211,28 +260,6 @@
   <metadata name="matchSessionsPlayerBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>379, 17</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="matchPlayersDataGridView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 84</value>
-  </data>
-  <data name="matchPlayersDataGridView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>786, 203</value>
-  </data>
-  <data name="matchPlayersDataGridView.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;matchPlayersDataGridView.Name" xml:space="preserve">
-    <value>matchPlayersDataGridView</value>
-  </data>
-  <data name="&gt;&gt;matchPlayersDataGridView.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;matchPlayersDataGridView.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;matchPlayersDataGridView.ZOrder" xml:space="preserve">
-    <value>13</value>
-  </data>
   <data name="nameDataGridViewTextBoxColumn1.HeaderText" xml:space="preserve">
     <value>Name</value>
   </data>
@@ -272,18 +299,6 @@
   <metadata name="matchmediaContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>622, 17</value>
   </metadata>
-  <data name="copyFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>161, 22</value>
-  </data>
-  <data name="copyFileToolStripMenuItem.Text" xml:space="preserve">
-    <value>Copy File</value>
-  </data>
-  <data name="showInExplorerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>161, 22</value>
-  </data>
-  <data name="showInExplorerToolStripMenuItem.Text" xml:space="preserve">
-    <value>Show in Explorer</value>
-  </data>
   <data name="matchmediaContextMenuStrip.Size" type="System.Drawing.Size, System.Drawing">
     <value>162, 48</value>
   </data>
@@ -316,6 +331,18 @@
   </data>
   <data name="&gt;&gt;matchmediaDataGridView.ZOrder" xml:space="preserve">
     <value>2</value>
+  </data>
+  <data name="copyFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 22</value>
+  </data>
+  <data name="copyFileToolStripMenuItem.Text" xml:space="preserve">
+    <value>Copy File</value>
+  </data>
+  <data name="showInExplorerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 22</value>
+  </data>
+  <data name="showInExplorerToolStripMenuItem.Text" xml:space="preserve">
+    <value>Show in Explorer</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="saveButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
@@ -708,6 +735,54 @@
   <data name="&gt;&gt;Cheating.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewCheckBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;matchSessionIdDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>matchSessionIdDataGridViewTextBoxColumn</value>
+  </data>
+  <data name="&gt;&gt;matchSessionIdDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;playerIdDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>playerIdDataGridViewTextBoxColumn</value>
+  </data>
+  <data name="&gt;&gt;playerIdDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;teamDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>teamDataGridViewTextBoxColumn</value>
+  </data>
+  <data name="&gt;&gt;teamDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;skillDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>skillDataGridViewTextBoxColumn</value>
+  </data>
+  <data name="&gt;&gt;skillDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;descriptionDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>descriptionDataGridViewTextBoxColumn</value>
+  </data>
+  <data name="&gt;&gt;descriptionDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cheatingDataGridViewCheckBoxColumn.Name" xml:space="preserve">
+    <value>cheatingDataGridViewCheckBoxColumn</value>
+  </data>
+  <data name="&gt;&gt;cheatingDataGridViewCheckBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewCheckBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;matchSessionDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>matchSessionDataGridViewTextBoxColumn</value>
+  </data>
+  <data name="&gt;&gt;matchSessionDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;playerDataGridViewTextBoxColumn.Name" xml:space="preserve">
+    <value>playerDataGridViewTextBoxColumn</value>
+  </data>
+  <data name="&gt;&gt;playerDataGridViewTextBoxColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;matchSessionsPlayerBindingSource.Name" xml:space="preserve">
     <value>matchSessionsPlayerBindingSource</value>
   </data>
@@ -767,54 +842,6 @@
   </data>
   <data name="&gt;&gt;matchmediaBindingSource.Type" xml:space="preserve">
     <value>System.Windows.Forms.BindingSource, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;matchSessionIdDataGridViewTextBoxColumn.Name" xml:space="preserve">
-    <value>matchSessionIdDataGridViewTextBoxColumn</value>
-  </data>
-  <data name="&gt;&gt;matchSessionIdDataGridViewTextBoxColumn.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;playerIdDataGridViewTextBoxColumn.Name" xml:space="preserve">
-    <value>playerIdDataGridViewTextBoxColumn</value>
-  </data>
-  <data name="&gt;&gt;playerIdDataGridViewTextBoxColumn.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;teamDataGridViewTextBoxColumn.Name" xml:space="preserve">
-    <value>teamDataGridViewTextBoxColumn</value>
-  </data>
-  <data name="&gt;&gt;teamDataGridViewTextBoxColumn.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;skillDataGridViewTextBoxColumn.Name" xml:space="preserve">
-    <value>skillDataGridViewTextBoxColumn</value>
-  </data>
-  <data name="&gt;&gt;skillDataGridViewTextBoxColumn.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;descriptionDataGridViewTextBoxColumn.Name" xml:space="preserve">
-    <value>descriptionDataGridViewTextBoxColumn</value>
-  </data>
-  <data name="&gt;&gt;descriptionDataGridViewTextBoxColumn.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;cheatingDataGridViewCheckBoxColumn.Name" xml:space="preserve">
-    <value>cheatingDataGridViewCheckBoxColumn</value>
-  </data>
-  <data name="&gt;&gt;cheatingDataGridViewCheckBoxColumn.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewCheckBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;matchSessionDataGridViewTextBoxColumn.Name" xml:space="preserve">
-    <value>matchSessionDataGridViewTextBoxColumn</value>
-  </data>
-  <data name="&gt;&gt;matchSessionDataGridViewTextBoxColumn.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;playerDataGridViewTextBoxColumn.Name" xml:space="preserve">
-    <value>playerDataGridViewTextBoxColumn</value>
-  </data>
-  <data name="&gt;&gt;playerDataGridViewTextBoxColumn.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>EditMatchSession</value>

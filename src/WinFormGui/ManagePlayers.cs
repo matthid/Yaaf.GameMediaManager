@@ -40,6 +40,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void ManagePlayers_Load(object sender, EventArgs e)
         {
+            this.SetupForm(logger);
             var task = Primitives.Task.FromDelegate(
                 () =>
                     {

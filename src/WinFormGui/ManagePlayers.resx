@@ -146,24 +146,6 @@
   <metadata name="Id.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <data name="Id.HeaderText" xml:space="preserve">
-    <value>Id</value>
-  </data>
-  <data name="Id.Width" type="System.Int32, mscorlib">
-    <value>50</value>
-  </data>
-  <data name="eslPlayerIdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>EslPlayerId</value>
-  </data>
-  <data name="eslPlayerIdDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
-    <value>70</value>
-  </data>
-  <data name="nameDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="nameDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
-    <value>150</value>
-  </data>
   <metadata name="playerBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
@@ -188,6 +170,30 @@
   <data name="&gt;&gt;playerDataGridView.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <metadata name="Id.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="Id.HeaderText" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <data name="Id.Width" type="System.Int32, mscorlib">
+    <value>50</value>
+  </data>
+  <data name="eslPlayerIdDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>EslPlayerId</value>
+  </data>
+  <data name="eslPlayerIdDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>70</value>
+  </data>
+  <data name="nameDataGridViewTextBoxColumn.HeaderText" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="nameDataGridViewTextBoxColumn.Width" type="System.Int32, mscorlib">
+    <value>150</value>
+  </data>
+  <metadata name="playerBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>

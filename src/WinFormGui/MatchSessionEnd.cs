@@ -61,7 +61,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void MatchSessionEnd_Load(object sender, EventArgs e)
         {
-            Logging.setupLogging(logger);
+            this.SetupForm(logger);
             try
             {
                 var me = FSharpInterop.Interop.Database.GetIdentityPlayer(context);

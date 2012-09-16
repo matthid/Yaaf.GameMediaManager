@@ -52,7 +52,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void ManageWatchFolder_Load(object sender, EventArgs e)
         {
-            Logging.setupLogging(logger);
+            this.SetupForm(logger);
             try
             {
                 watchFolderBindingSource.DataSource = wrapperTableCopy.SourceTable;

@@ -31,12 +31,12 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageWatchFolder));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.watchFolderBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.folderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.filterDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NotifyOnInactivity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.watchFolderBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.watchFolderBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -52,24 +52,6 @@
             this.dataGridView1.DataSource = this.watchFolderBindingSource;
             resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.Name = "dataGridView1";
-            // 
-            // watchFolderBindingSource
-            // 
-            this.watchFolderBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.WatchFolder);
-            // 
-            // button1
-            // 
-            resources.ApplyResources(this.button1, "button1");
-            this.button1.Name = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            resources.ApplyResources(this.button2, "button2");
-            this.button2.Name = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // folderDataGridViewTextBoxColumn
             // 
@@ -90,6 +72,24 @@
             resources.ApplyResources(this.NotifyOnInactivity, "NotifyOnInactivity");
             this.NotifyOnInactivity.Name = "NotifyOnInactivity";
             // 
+            // watchFolderBindingSource
+            // 
+            this.watchFolderBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.WatchFolder);
+            // 
+            // button1
+            // 
+            resources.ApplyResources(this.button1, "button1");
+            this.button1.Name = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            resources.ApplyResources(this.button2, "button2");
+            this.button2.Name = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // ManageWatchFolder
             // 
             resources.ApplyResources(this, "$this");
@@ -98,6 +98,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "ManageWatchFolder";
             this.Load += new System.EventHandler(this.ManageWatchFolder_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

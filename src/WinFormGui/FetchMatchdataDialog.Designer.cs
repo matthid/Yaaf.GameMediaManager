@@ -68,7 +68,9 @@
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "FetchMatchdataDialog";
+            this.Load += new System.EventHandler(this.FetchMatchdataDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

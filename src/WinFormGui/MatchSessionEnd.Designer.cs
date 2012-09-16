@@ -38,14 +38,14 @@
             this.switchToAdvancedViewButton = new System.Windows.Forms.Button();
             this.rememberCheckBox = new System.Windows.Forms.CheckBox();
             this.matchmediaDataGridView = new System.Windows.Forms.DataGridView();
-            this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.fetchMatchDatabutton = new System.Windows.Forms.Button();
-            this.linkLabel = new System.Windows.Forms.Label();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Tags = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mapDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.createdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.fetchMatchDatabutton = new System.Windows.Forms.Button();
+            this.linkLabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.matchNameTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaDataGridView)).BeginInit();
@@ -112,22 +112,6 @@
             this.matchmediaDataGridView.DragDrop += new System.Windows.Forms.DragEventHandler(this.matchmediaDataGridView_DragDrop);
             this.matchmediaDataGridView.DragEnter += new System.Windows.Forms.DragEventHandler(this.matchmediaDataGridView_DragEnter);
             // 
-            // matchmediaBindingSource
-            // 
-            this.matchmediaBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.Matchmedia);
-            // 
-            // fetchMatchDatabutton
-            // 
-            resources.ApplyResources(this.fetchMatchDatabutton, "fetchMatchDatabutton");
-            this.fetchMatchDatabutton.Name = "fetchMatchDatabutton";
-            this.fetchMatchDatabutton.UseVisualStyleBackColor = true;
-            this.fetchMatchDatabutton.Click += new System.EventHandler(this.fetchMatchDatabutton_Click);
-            // 
-            // linkLabel
-            // 
-            resources.ApplyResources(this.linkLabel, "linkLabel");
-            this.linkLabel.Name = "linkLabel";
-            // 
             // nameDataGridViewTextBoxColumn
             // 
             this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
@@ -161,6 +145,22 @@
             resources.ApplyResources(this.createdDataGridViewTextBoxColumn, "createdDataGridViewTextBoxColumn");
             this.createdDataGridViewTextBoxColumn.Name = "createdDataGridViewTextBoxColumn";
             // 
+            // matchmediaBindingSource
+            // 
+            this.matchmediaBindingSource.DataSource = typeof(Yaaf.WirePlugin.WinFormGui.Database.Matchmedia);
+            // 
+            // fetchMatchDatabutton
+            // 
+            resources.ApplyResources(this.fetchMatchDatabutton, "fetchMatchDatabutton");
+            this.fetchMatchDatabutton.Name = "fetchMatchDatabutton";
+            this.fetchMatchDatabutton.UseVisualStyleBackColor = true;
+            this.fetchMatchDatabutton.Click += new System.EventHandler(this.fetchMatchDatabutton_Click);
+            // 
+            // linkLabel
+            // 
+            resources.ApplyResources(this.linkLabel, "linkLabel");
+            this.linkLabel.Name = "linkLabel";
+            // 
             // label3
             // 
             resources.ApplyResources(this.label3, "label3");
@@ -190,6 +190,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tagTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "MatchSessionEnd";
             this.Load += new System.EventHandler(this.MatchSessionEnd_Load);
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaDataGridView)).EndInit();

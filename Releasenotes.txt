@@ -16,6 +16,10 @@ Wish List
 |Code:
  - Documentation
  
+16.09.2012 Version 0.9.2.2
+ - Issue #2
+ - Fixed that the program icon was included for every form in the application
+
 15.09.2012 Version 0.9.2.1
  - Watchfolder bug
 

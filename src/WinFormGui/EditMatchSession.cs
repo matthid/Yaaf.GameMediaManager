@@ -223,7 +223,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void EditMatchSession_Load(object sender, EventArgs e)
         {
-            Logging.setupLogging(logger);
+            this.SetupForm(logger);
             try
             {
                 if (matchEndMode)

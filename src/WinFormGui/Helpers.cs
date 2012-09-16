@@ -194,5 +194,11 @@
             media.MyMatchSessionsPlayer = myMatchSessionsPlayer;
             return media;
         }
+
+        public static void SetupForm(this Form form, Logging.LoggingInterfaces.ITracer logger)
+        {
+            Logging.setupLogging(logger);
+            form.Icon = Properties.Resources.reddragonIco;
+        }
     }
 }

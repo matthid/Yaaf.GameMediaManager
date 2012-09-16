@@ -56,5 +56,10 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             Close();
         }
+
+        private void FetchMatchdataDialog_Load(object sender, EventArgs e)
+        {
+            this.SetupForm(logger);
+        }
     }
 }

@@ -48,7 +48,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void InfoForm_Load(object sender, EventArgs e)
         {
-            Logging.setupLogging(logger);
+            this.SetupForm(logger);
             linkLabel2.Text = string.Format(
                 Resources.InfoForm_InfoForm_Load_VersionString___0_, ProjectConstants.ProjectVersion);
         }

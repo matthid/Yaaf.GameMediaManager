@@ -38,14 +38,22 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void EditGames_Load(object sender, EventArgs e)
         {
-            Logging.setupLogging(logger);
-            var games = from g in context.Games select g;
-
-            foreach (var game in games)
+            this.SetupForm(logger);
+            try
             {
-                game.MatchFormAction.Load();
+                var games = from g in context.Games select g;
+
+                foreach (var game in games)
+                {
+                    game.MatchFormAction.Load();
+                }
+                gameBindingSource.DataSource = context.Games;
             }
-            gameBindingSource.DataSource = context.Games;
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Can't load EditGames-Form");
+                Close();
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

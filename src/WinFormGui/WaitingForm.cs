@@ -40,6 +40,7 @@ namespace Yaaf.WirePlugin.WinFormGui
 
         private void WaitingForm_Load(object sender, EventArgs e)
         {
+            this.SetupForm(logger); 
             if (!taskStarted)
             {
                 task.Error += task_Error;
