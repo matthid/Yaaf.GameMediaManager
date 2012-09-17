@@ -15,6 +15,9 @@ Wish List
 
 |Code:
  - Documentation
+18.09.2012 Version 0.9.2.5
+ - Changed name to GameMediaManager (from WirePlugin)
+ - Copy/Move your data from C:\Users\_\AppData\Local\Yaaf\WirePlugin to C:\Users\_\AppData\Local\Yaaf\GameMediaManager
 
 17.09.2012 Version 0.9.2.4
  - Fixed a bug while deleting games 

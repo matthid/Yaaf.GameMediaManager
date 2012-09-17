@@ -1,14 +1,14 @@
-# Yaaf.WirePlugin 
+# Yaaf.GameMediaManager 
 
-WirePlugin makes uploading Matchmedia in ESL-Matches very simple. 
-Whenever you record anything in any (needs wire support) game or make a screenshot WirePlugin will manage these files for you.
+GameMediaManager makes uploading Matchmedia in ESL-Matches very simple. 
+Whenever you record anything in any (needs wire support) game or make a screenshot GameMediaManager will manage these files for you.
 The idea is basically to play a game and after playing already have the "Matchmedia upload Window" perfectly filled with all your data.
 You can tag matches, players and files. 
 You can also add some info to your enemies or mates, for example set their skill level, flag as cheater or save a description how they played in this game.
 
 All this data can be searched (not fully implemented) and exported (media files).
 
-WirePlugin goes even one step further and allows the same file/player/media management for any gaming you do besides ESL-Matches.
+GameMediaManager goes even one step further and allows the same file/player/media management for any gaming you do besides ESL-Matches.
 
 Features:
 - Manages your matchmedia
@@ -26,7 +26,7 @@ Features:
 ## Dependencies
 
 - http://www.microsoft.com/de-de/download/details.aspx?id=5783
-- https://github.com/fsharp/fsharp FSharp libraries required to use WirePlugin and fsc required to build the Project
+- https://github.com/fsharp/fsharp FSharp libraries required to use GameMediaManager and fsc required to build the Project
   * install: http://www.microsoft.com/de-de/download/details.aspx?id=13450
 - http://fsharppowerpack.codeplex.com/ FSharp Powerpack
 - CLI Runtime (one of those)
@@ -40,27 +40,27 @@ Code Dependencies (no need to install, shipped)
 ## Using
 
 Read the Wiki:
-https://github.com/matthid/Yaaf.WirePlugin/wiki
+https://github.com/matthid/Yaaf.GameMediaManager/wiki
 
-Download the binaries and double click or build yourself and then copy the files to C:\Users\_\AppData\Local\ESL Wire Game Client\plugins\Yaaf.WirePlugin.
+Download the binaries and double click or build yourself and then copy the files to C:\Users\_\AppData\Local\ESL Wire Game Client\plugins\Yaaf.GameMediaManager.
 Restart Wire. Make sure to install all dependencies (see above).
 
 ## Contributing
 
-Read the wishlist in the releasenotes (https://github.com/matthid/Yaaf.WirePlugin/blob/master/Releasenotes.txt) if you want to get some ideas where to start.
+Read the wishlist in the releasenotes (https://github.com/matthid/Yaaf.GameMediaManager/blob/master/Releasenotes.txt) if you want to get some ideas where to start.
 If you start something you can send me a mail to coordinate progress/tasks if you want (matthi.d@googlemail.com).
 
 ### There are 3 ways to contribute to the project.
 
-- If you plan to send multiple patches in the future the best would be to sign a Contributor-Agreement (https://github.com/matthid/Yaaf.WirePlugin/blob/master/ContributorAgreement.md) and send a scanned copy to matthi.d@googlemail.com.
+- If you plan to send multiple patches in the future the best would be to sign a Contributor-Agreement (https://github.com/matthid/Yaaf.GameMediaManager/blob/master/ContributorAgreement.md) and send a scanned copy to matthi.d@googlemail.com.
 
 - If you only want to send a single patch (or very few in general) you can state in the comment note and the pull request, that you share your changes under the MIT-License. For example: "This contribution is Licensed unter the http://www.opensource.org/licenses/mit-license.html"
 
-- Report an issue https://github.com/matthid/Yaaf.WirePlugin/issues. See "Report a Bug"
+- Report an issue https://github.com/matthid/Yaaf.GameMediaManager/issues. See "Report a Bug"
 
 ### Report a Bug
 
-The log folder is in C:\Users\_\AppData\Local\Yaaf\WirePlugin\log
+The log folder is in C:\Users\_\AppData\Local\Yaaf\GameMediaManager\log
 Do the following:
 
 - move the contents of the "logs" folder, do not remove/move the logs folder itself.
@@ -91,7 +91,7 @@ I really think free software licenses are the way to go. But the GPL is very res
 ## Licensing
 
 This project is subject to the terms and conditions defined in file 'LICENSE.txt', which is part of this source code package. 
-https://github.com/matthid/Yaaf.WirePlugin/blob/master/License.txt is a GPL License in version 3.
+https://github.com/matthid/Yaaf.GameMediaManager/blob/master/License.txt is a GPL License in version 3.
 
 If you require another licensing please write to matthi.d@googlemail.com. (I will always consider helping open source projects).
 Also remember: If you massively contribute to the project I have the option to give you any license you may require.
