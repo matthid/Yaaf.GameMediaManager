@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Name>Yaaf.GameMediaManager</Name>
     <TargetFrameworkProfile />
+    <ProjectTypeGuids>{5B89FCC2-C9F6-49a8-8F8D-EDDCC3FDC9E9};{f2a71f9b-5d33-465a-a702-920d77279786}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,16 +48,27 @@
     <None Include="Script.fsx" />
     <None Include="..\..\Readme.md">
       <Link>Readme.md</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\..\ContributorAgreement.md">
       <Link>ContributorAgreement.md</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="..\..\LICENSE.txt">
+    <None Include="..\..\LICENSE.txt">
       <Link>LICENSE.txt</Link>
-    </Content>
-    <Content Include="..\..\Releasenotes.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Releasenotes.txt">
       <Link>Releasenotes.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="..\..\Wishlist.txt">
+      <Link>Wishlist.txt</Link>
+      <move-by>1</move-by>
     </Content>
+    <None Include="Scripting\demorecording.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.PowerPack">
@@ -79,8 +91,6 @@
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Yaaf.GameMediaManager.Primitives.CSharp\Yaaf.GameMediaManager.Primitives.CSharp.csproj">
       <Name>Yaaf.GameMediaManager.Primitives.CSharp</Name>
       <Project>{ce3e2ac2-3e44-46c5-9539-cb201ec19b94}</Project>

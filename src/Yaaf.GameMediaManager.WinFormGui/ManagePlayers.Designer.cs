@@ -111,7 +111,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.playerDataGridView);
             this.Controls.Add(this.saveButton);
-            this.MaximizeBox = false;
             this.Name = "ManagePlayers";
             this.Load += new System.EventHandler(this.ManagePlayers_Load);
             ((System.ComponentModel.ISupportInitialize)(this.playerDataGridView)).EndInit();

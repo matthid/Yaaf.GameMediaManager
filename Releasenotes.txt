@@ -1,24 +1,12 @@
-
-Wish List
-|Features:
- - Allow Custom Actions to be setup via GUI
- - Add CustomTool actions for converting (implementation)
- - Info Extraction from mediadata (players,mapname,server, ...) as plugin system
- -> Example Plugin for sc2 replays.
- -> Start new sessions when something differs to hard (like playerlist).
- - Manually extract Mediafiles into new session (open a secound Match-End Window)
- - Automatic Updates 
- (note: not any database update is supported. For example it is possible that you have to update to version 1.9 first before you can update to 2.0. Updatecode should consider such requirements)
- - GUI Redesign (nicer look&feel and more intuitive)
- - More user input validation (currently it will just fail when inserting to database)
- - Proper Info Window
-
-|Code:
- - Documentation
-18.09.2012 Version 0.9.2.5
+17.09.2012 Version 0.9.2.6
+ - Redesigned the Info-Form
+ - Activated MaximizeBox from ManagePlayers-Form
+ - Added Wishlist
+ 
+17.09.2012 Version 0.9.2.5
+ ! Copy/Move your data from C:\Users\_\AppData\Local\Yaaf\WirePlugin to C:\Users\_\AppData\Local\Yaaf\GameMediaManager if you are upgrading from 0.9.2.4
  - Changed name to GameMediaManager (from WirePlugin)
- - Copy/Move your data from C:\Users\_\AppData\Local\Yaaf\WirePlugin to C:\Users\_\AppData\Local\Yaaf\GameMediaManager
-
+ 
 17.09.2012 Version 0.9.2.4
  - Fixed a bug while deleting games 
 
