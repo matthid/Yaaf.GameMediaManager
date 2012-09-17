@@ -39,11 +39,11 @@ Code Dependencies (no need to install, shipped)
 
 ## Using
 
-Download the binaries or build yourself and then copy the files to C:\Users\_\AppData\Local\ESL Wire Game Client\plugins\Yaaf.WirePlugin.
-Restart Wire. Make sure to install all dependencies (see above).
-
 Read the Wiki:
 https://github.com/matthid/Yaaf.WirePlugin/wiki
+
+Download the binaries and double click or build yourself and then copy the files to C:\Users\_\AppData\Local\ESL Wire Game Client\plugins\Yaaf.WirePlugin.
+Restart Wire. Make sure to install all dependencies (see above).
 
 ## Contributing
 

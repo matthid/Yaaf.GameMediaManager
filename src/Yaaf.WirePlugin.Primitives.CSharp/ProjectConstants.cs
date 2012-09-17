@@ -13,7 +13,7 @@ namespace Yaaf.WirePlugin
     {
         public const string DatabaseSchemaVersionString = "1.1.1.0";
         public static readonly Version DatabaseSchemaVersion = new Version(DatabaseSchemaVersionString);
-        public const string VersionString = "0.9.2.3";
+        public const string VersionString = "0.9.2.4";
 
         public static readonly Version ProjectVersion = new Version(VersionString);
     }

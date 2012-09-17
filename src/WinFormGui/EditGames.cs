@@ -47,6 +47,7 @@ namespace Yaaf.WirePlugin.WinFormGui
                 {
                     game.MatchFormAction.Load();
                 }
+
                 gameBindingSource.DataSource = context.Games;
             }
             catch (Exception ex)
@@ -66,10 +67,9 @@ namespace Yaaf.WirePlugin.WinFormGui
         {
             try
             {
-                // TODO: Check for invalid WatchFolder Entries (well they are not critical)
-                foreach (var table in gameWatchFolders.Values)
+                foreach (var wrapperTable in gameWatchFolders.Values)
                 {
-                    table.UpdateTable(wrapper.Context.WatchFolders);
+                    wrapperTable.UpdateTable(wrapper.Context.WatchFolders);
                 }
 
                 wrapper.MySubmitChanges();
@@ -186,7 +186,35 @@ namespace Yaaf.WirePlugin.WinFormGui
                     item = (Game)gameBindingSource.Current;
                 }
 
-                context.MatchFormActions.DeleteAllOnSubmit(item.MatchFormAction);
+                foreach (var action in item.MatchFormAction)
+                {
+                    if (context.MatchFormActions.GetOriginalEntityState(action) != null)
+                    {
+                        context.MatchFormActions.DeleteOnSubmit(action);
+                    }
+                }
+                item.MatchFormAction.Clear();
+
+                WrapperDataTable.WrapperTable<WatchFolder> watchfolderTable;
+                if (gameWatchFolders.TryGetValue(item, out watchfolderTable))
+                {
+                    watchfolderTable = gameWatchFolders[item];
+                    foreach (var copyItem in watchfolderTable.CopyLinqData.ToList())
+                    {
+                        watchfolderTable.DeleteCopyItem(copyItem);
+                    }
+                }
+                else
+                {
+                    foreach (var watchFolder in item.WatchFolder)
+                    {
+                        if (context.WatchFolders.GetOriginalEntityState(watchFolder) != null)
+                        {
+                            context.WatchFolders.DeleteOnSubmit(watchFolder);
+                        }
+                    }
+                    item.WatchFolder.Clear();
+                }
             }
             catch (Exception ex)
             {
