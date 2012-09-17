@@ -25,7 +25,7 @@ Features:
 
 ## Dependencies
 
-- http://www.microsoft.com/de-de/download/details.aspx?id=5783
+- http://www.microsoft.com/de-de/download/details.aspx?id=5783 (Microsoft SQL Server Compact 3.5 Service Pack 2 für Windows Desktop)
 - https://github.com/fsharp/fsharp FSharp libraries required to use GameMediaManager and fsc required to build the Project
   * install: http://www.microsoft.com/de-de/download/details.aspx?id=13450
 - http://fsharppowerpack.codeplex.com/ FSharp Powerpack
