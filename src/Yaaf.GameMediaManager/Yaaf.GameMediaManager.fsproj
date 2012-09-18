@@ -26,8 +26,7 @@
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\EslWire\pluginContainer\wire-plugin.exe</StartProgram>
     <StartArguments>"D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\Yaaf.GameMediaManager\bin\Debug\Yaaf.GameMediaManager.dll"</StartArguments>
-    <StartWorkingDirectory>
-    </StartWorkingDirectory>
+    <StartWorkingDirectory>D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\Yaaf.GameMediaManager\bin\Debug\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,6 +36,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\Yaaf.GameMediaManager.XML</DocumentationFile>
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Program Files\EslWire\pluginContainer\wire-plugin.exe</StartProgram>
+    <StartArguments>"D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\Yaaf.GameMediaManager\bin\Release\Yaaf.GameMediaManager.dll"</StartArguments>
+    <StartWorkingDirectory>D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\Yaaf.GameMediaManager\bin\Release\</StartWorkingDirectory>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="!Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
@@ -62,13 +65,13 @@
       <Link>Releasenotes.txt</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Scripting\demorecording.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="..\..\Wishlist.txt">
       <Link>Wishlist.txt</Link>
       <move-by>1</move-by>
     </Content>
-    <None Include="Scripting\demorecording.cfg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.PowerPack">
