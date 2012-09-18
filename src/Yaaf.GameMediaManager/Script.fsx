@@ -2,60 +2,26 @@
 // This file is subject to the terms and conditions defined in
 // file 'LICENSE.txt', which is part of this source code package.
 // ----------------------------------------------------------------------------
+
+#r @"D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\Yaaf.GameMediaManager\bin\Debug\Yaaf.GameMediaManager.Primitives.CSharp.dll"
+#r @"D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\Yaaf.GameMediaManager\bin\Debug\Yaaf.GameMediaManager.Primitives.dll"
+#r @"D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\Yaaf.GameMediaManager\bin\Debug\Yaaf.GameMediaManager.WinFormGui.dll"
+#r @"D:\Projects\Aktuell\WireYaafCssPlugin\Yaaf\src\Yaaf.GameMediaManager\bin\Debug\Yaaf.GameMediaManager.dll"
+
+#r "System.Data.Linq.dll"
+
 open System
 open System.IO
 
-let path = "C:\\test"
-let ext = ".jpg"
+open Yaaf.GameMediaManager
+open Yaaf.GameMediaManager.Primitives
+open Yaaf.GameMediaManager.WinFormGui.Database
 
-let fileSize rnd = (1024*7)
-let filenumber = 1000000
-let outputdelay = 1000
-let globalRnd = Random()
-let written = ref 0
-let task() = async {
-    let rnd =
-        lock globalRnd (fun () ->
-                Random(globalRnd.Next())
-            )
-    let createdFile = ref false
-    while not <| !createdFile do
-        let newFileName = sprintf "%s%s" (Guid.NewGuid().ToString()) ext
-        let newPath = Path.Combine (path, newFileName)
-        if not <| File.Exists newPath then
-            let buffer = Array.zeroCreate (fileSize(rnd))
-            rnd.NextBytes buffer
-            File.WriteAllBytes (newPath, buffer)
-            createdFile := true
-            let newWritten = System.Threading.Interlocked.Increment(written)
-            if (newWritten % outputdelay = 0) then
-                printfn "Finished %d items" newWritten}
-
-let tasks = async {
-    do!
-        Array.init filenumber (fun _ -> task())
-        |> Async.Parallel
-        |> Async.Ignore
-    printfn "All Finished" }
-
-let rec deleteTask path = async {
-    printfn "Start deletion"
-    Directory.EnumerateFiles(path)
-    |> Seq.iteri 
-        (fun i file ->
-            try
-                File.Delete file
-            with :? IOException as exn -> 
-                printfn "%s, Error, %O" file exn
-            if (i%outputdelay = 0) then
-                printfn "Finished %d items" i)
-    do!
-        Directory.EnumerateDirectories(path)
-        |> Seq.map (fun p -> deleteTask p)
-        |> Async.Parallel
-        |> Async.Ignore
-    printfn "Finished deletion"
-    }
-let deleteTasks = deleteTask path
-//tasks |> Async.Start;;
-//deleteTask |> Async.Start;;
+let context = Database.getContext()
+context.Context.MatchSessions_Players.InsertOnSubmit(new MatchSessions_Player())
+try
+    context.Context.SubmitChanges()
+with exn ->
+    printfn "type %s" (exn.GetType().FullName)
+    printfn "msg %s" exn.Message
+    printfn "stack %s" exn.StackTrace

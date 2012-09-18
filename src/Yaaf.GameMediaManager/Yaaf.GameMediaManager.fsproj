@@ -65,13 +65,13 @@
       <Link>Releasenotes.txt</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Scripting\demorecording.cfg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Content Include="..\..\Wishlist.txt">
       <Link>Wishlist.txt</Link>
       <move-by>1</move-by>
     </Content>
+    <None Include="Scripting\demorecording.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.PowerPack">

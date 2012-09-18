@@ -325,10 +325,7 @@ namespace Yaaf.GameMediaManager.WinFormGui.Database
                 myMatchsessionPlayer = value;
                 if (isOriginal)
                 {
-                    if (value != null)
-                    {
-                        MatchSessions_Player = myMatchsessionPlayer;
-                    }
+                    MatchSessions_Player = myMatchsessionPlayer;
                 }
             }
         }
@@ -354,6 +351,10 @@ namespace Yaaf.GameMediaManager.WinFormGui.Database
 
     partial class MatchSessions_Player
     {
+        private MatchSession myMatchSession;
+
+        private bool isOriginal;
+
         public override string ToString()
         {
             return string.Format("MatchSessions_Player(MyTeam: {0}, MySkill: {1}, MatchSessionId: {2}, PlayerId: {3}, Team: {4}, Skill: {5}, Description: {6}, Cheating: {7})", MyTeam, MySkill, MatchSessionId, PlayerId, Team, Skill, Description, Cheating);
@@ -363,9 +364,31 @@ namespace Yaaf.GameMediaManager.WinFormGui.Database
         {
             if (PlayerId != 0 && MatchSessionId != 0)
             {
+                SetOriginal();
+                MyMatchSession = MatchSession;
             }
         }
-        
+
+        private void SetOriginal()
+        {
+            isOriginal = true;
+        }
+
+        public MatchSession MyMatchSession
+        {
+            get
+            {
+                return myMatchSession;
+            }
+            set
+            {
+                myMatchSession = value;
+                if (isOriginal)
+                {
+                    MatchSession = myMatchSession;
+                }
+            }
+        }
 
         partial void OnCreated()
         {

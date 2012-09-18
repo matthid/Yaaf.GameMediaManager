@@ -1,3 +1,7 @@
+18.09.2012 Version 0.9.2.7
+ - Fixed a bug on Esl Matches
+ - smaller changes
+ 
 17.09.2012 Version 0.9.2.6
  - Redesigned the Info-Form
  - Activated MaximizeBox from ManagePlayers-Form

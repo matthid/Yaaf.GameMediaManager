@@ -245,6 +245,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 matchSessionsPlayerBindingSource.DataSource = playersDataCopy.SourceTable;
                 linkLabel.Text = session.EslMatchLink;
                 playersDataCopy.InitRow += playersDataCopy_InitRow;
+                playersDataCopy.UserAddedRow += playersDataCopy_UserAddedRow;
                 matchTagsTextBox.Text = session.MyTags;
             }
             catch (Exception ex)
@@ -252,6 +253,11 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 ex.ShowError(logger, "Can't load EditMatchSession-Form");
                 Close();
             }
+        }
+
+        void playersDataCopy_UserAddedRow(object sender, MatchSessions_Player args)
+        {
+            args.MyMatchSession = session;
         }
         
         private void playersDataCopy_InitRow(object sender, MatchSessions_Player player)
@@ -278,14 +284,14 @@ namespace Yaaf.GameMediaManager.WinFormGui
         {
             matchmediaDataCopy.ImportChanges(oldWrapper);
             matchmediaData.ImportChanges(matchmediaDataCopy);
-            var playerData = from copyData in playersDataCopy.CopyLinqData
-                             let row = playersDataCopy.get_CopyItemToRow(copyData)
-                             let original = playersDataCopy.GetItem(row)
-                             select original;
-            foreach (var p in playerData)
-            {
-                p.MatchSession = session;
-            }
+            //var playerData = from copyData in playersDataCopy.CopyLinqData
+            //                 let row = playersDataCopy.get_CopyItemToRow(copyData)
+            //                 let original = playersDataCopy.GetItem(row)
+            //                 select original;
+            //foreach (var p in playerData)
+            //{
+            //    p.MatchSession = session;
+            //}
 
             if (matchnameTextBox.Text.Length > 100)
             {
@@ -405,7 +411,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 var players = Helpers.ShowLoadMatchDataDialog(logger, session.EslMatchLink);
                 matchmediaDataCopy.ImportChanges(oldWrapper);
                 oldWrapper = null;
-                FSharpInterop.Interop.FillWrapperTable(players.Item1, playersDataCopy, matchmediaDataCopy);
+                FSharpInterop.Interop.FillWrapperTable(session, players.Item1, playersDataCopy, matchmediaDataCopy);
                 linkLabel.Text = players.Item2;
                 RefreshMatchmediaView();
             }

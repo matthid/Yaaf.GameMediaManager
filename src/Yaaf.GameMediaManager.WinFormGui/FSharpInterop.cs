@@ -34,6 +34,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
         ITask<IEnumerable<EslGrabber.Player>> GetFetchPlayerTask(string link);
 
         void FillWrapperTable(
+            MatchSession session, 
             IEnumerable<EslGrabber.Player> players, 
             WrapperDataTable.WrapperTable<MatchSessions_Player> playerTable,
             Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia> medias);

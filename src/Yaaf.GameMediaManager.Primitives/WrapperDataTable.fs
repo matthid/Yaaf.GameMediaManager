@@ -347,7 +347,7 @@ module WrapperDataTable =
         member x.InitRow = initRow.Publish
 
         /// Will be triggered when there was finally added a new row on the sourcetable (will not be called on add methods).
-        /// This item will not be modified any further. Changes to the item will not be displayed.
+        /// This (original) item will not be modified any further. Changes to the item will not be displayed.
         [<CLIEvent>]
         member x.UserAddedRow = userAddedRow.Publish
         

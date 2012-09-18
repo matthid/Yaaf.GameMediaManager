@@ -217,7 +217,7 @@ type ReplayWirePlugin() as x =
                         let me = Database.getIdentityPlayer db
                         let newPlayerAssociation = 
                             new Database.MatchSessions_Player(
-                                MatchSession = matchSession,
+                                MyMatchSession = matchSession,
                                 Cheating = false,
                                 Player = me,
                                 Skill = System.Nullable(100uy),
@@ -342,6 +342,7 @@ type ReplayWirePlugin() as x =
                 true
             with exn ->
                 logger.logCrit "Error while saving in Database: %O" exn
+                //session.Context.DumpData(logger)
                 System.Windows.Forms.MessageBox.Show(
                     "You triggered a critical bug in Yaaf.GameMediaManager.\n"+
                     " Please let me know how you did it and report it on the website (rightclick -> Report Bug or Request Feature).\n"+
@@ -396,8 +397,8 @@ type ReplayWirePlugin() as x =
             member x.GetFetchPlayerTask link =
                 let asyncTask = async { return! EslGrabber.getMatchMembers link } 
                 Primitives.Task(asyncTask) :> Primitives.ITask<_> 
-            member x.FillWrapperTable(players, wrapperTable, mediaTable) = 
-                Database.fillWrapperTable players wrapperTable mediaTable }    
+            member x.FillWrapperTable(session, players, wrapperTable, mediaTable) = 
+                Database.fillWrapperTable session players wrapperTable mediaTable }    
 
     do  logger.logVerb "Starting up Yaaf.GameMediaManager (%s)" ProjectConstants.VersionString
     static do 
@@ -415,6 +416,11 @@ type ReplayWirePlugin() as x =
                     "ESL Match Media")
 
         Settings.Default.Save()
+         
+        let dir = Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly().Location)
+        let winFormGui = System.Reflection.Assembly.LoadFile(Path.Combine(dir, "Yaaf.GameMediaManager.WinFormGui.dll"))
+        System.AppDomain.CurrentDomain.add_AssemblyResolve
+            (System.ResolveEventHandler(fun o e -> if e.Name.StartsWith("Yaaf.GameMediaManager.WinFormGui") then winFormGui else null))
 
     member x.GameInterface 
         with get() : GameInterface = 

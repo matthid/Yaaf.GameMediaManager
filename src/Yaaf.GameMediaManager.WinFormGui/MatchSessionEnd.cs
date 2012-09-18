@@ -71,13 +71,14 @@ namespace Yaaf.GameMediaManager.WinFormGui
                     primaryPlayer = session.MatchSessions_Player.FirstOrDefault();
                     if (primaryPlayer == null)
                     {
-                        primaryPlayer = new MatchSessions_Player(){Player = me, MatchSession = session};
+                        primaryPlayer = new MatchSessions_Player(){Player = me, MyMatchSession = session};
                         playerTableCopy.Add(primaryPlayer);
                     }
                 }
                 tagTextBox.Text = session.MyTags;
                 matchNameTextBox.Text = session.Name;
                 linkLabel.Text = session.EslMatchLink;
+                playerTableCopy.UserAddedRow += playerTableCopy_UserAddedRow;
                 matchmediaBindingSource.DataSource = matchmediaTableCopy.SourceTable;
             }
             catch (Exception ex)
@@ -85,6 +86,11 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 ex.ShowError(logger, "Could not load SessionEnd-View");
                 Close();
             }
+        }
+
+        void playerTableCopy_UserAddedRow(object sender, MatchSessions_Player args)
+        { // can't happen actually.
+            args.MyMatchSession = session;
         }
 
         private void saveMatchmediaButton_Click(object sender, EventArgs e)
@@ -185,7 +191,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
             try
             {
                 var players = Helpers.ShowLoadMatchDataDialog(logger, session.EslMatchLink);
-                FSharpInterop.Interop.FillWrapperTable(players.Item1, playerTableCopy, matchmediaTableCopy);
+                FSharpInterop.Interop.FillWrapperTable(session, players.Item1, playerTableCopy, matchmediaTableCopy);
                 linkLabel.Text = players.Item2;
                 rememberCheckBox.Enabled = false;
             }

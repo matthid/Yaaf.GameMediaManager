@@ -32,6 +32,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
         static LocalDatabaseWrapper()
         {
+            Console.WriteLine("init logger");
             loggerSource = Logging.Source("Yaaf.GameMediaManager.WinFormGui.LocalDatabaseWrapper", "");
             logger = Logging.DefaultTracer(loggerSource, "Initialization");
         }
@@ -135,10 +136,11 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 var changes = Context.GetChangeSet();
                 var allchanges = changes.Inserts.Union(changes.Updates).ToList();
 
+                // Update MatchSessions_Player
                 var matchSessionsPlayers = allchanges.Select(o => o as MatchSessions_Player).Where(o => o != null);
-
                 foreach (var matchSessionsPlayer in matchSessionsPlayers)
                 {
+                    matchSessionsPlayer.MatchSession = matchSessionsPlayer.MyMatchSession;
                     if (matchSessionsPlayer.Player.MyId != 0)
                     {
                         var newPlayer = FSharpInterop.Interop.Database.GetPlayerById(
@@ -146,7 +148,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
                         var oldPlayer = matchSessionsPlayer.Player;
                         if (newPlayer != null)
                         {
-                            UpdateMatchSessionPlayer(oldPlayer, newPlayer, matchSessionsPlayer);
+                            UpdateMatchSessionPlayer(matchSessionsPlayer, oldPlayer, newPlayer);
                         }
                         else
                         {
@@ -161,12 +163,13 @@ namespace Yaaf.GameMediaManager.WinFormGui
                         var oldPlayer = matchSessionsPlayer.Player;
                         if (newPlayer != null)
                         {
-                            UpdateMatchSessionPlayer(oldPlayer, newPlayer, matchSessionsPlayer);
+                            UpdateMatchSessionPlayer(matchSessionsPlayer, oldPlayer, newPlayer);
                         }
                     }
                 }
-                var matchmedias = allchanges.Select(o => o as Matchmedia).Where(o => o != null).Cache();
 
+                // Update Matchmedias
+                var matchmedias = allchanges.Select(o => o as Matchmedia).Where(o => o != null).Cache();
                 foreach (var matchmedia in matchmedias)
                 {
                     if (matchmedia.MyMatchSessionsPlayer != null)
@@ -174,9 +177,9 @@ namespace Yaaf.GameMediaManager.WinFormGui
                         matchmedia.MatchSessions_Player = matchmedia.MyMatchSessionsPlayer;
                     }
                 } 
-                
-                var watchFolders = allchanges.Select(o => o as WatchFolder).Where(o => o != null).Cache();
 
+                // Update WatchFolders
+                var watchFolders = allchanges.Select(o => o as WatchFolder).Where(o => o != null).Cache();
                 foreach (var watchFolder in watchFolders)
                 {
                     if (watchFolder.MyGame != null)
@@ -185,6 +188,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
                     }
                 }
 
+                // Update MatchSessions
                 var deletedSessions = changes.Deletes.Select(o => o as MatchSession).Where(o => o != null);
                 foreach (var deletedSession in deletedSessions)
                 {
@@ -228,20 +232,55 @@ namespace Yaaf.GameMediaManager.WinFormGui
             }
             catch (Exception e)
             {
-                logger.LogError("Exception: {0}", e);
+                logger.LogError("Exception: Type: {0}, ToString: {1}", e.GetType(), e.ToString());
+                if (e.GetType().FullName == "System.Data.SqlServerCe.SqlCeException")
+                {
+                    TryDumpData();
+                }
                 throw;
             }
         }
 
-        private void UpdateMatchSessionPlayer(Player oldPlayer, Player newPlayer, MatchSessions_Player matchSessionsPlayer)
+        private void TryDumpData()
         {
-            matchSessionsPlayer.Player = newPlayer;
-            newPlayer.EslPlayerId = oldPlayer.EslPlayerId;
-            newPlayer.MyTags = oldPlayer.MyTags;
-            newPlayer.Name = oldPlayer.Name;
-            if (oldPlayer.Id == 0)
+            try
             {
-                Context.Players.DeleteOnSubmit(oldPlayer);
+                var changes = Context.GetChangeSet();
+                foreach (var delete in changes.Deletes)
+                {
+                    logger.LogInformation("Dump data: Deletion({0})", delete.ToString());
+                } 
+
+                foreach (var insert in changes.Inserts)
+                {
+                    logger.LogInformation("Dump data: Insertion({0})", insert.ToString());
+                }
+
+                foreach (var update in changes.Updates)
+                {
+                    var table = Context.GetTable(update.GetType());
+                    var original = table.GetOriginalEntityState(update);
+                    logger.LogInformation("Dump data: Update({0}, {1})", original.ToString(), update.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError("Exception while trying to dump data: {0}", e.ToString());
+            }
+        }
+
+        private void UpdateMatchSessionPlayer(MatchSessions_Player matchSessionsPlayer, Player copyPlayer, Player databasePlayer)
+        {
+            matchSessionsPlayer.Player = databasePlayer;
+            databasePlayer.EslPlayerId = copyPlayer.EslPlayerId;
+            databasePlayer.MyTags = copyPlayer.MyTags;
+            databasePlayer.Name = copyPlayer.Name;
+            if (copyPlayer.Id == 0)
+            {
+                if (Context.Players.GetOriginalEntityState(copyPlayer) != null)
+                { // should not happen
+                    Context.Players.DeleteOnSubmit(copyPlayer);
+                }
             }
         }
 

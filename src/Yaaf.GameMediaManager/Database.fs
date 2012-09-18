@@ -305,6 +305,7 @@ module Database =
         let nick, eslId = getIdentityPlayerInfo()
         getPlayerByEslId db eslId nick
     let fillWrapperTable
+        session
         (players:EslGrabber.Player seq) 
         (wrapperTable:Primitives.WrapperDataTable.WrapperTable<Database.MatchSessions_Player>)
         (mediaTable:Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>)
@@ -329,6 +330,7 @@ module Database =
                     | false, _ ->
                         let newPlayer = 
                             Database.MatchSessions_Player(
+                                MyMatchSession = session,
                                 Team = byte p.Team, Player = Database.Player(Name = p.Nick, EslPlayerId = System.Nullable(p.Id)))
                         wrapperTable.Add newPlayer)
         let medias =
@@ -343,7 +345,7 @@ module Database =
     let fillPlayers (db:LocalDatabaseWrapper) (matchSession:Database.MatchSession) (players:EslGrabber.Player seq) =   
         let wrapper = WinFormGui.Helpers.GetWrapper(matchSession.MatchSessions_Player)
         let medias = WinFormGui.Helpers.GetWrapper(matchSession.Matchmedia)
-        fillWrapperTable players wrapper medias
+        fillWrapperTable matchSession players wrapper medias
         db.UpdateMatchSessionPlayerTable(wrapper)
 
 
