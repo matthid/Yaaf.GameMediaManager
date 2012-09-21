@@ -16,5 +16,30 @@ namespace Yaaf.GameMediaManager
         public const string VersionString = "0.9.2.7";
 
         public static readonly Version ProjectVersion = new Version(VersionString);
+
+        public const string UrlPrefix = "https://github.com/matthid/Yaaf.GameMediaManager/";
+
+        public const string RawPrefix = "https://raw.github.com/matthid/Yaaf.GameMediaManager/";
+
+#if DEBUG
+        public const bool IsRelease = false;
+#else
+        public const bool IsRelease = true;
+#endif
+
+        public static string GetLink(string section)
+        {
+            return UrlPrefix + section;
+        }
+
+        public static string GetRawLink(string file)
+        {
+            return GetRawLink(file, IsRelease);
+        }
+
+        public static string GetRawLink(string file, bool releaseFile)
+        {
+            return RawPrefix + (releaseFile ? "master" : "core") + "/" + file;
+        }
     }
 }

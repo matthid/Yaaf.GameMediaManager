@@ -1,0 +1,93 @@
+﻿// ----------------------------------------------------------------------------
+// This file is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package.
+// ----------------------------------------------------------------------------
+namespace Yaaf.GameMediaManager
+
+open Yaaf.GameMediaManager
+
+module Upgrading = 
+    open System.Net
+    open Microsoft.FSharp.Control.WebExtensions
+    let createClient () = new System.Net.WebClient()
+    
+    let downloadString uri = async {
+        let client = createClient()
+        let! data = client.AsyncDownloadString uri
+        return data }
+
+    open System.Xml
+    let loadXml data = 
+        let doc = new XmlDocument()
+        doc.LoadXml data
+        doc
+
+    open System
+    type Sources = 
+        | Github = 1
+        | Esl = 2
+        | Mirror = 4
+
+    type FileUrl = {
+        Url : string
+        Source : Sources }
+
+    type VersionData = {
+        Version : Version
+        CanBeSkipped : bool
+        FileUrls : FileUrl seq
+        Message : string }
+
+    let parseUpgradeFile (xml:XmlDocument) = 
+        let parseUpgradeFileItem (item:XmlElement) =
+            let getBool defValue s = 
+                match bool.TryParse s with
+                | true, v -> v
+                | false, _ -> defValue
+            let getSource defValue s = 
+                match Enums<Sources,_>.TryParse s with
+                | true, s -> s
+                | false, _ -> defValue
+            let parseFileUrl (item:XmlElement) = 
+                {
+                    Url = item.InnerText
+                    Source = getSource Sources.Mirror (item.GetAttribute "Source")
+                }
+            {
+                Version = Version(item.GetAttribute "VersionNumber")
+                CanBeSkipped = getBool true (item.GetAttribute "CanBeSkipped")
+                FileUrls = 
+                    item.ChildNodes
+                        |> Seq.cast
+                        |> Seq.map parseFileUrl
+                Message = item.GetAttribute "Message"
+            }
+            
+        xml.DocumentElement.ChildNodes
+            |> Seq.cast
+            |> Seq.map parseUpgradeFileItem
+
+    let filterVersions (filterFlags:Sources) versions = 
+        let filterFile f = 
+            Enums.GetFlags(filterFlags)
+                |> Seq.exists (fun includeFlag -> Enums.HasFlag(f.Source, includeFlag))
+
+        versions
+            |> Seq.map (fun d -> { d with FileUrls = d.FileUrls |> Seq.filter filterFile })
+            |> Seq.filter (fun d -> d.FileUrls |> Seq.isEmpty |> not)
+    
+    let findNextVersion startVersion versions = 
+        let newVersions = 
+            versions
+                |> Seq.sortBy (fun t -> t.Version)
+                |> Seq.skipWhile (fun d -> d.Version <= startVersion)
+                |> Seq.cache
+        let newVersionCount = newVersions |> Seq.length
+
+        newVersions
+            |> Seq.mapi (fun i d -> i,d)    
+            |> Seq.skipWhile (fun (i,d) -> d.CanBeSkipped && i < newVersionCount - 1)
+            |> Seq.map (fun (i,d) -> d)
+            |> Seq.tryHead
+
+    

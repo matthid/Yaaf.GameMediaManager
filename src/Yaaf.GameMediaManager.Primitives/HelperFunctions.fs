@@ -5,6 +5,11 @@
 [<AutoOpen>]
 module HelperFunctions
 
+    let flip f x y = f y x
+        
+    let curry f a b = f (a,b)
+    let uncurry f (a,b) = f a b
+
     module Event =
         /// Executes f just after adding the event-handler
         let guard f (e:IEvent<'Del, 'Args>) = 
@@ -27,8 +32,15 @@ module HelperFunctions
                 s
                     |> tryTake 1
             if newSeq |> Seq.isEmpty then None else newSeq |> Seq.head |> Some
+            
+        let sortWith f e = 
+            let e' = e |> Seq.toArray
+            e' |> Array.sortInPlaceWith f
+            e' |> Seq.readonly
 
-    let curry f a b = f (a,b)
-    let uncurry f (a,b) = f a b
+        let sortWithBy (extractKey:'a -> 'TKey) f e = 
+            e 
+                |> sortWith
+                    (fun item1 item2 -> f (extractKey item1) (extractKey item2))
 
     let pathCombine l = List.fold (curry System.IO.Path.Combine) "" l

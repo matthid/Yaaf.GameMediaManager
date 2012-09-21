@@ -38,6 +38,8 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="HelperFunctions.fs" />
     <Compile Include="Logging.fs" />
+    <Compile Include="Enums.fs" />
+    <Compile Include="Upgrading.fs" />
     <Compile Include="MatchmediaWatcher.fs" />
     <Compile Include="MediaAnalyser.fs" />
     <Compile Include="EslGrabber.fs" />
@@ -46,6 +48,9 @@
     <Compile Include="WrapperDataTable.fs" />
     <Compile Include="SetDictionary.fs" />
     <None Include="Script.fsx" />
+    <Content Include="..\..\Upgradefile.xml">
+      <Link>Upgradefile.xml</Link>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.PowerPack">

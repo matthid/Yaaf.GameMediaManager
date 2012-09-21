@@ -30,7 +30,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            TryStart("https://github.com/matthid/Yaaf.GameMediaManager");
+            TryStart(ProjectConstants.GetLink(""));
         }
 
         private void TryStart(string link)
@@ -48,7 +48,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            TryStart("https://github.com/matthid/Yaaf.GameMediaManager/downloads");
+            TryStart(ProjectConstants.GetLink("downloads"));
         }
 
         private void InfoForm_Load(object sender, EventArgs e)
@@ -62,9 +62,9 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 var downloadReleaseNotesTask = Primitives.Task.FromDelegate(
                     () =>
                     {
-                        const string Url = "https://raw.github.com/matthid/Yaaf.GameMediaManager/master/Releasenotes.txt";
+                        string url = ProjectConstants.GetRawLink("Releasenotes.txt");
                         var client = new WebClient();
-                        var raw = client.DownloadString(Url);
+                        var raw = client.DownloadString(url);
                         return raw.Replace("\n", "\r\n");
                     });
                 downloadReleaseNotesTask.Finished += downloadReleaseNotesTask_Finished;
@@ -100,7 +100,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
         private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            TryStart("https://github.com/matthid/Yaaf.GameMediaManager/wiki");
+            TryStart(ProjectConstants.GetLink("wiki"));
         }
 
         private void linkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -111,7 +111,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
         private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            TryStart("https://github.com/matthid/Yaaf.GameMediaManager/issues");
+            TryStart(ProjectConstants.GetLink("issues"));
         }
 
         private void linkLabel6_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

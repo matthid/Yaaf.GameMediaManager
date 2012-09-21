@@ -33,6 +33,8 @@ Features:
   * .NET 3.5 (Included in > Windows Vista) http://www.microsoft.com/de-de/download/details.aspx?id=21
 - Wire http://www.esl.eu/de/wire/
 
+- F# Project System Extender (Visual Studio Extension)
+
 
 Code Dependencies (no need to install, shipped)
 - http://htmlagilitypack.codeplex.com/ Html Agility Pack

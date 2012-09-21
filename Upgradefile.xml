@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Versions>
+  <Version VersionNumber="0.9.3.0" CanBeSkipped="true" >
+    <FileUrl>https://github.com/downloads/matthid/Yaaf.GameMediaManager/GameMediaManager.%200.9.2.7.wireplugin</FileUrl>
+  </Version>
+  <Version VersionNumber="0.9.2.8" CanBeSkipped="true" Message="test" >
+    <FileUrl>https://github.com/downloads/matthid/Yaaf.GameMediaManager/GameMediaManager.%200.9.2.7.wireplugin</FileUrl>
+    <FileUrl Source="Github" >https://github.com/downloads/matthid/Yaaf.GameMediaManager/GameMediaManager.%200.9.2.7.wireplugin</FileUrl>
+  </Version>
+</Versions>
