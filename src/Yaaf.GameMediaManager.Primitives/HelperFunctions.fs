@@ -31,6 +31,7 @@ module HelperFunctions
             let newSeq =
                 s
                     |> tryTake 1
+                    |> Seq.cache // Remove possible side effects
             if newSeq |> Seq.isEmpty then None else newSeq |> Seq.head |> Some
             
         let sortWith f e = 

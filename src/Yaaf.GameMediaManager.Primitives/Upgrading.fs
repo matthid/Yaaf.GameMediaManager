@@ -2,10 +2,9 @@
 // This file is subject to the terms and conditions defined in
 // file 'LICENSE.txt', which is part of this source code package.
 // ----------------------------------------------------------------------------
-namespace Yaaf.GameMediaManager
+namespace Yaaf.Utils
 
-open Yaaf.GameMediaManager
-
+/// A generic Upgrading helper
 module Upgrading = 
     open System.Net
     open Microsoft.FSharp.Control.WebExtensions
@@ -37,8 +36,10 @@ module Upgrading =
         CanBeSkipped : bool
         FileUrls : FileUrl seq
         Message : string }
-
+    
+    /// Parses the given Xml Document to a VersionData sequence
     let parseUpgradeFile (xml:XmlDocument) = 
+        /// Parses the given Version Element
         let parseUpgradeFileItem (item:XmlElement) =
             let getBool defValue s = 
                 match bool.TryParse s with
@@ -48,6 +49,7 @@ module Upgrading =
                 match Enums<Sources,_>.TryParse s with
                 | true, s -> s
                 | false, _ -> defValue
+            /// Parses the given FileUrl Element
             let parseFileUrl (item:XmlElement) = 
                 {
                     Url = item.InnerText
@@ -67,6 +69,7 @@ module Upgrading =
             |> Seq.cast
             |> Seq.map parseUpgradeFileItem
 
+    /// Filter the version to only include the given Sources
     let filterVersions (filterFlags:Sources) versions = 
         let filterFile f = 
             Enums.GetFlags(filterFlags)
@@ -76,6 +79,7 @@ module Upgrading =
             |> Seq.map (fun d -> { d with FileUrls = d.FileUrls |> Seq.filter filterFile })
             |> Seq.filter (fun d -> d.FileUrls |> Seq.isEmpty |> not)
     
+    /// Finds the next valid version where startVersion if the Version to start looking from (the current Version)
     let findNextVersion startVersion versions = 
         let newVersions = 
             versions
