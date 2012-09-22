@@ -48,7 +48,6 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "WaitingForm";
-            this.ShowInTaskbar = false;
             this.Load += new System.EventHandler(this.WaitingForm_Load);
             this.ResumeLayout(false);
 
