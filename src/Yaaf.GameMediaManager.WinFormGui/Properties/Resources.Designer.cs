@@ -125,6 +125,15 @@ namespace Yaaf.GameMediaManager.WinFormGui.Properties {
             }
         }
         
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The current Schmema-Version ({0}) is newer than the required one ({1}). Are you trying to downgrade your version? Downgrading is not supported! ähnelt.
+        /// </summary>
+        public static string DowngradeNotSupported {
+            get {
+                return ResourceManager.GetString("DowngradeNotSupported", resourceCulture);
+            }
+        }
+        
         public static System.Drawing.Bitmap download {
             get {
                 object obj = ResourceManager.GetObject("download", resourceCulture);
@@ -158,11 +167,40 @@ namespace Yaaf.GameMediaManager.WinFormGui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error ähnelt.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Example: {0} ähnelt.
         /// </summary>
         public static string Example {
             get {
                 return ResourceManager.GetString("Example", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to upgrade your database!
+        ///Message: {0} ähnelt.
+        /// </summary>
+        public static string FailedToUpgradeDatabase {
+            get {
+                return ResourceManager.GetString("FailedToUpgradeDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to upgrade your plugin!
+        ///Message: {0} ähnelt.
+        /// </summary>
+        public static string FailedToUpgradePlugin {
+            get {
+                return ResourceManager.GetString("FailedToUpgradePlugin", resourceCulture);
             }
         }
         
@@ -432,6 +470,53 @@ namespace Yaaf.GameMediaManager.WinFormGui.Properties {
             get {
                 object obj = ResourceManager.GetObject("share", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Start Upgrade? ähnelt.
+        /// </summary>
+        public static string UpgradeCaption {
+            get {
+                return ResourceManager.GetString("UpgradeCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Upgrade from this Version ({0}) is not supported, try upgrading with an older version first! ähnelt.
+        /// </summary>
+        public static string UpgradeNotSupported {
+            get {
+                return ResourceManager.GetString("UpgradeNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Do you want to Upgrade to Version {0}?
+        ///(Please close all other open windows to prevent data loss)
+        ///Upgrade-Message: {1} ähnelt.
+        /// </summary>
+        public static string UpgradeQuestion {
+            get {
+                return ResourceManager.GetString("UpgradeQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Upgrading database... ähnelt.
+        /// </summary>
+        public static string UpgradingDatabase {
+            get {
+                return ResourceManager.GetString("UpgradingDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Upgrading Plugin.... ähnelt.
+        /// </summary>
+        public static string UpgradingPlugin {
+            get {
+                return ResourceManager.GetString("UpgradingPlugin", resourceCulture);
             }
         }
         

@@ -58,5 +58,17 @@ namespace Yaaf.GameMediaManager.WinFormGui.Properties {
                 this["SettingsVersion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Github|Esl")]
+        public string AllowedSources {
+            get {
+                return ((string)(this["AllowedSources"]));
+            }
+            set {
+                this["AllowedSources"] = value;
+            }
+        }
     }
 }

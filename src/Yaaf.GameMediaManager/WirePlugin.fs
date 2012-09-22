@@ -11,12 +11,13 @@ open System.IO
 open System.Drawing
 open System.Diagnostics
 open Yaaf.Logging
+open Yaaf.Utils
 open Yaaf.GameMediaManager.WinFormGui
 open Yaaf.GameMediaManager.Primitives
 open Yaaf.GameMediaManager.WinFormGui.Properties
 
 /// The Wire Plugin implementation
-type ReplayWirePlugin() as x = 
+type ReplayWirePlugin() = 
     inherit Wire.Plugin()
     
     let logger = 
@@ -70,8 +71,6 @@ type ReplayWirePlugin() as x =
             |> List.iter (fun t -> cm.Items.Add(t) |> ignore)
         cm
 
-    let mutable gameInterface = None 
-
     // Session Management
     let gameSessions = new System.Collections.Generic.Dictionary<int, Session option>()
     let getGameSession id = 
@@ -80,24 +79,147 @@ type ReplayWirePlugin() as x =
         | false, _ -> None
     let setGameSession id game = gameSessions.[id] <- game
 
-    let sessionMatchStarted logger matchId = 
+    let sessionMatchStarted logger (gameInterface:Wire.GameInterface) matchId = 
         let matchInfo =
             match matchId with
             | Some warId ->
-                let info = x.GameInterface.matchInfo(warId)
+                let info = gameInterface.matchInfo(warId)
                 let eslMatchLink = info.["uri"] :?> string
                 Some { EslId = warId; MatchUrl = eslMatchLink }
             | None -> None
         Session.MatchStarted logger matchInfo
     
     /// Starts the mediawatcher for the given game
-    let sessionGameStarted (logger:ITracer) (session:Session) gameId gamePath = 
+    let sessionGameStarted (logger:ITracer)  (session:Session) gameId gamePath = 
         session.GameStarted logger gameId gamePath
 
     /// Stops the watcher saves the matchmedia and starts the given actions
     let sessionEnd (logger:ITracer) (session:Session) = 
         session.SessionEnd logger
-                
+    
+    let setupGameEvents (gameInterface:Wire.GameInterface) = 
+        // Setup Game events
+        let logEvent event f = 
+            let logger = logger.childTracer (event)
+            try
+                let t = 
+                    new System.Threading.Thread(fun () ->
+                        try
+                            f logger
+                        with exn ->
+                            logger.logErr "Error: %O" exn)
+                t.SetApartmentState(System.Threading.ApartmentState.STA)
+                t.Start()
+            with exn ->
+                logger.logErr "Error: %O" exn
+
+        let formatGameData (data:System.Collections.Generic.Dictionary<_,_>) =
+            let stringJoin sep strings =
+                System.String.Join(sep, strings |> Seq.toArray)
+            let s = 
+                data
+                |> Seq.map (fun k -> k.Key, k.Value)
+                |> Seq.map (fun (k,v) -> sprintf "\t[%s, %O]" k v)
+                |> stringJoin "; \n"
+            sprintf "[ \n%s ]" s
+
+        // Match started (before Game started and only with wire)
+        gameInterface.add_MatchStarted
+            (fun matchId matchMediaPath -> 
+                logEvent ("MatchStart" + string matchId) (fun logger ->
+                    Settings.Default.MatchMediaPath <- matchMediaPath
+                    Settings.Default.Save()
+                    let data = gameInterface.matchInfo matchId
+                    logger.logInfo 
+                        "Starting Match with data: %s" (data |> formatGameData)
+                    let gameId = data.["gameId"] :?> int
+                    match getGameSession gameId with
+                    | Some (s) -> 
+                        failwith "a previous session was not closed properly!"
+                    | None ->
+                        let session = Some (sessionMatchStarted logger gameInterface (Some matchId))
+                        setGameSession gameId session))
+
+        // Game started (with or without wire)
+        gameInterface.add_GameStarted
+            (fun gameId gamePath -> 
+                logEvent ("GameStart" + string gameId) (fun logger ->
+                    let currS = 
+                        match getGameSession gameId with
+                        | Some (s) -> s // Use this session as it was created in MatchStart
+                        | None -> sessionMatchStarted logger gameInterface None
+                        
+                    sessionGameStarted logger currS gameId gamePath 
+                    |> Some
+                    |> setGameSession gameId))
+
+        // Game stopped (before Match ended and always)
+        // On real matches we have time until Anticheat has finished (parallel) for copying our matchmedia
+        gameInterface.add_GameStopped
+            (fun gameId -> 
+                logEvent ("GameEnd" + string gameId) (fun logger ->
+                    match getGameSession gameId with
+                    | Some (s) -> 
+                        // Use this session as it was created in MatchStart
+                        setGameSession gameId None
+                        sessionEnd logger s
+                    | None -> 
+                        failwith "No session found on GameEnd!"))
+
+        // Match ended (the Matchmedia dialog is already opened)
+        // This event brings no additional information...
+        gameInterface.add_MatchEnded
+            (fun matchId -> 
+                logEvent ("MatchEnd" + string matchId) (fun logger ->
+                    let data = gameInterface.matchInfo matchId
+                    logger.logInfo 
+                        "Ending match session with data: %s" (data |> formatGameData)
+                             
+                    let gameId = data.["gameId"] :?> int
+                    match getGameSession gameId with
+                    | Some (s) -> 
+                        setGameSession gameId None
+                        sessionEnd logger s
+                        failwith "Session not already closed on MatchEnd!"
+                    | None -> ()))
+
+    let shutdown reason = 
+        logger.logVerb "Shutdown (%s)" reason
+        try
+            Process.GetCurrentProcess().Kill()
+        with exn ->
+            logger.logErr "Shutdown-Error (%O)" exn
+
+    let shutdownAndThrow reason = 
+        shutdown reason
+        raise (InvalidOperationException(sprintf "Shutdown Process %s" reason))
+
+    let executeTask asynchronous message failstring (task:ITask<_> option) = 
+        match task with
+        | Some (t) ->     
+            //let t = Primitives.Task<_>(t, update) :> Primitives.ITask<_>
+            let onFinished () = 
+                match t.ErrorObj with
+                | Some error ->
+                    MessageBox.Show(
+                        System.String.Format(failstring, error.Message), 
+                        Resources.Error)
+                        |> ignore
+                | None -> ()
+            let startTaskFun = 
+                if asynchronous then 
+                    WaitingForm.StartTaskAsync
+                else 
+                    (fun (logger, t, message, onFinished) -> 
+                        try
+                            WaitingForm.StartTask(logger, t, message)
+                        finally
+                            onFinished.Invoke())
+            startTaskFun(logger, t, message , Action(onFinished))                
+        | None -> ()
+        
+        
+
     /// Interop with CSharp 
     let interop = 
         let dataBaseInterop = 
@@ -148,11 +270,6 @@ type ReplayWirePlugin() as x =
         System.AppDomain.CurrentDomain.add_AssemblyResolve
             (System.ResolveEventHandler(fun o e -> if e.Name.StartsWith("Yaaf.GameMediaManager.WinFormGui") then winFormGui else null))
             
-    member x.GameInterface 
-        with get() : GameInterface = 
-            match gameInterface with
-            | Some (i) -> i
-            | None -> invalidOp "not initialized"
     override x.Author with get() = "Matthias Dittrich"
     override x.Title with get() = "Yaaf WirePlugin"
     override x.Version with get() = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
@@ -171,115 +288,21 @@ type ReplayWirePlugin() as x =
         try 
             logger.logVerb "Init Plugin" 
             FSharpInterop.Interop <- interop
-            gameInterface <- Some (InterfaceFactory.gameInterface())
+
+            let gameInterface = InterfaceFactory.gameInterface()
             
             // Upgrade Database
-            let task = DatabaseUpgrade.getUpgradeDatabaseTask logger
-            match task with
-            | Some (t, update) ->     
-                let t = Primitives.Task<_>(t, update) :> Primitives.ITask<_>
-                WaitingForm.StartTask(logger, t, "Upgrading database...")
-                match t.ErrorObj with
-                | Some error ->
-                    MessageBox.Show(
-                        "Failed to upgrade your database!\n"+
-                        "Message: " + error.Message, 
-                        "Error")
-                        |> ignore
-                    raise (InvalidOperationException("Unable to startup with possible corrupt database", error))
-                | None -> ()
-            | None -> ()
-
-            // TODO: Upgrade Plugin
-
-
-
-            // Setup Game events
-            let logEvent event f = 
-                let logger = logger.childTracer (event)
-                try
-                    let t = 
-                        new System.Threading.Thread(fun () ->
-                            try
-                                f logger
-                            with exn ->
-                                logger.logErr "Error: %O" exn)
-                    t.SetApartmentState(System.Threading.ApartmentState.STA)
-                    t.Start()
-                with exn ->
-                    logger.logErr "Error: %O" exn
-
-            let formatGameData (data:System.Collections.Generic.Dictionary<_,_>) =
-                let stringJoin sep strings =
-                    System.String.Join(sep, strings |> Seq.toArray)
-                let s = 
-                    data
-                    |> Seq.map (fun k -> k.Key, k.Value)
-                    |> Seq.map (fun (k,v) -> sprintf "\t[%s, %O]" k v)
-                    |> stringJoin "; \n"
-                sprintf "[ \n%s ]" s
-
-            // Match started (before Game started and only with wire)
-            x.GameInterface.add_MatchStarted
-                (fun matchId matchMediaPath -> 
-                    logEvent ("MatchStart" + string matchId) (fun logger ->
-                        Settings.Default.MatchMediaPath <- matchMediaPath
-                        Settings.Default.Save()
-                        let data = x.GameInterface.matchInfo matchId
-                        logger.logInfo 
-                            "Starting Match with data: %s" (data |> formatGameData)
-                        let gameId = data.["gameId"] :?> int
-                        match getGameSession gameId with
-                        | Some (s) -> 
-                            failwith "a previous session was not closed properly!"
-                        | None ->
-                            let session = Some (sessionMatchStarted logger (Some matchId))
-                            setGameSession gameId session))
-
-            // Game started (with or without wire)
-            x.GameInterface.add_GameStarted
-                (fun gameId gamePath -> 
-                    logEvent ("GameStart" + string gameId) (fun logger ->
-                        let currS = 
-                            match getGameSession gameId with
-                            | Some (s) -> s // Use this session as it was created in MatchStart
-                            | None -> sessionMatchStarted logger None
-                        
-                        sessionGameStarted logger currS gameId gamePath 
-                        |> Some
-                        |> setGameSession gameId))
-
-            // Game stopped (before Match ended and always)
-            // On real matches we have time until Anticheat has finished (parallel) for copying our matchmedia
-            x.GameInterface.add_GameStopped
-                (fun gameId -> 
-                    logEvent ("GameEnd" + string gameId) (fun logger ->
-                        match getGameSession gameId with
-                        | Some (s) -> 
-                            // Use this session as it was created in MatchStart
-                            setGameSession gameId None
-                            sessionEnd logger s
-                        | None -> 
-                            failwith "No session found on GameEnd!"))
-
-            // Match ended (the Matchmedia dialog is already opened)
-            // This event brings no additional information...
-            x.GameInterface.add_MatchEnded
-                (fun matchId -> 
-                    logEvent ("MatchEnd" + string matchId) (fun logger ->
-                        let data = x.GameInterface.matchInfo matchId
-                        logger.logInfo 
-                            "Ending match session with data: %s" (data |> formatGameData)
-                             
-                        let gameId = data.["gameId"] :?> int
-                        match getGameSession gameId with
-                        | Some (s) -> 
-                            setGameSession gameId None
-                            sessionEnd logger s
-                            failwith "Session not already closed on MatchEnd!"
-                        | None -> ()))
+            let dbtask = DatabaseUpgrade.getUpgradeDatabaseTask logger
+            executeTask false Resources.UpgradingDatabase Resources.FailedToUpgradeDatabase dbtask
             
+            let upgradeTask = Upgrading.getUpgradeTask logger
+            executeTask true Resources.UpgradingPlugin Resources.FailedToUpgradePlugin upgradeTask
+
+            setupGameEvents gameInterface
+            
+            // Set the icon
             x.setIcon(Resources.bluedragon)
         with exn ->
             logger.logErr "Error: %O" exn
+            shutdown ("Startup error!")
 

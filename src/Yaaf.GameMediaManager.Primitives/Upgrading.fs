@@ -12,8 +12,18 @@ module Upgrading =
     
     let downloadString uri = async {
         let client = createClient()
-        let! data = client.AsyncDownloadString uri
+        let! data = client.AsyncDownloadString (System.Uri(uri))
         return data }
+
+    let downloadFile progressChanged uri localFile = async {
+        let client = createClient()
+        let await = Async.AwaitEvent(client.DownloadFileCompleted, client.CancelAsync)
+        client.DownloadProgressChanged
+            |> Event.add (fun t ->  progressChanged(t))
+        client.DownloadFile(System.Uri(uri), localFile) 
+        let! completed = await
+        if completed.Error <> null then
+            raise (System.Reflection.TargetInvocationException("error while downloading file", completed.Error)) }
 
     open System.Xml
     let loadXml data = 
@@ -22,6 +32,7 @@ module Upgrading =
         doc
 
     open System
+    [<Flags>]
     type Sources = 
         | Github = 1
         | Esl = 2
@@ -68,6 +79,10 @@ module Upgrading =
         xml.DocumentElement.ChildNodes
             |> Seq.cast
             |> Seq.map parseUpgradeFileItem
+    
+    let parseUpgradeFileString s = 
+        let xml = loadXml s
+        parseUpgradeFile xml
 
     /// Filter the version to only include the given Sources
     let filterVersions (filterFlags:Sources) versions = 

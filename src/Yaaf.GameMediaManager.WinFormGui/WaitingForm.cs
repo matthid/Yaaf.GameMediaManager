@@ -8,6 +8,8 @@
 namespace Yaaf.GameMediaManager.WinFormGui
 {
     using System;
+    using System.Reflection;
+    using System.Threading;
     using System.Windows.Forms;
 
     using Microsoft.FSharp.Core;
@@ -32,10 +34,44 @@ namespace Yaaf.GameMediaManager.WinFormGui
             Text = title;
         }
 
-        public static void StartTask<T>(Logging.LoggingInterfaces.ITracer logger, ITask<T> task, string title)
+        public static T StartTask<T>(Logging.LoggingInterfaces.ITracer logger, ITask<T> task, string title)
         {
             var form = new WaitingForm(logger, task.MapTask(t => (object)t), title);
             form.ShowDialog();
+            if (task.ErrorObj.IsSome())
+            {
+                throw new TargetInvocationException("Task produced an error", task.ErrorObj.Value);
+            }
+            return task.Result.Value;
+        }
+        
+        public static void StartTaskAsync<T>(Logging.LoggingInterfaces.ITracer logger, ITask<T> task, string title, Action onFinished)
+        {
+            var thread = 
+                new Thread(() =>
+                    {
+                        try
+                        {
+                            StartTask(logger, task, title);
+                        }
+                        catch (Exception error)
+                        {
+                            logger.LogError("Error: {0}", error);
+                        }
+                        finally
+                        {
+                            try
+                            {
+                                onFinished();
+                            }
+                            catch (Exception e)
+                            {
+                                logger.LogError("Error in onFinished Code: {0}", e);
+                            }
+                        }
+                    });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
         }
 
         private void WaitingForm_Load(object sender, EventArgs e)
@@ -70,7 +106,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
         private void task_Error(object sender, Exception args)
         {
-            logger.LogError("Task finished with error: {0}", args);
+            logger.LogWarning("Task finished with error: {0}", args);
             Invoke(new Action(Close));
         }
     }

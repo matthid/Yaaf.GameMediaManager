@@ -10,6 +10,7 @@ module Database =
     open Yaaf.GameMediaManager.Primitives
     open Yaaf.GameMediaManager.WinFormGui
     type Context = Database.LocalDataContext
+
     let pluginFolder =
         let path = 
             [ System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
@@ -21,6 +22,11 @@ module Database =
     let dbFile addendum =
         let dbFileName = sprintf "LocalDatabase%s.sdf" (if addendum |> System.String.IsNullOrEmpty then "" else sprintf "_%s" addendum)
         [ pluginFolder; dbFileName ] |> pathCombine
+
+    let upgradeFile (version:System.Version) = 
+        let upgradeFile = sprintf "GameMediaManager. %O.wireplugin" version
+        [ pluginFolder; upgradeFile ] |> pathCombine
+
     let connectString dbFile = 
         sprintf "Data Source=%s" dbFile
     let private initDatabase (db:Database.LocalDataContext) = 

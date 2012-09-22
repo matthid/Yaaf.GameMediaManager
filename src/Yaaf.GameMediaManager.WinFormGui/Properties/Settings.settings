@@ -11,5 +11,8 @@
     <Setting Name="SettingsVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="AllowedSources" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Github|Esl</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -271,4 +271,40 @@
   <data name="MatchSessions" xml:space="preserve">
     <value>View Matchsessions</value>
   </data>
+  <data name="DowngradeNotSupported" xml:space="preserve">
+    <value>The current Schmema-Version ({0}) is newer than the required one ({1}). Are you trying to downgrade your version? Downgrading is not supported!</value>
+    <comment>{0} is the current Version, {1} is the required one</comment>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+    <comment>Caption in Messageboxes</comment>
+  </data>
+  <data name="FailedToUpgradeDatabase" xml:space="preserve">
+    <value>Failed to upgrade your database!
+Message: {0}</value>
+    <comment>{0} is the error message (in english)</comment>
+  </data>
+  <data name="FailedToUpgradePlugin" xml:space="preserve">
+    <value>Failed to upgrade your plugin!
+Message: {0}</value>
+  </data>
+  <data name="UpgradeCaption" xml:space="preserve">
+    <value>Start Upgrade?</value>
+  </data>
+  <data name="UpgradeNotSupported" xml:space="preserve">
+    <value>Upgrade from this Version ({0}) is not supported, try upgrading with an older version first!</value>
+    <comment>{0} is the current Database Version</comment>
+  </data>
+  <data name="UpgradeQuestion" xml:space="preserve">
+    <value>Do you want to Upgrade to Version {0}?
+(Please close all other open windows to prevent data loss)
+Upgrade-Message: {1}</value>
+    <comment>{0} the new Version, {1} the Upgrade message</comment>
+  </data>
+  <data name="UpgradingDatabase" xml:space="preserve">
+    <value>Upgrading database...</value>
+  </data>
+  <data name="UpgradingPlugin" xml:space="preserve">
+    <value>Upgrading Plugin....</value>
+  </data>
 </root>

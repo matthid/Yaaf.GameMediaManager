@@ -31,16 +31,8 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 var linkString = linkTextBox.Text;
                 var uri = new System.Uri(linkString);
                 var task = FSharpInterop.Interop.GetFetchPlayerTask(linkString);
-                WaitingForm.StartTask(logger, task, "Fetching player data...");
-                if (task.Result.IsNone())
-                {
-                    if (task.ErrorObj.IsNone())
-                    {
-                        throw new InvalidOperationException("Task finished without result or error!");
-                    }
-                    throw new TargetException("Task produced an error: " + task.ErrorObj.Value.Message, task.ErrorObj.Value);
-                }
-                Result = Tuple.Create(task.Result.Value, linkString);
+                var result = WaitingForm.StartTask(logger, task, "Fetching player data...");
+                Result = Tuple.Create(result, linkString);
 
                 Close();
             }

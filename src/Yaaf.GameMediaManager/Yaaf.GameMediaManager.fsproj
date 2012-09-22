@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Database.fs" />
+    <Compile Include="Upgrading.fs" />
     <Compile Include="DatabaseUpgrade.fs" />
     <None Include="Script.fsx" />
     <None Include="..\..\Readme.md">
@@ -64,13 +65,13 @@
       <Link>Releasenotes.txt</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Scripting\demorecording.cfg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Content Include="..\..\Wishlist.txt">
       <Link>Wishlist.txt</Link>
       <move-by>1</move-by>
     </Content>
+    <None Include="Scripting\demorecording.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Compile Include="Grabbing.fs" />
     <Compile Include="GameSession.fs" />
     <Compile Include="WirePlugin.fs" />

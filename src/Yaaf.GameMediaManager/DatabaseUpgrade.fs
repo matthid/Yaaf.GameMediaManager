@@ -5,8 +5,8 @@
 namespace Yaaf.GameMediaManager
 module DatabaseUpgrade = 
     open System
-    
     open Yaaf.GameMediaManager.WinFormGui
+    open Yaaf.GameMediaManager.WinFormGui.Properties
     type UpgradeTask = Async<unit> * IEvent<string>
     let empty() = 
         async { 
@@ -593,24 +593,22 @@ module DatabaseUpgrade =
         let newSchemaVersion = ProjectConstants.DatabaseSchemaVersion
 
         if currentSchemaVersion < Version(1,0,0,0) then
-            failwith 
-                (sprintf "Upgrade from this Version (%O) is not supported, try upgrading with an older version first!" currentSchemaVersion)
+            failwith (String.Format(Resources.UpgradeNotSupported, currentSchemaVersion))
         
         if currentSchemaVersion > newSchemaVersion then
-            failwith 
-                (sprintf 
-                    "The current Schmema-Version (%O) is newer than the required one (%O). Are you trying to downgrade your version? Downgrading is not supported!"
-                    currentSchemaVersion
-                    newSchemaVersion)
+            failwith (String.Format(Resources.DowngradeNotSupported, currentSchemaVersion, newSchemaVersion))
+
         if (currentSchemaVersion = newSchemaVersion) then None
         else
-        empty()
-            |> attach
-                (if (currentSchemaVersion = Version(1,0,0,0)) then
-                    fromUpgradeFunc logger Upgrade1_0_0_0to1_1_0_0.Upgrade 
-                 else empty())
-            |> attach 
-                (if currentSchemaVersion <= Version(1,1,0,0) then
-                    fromUpgradeFunc logger Upgrade1_1_0_0to1_1_1_0.Upgrade
-                 else empty())
-            |> Some
+        let asy, ev = 
+            empty()
+                |> attach
+                    (if (currentSchemaVersion = Version(1,0,0,0)) then
+                        fromUpgradeFunc logger Upgrade1_0_0_0to1_1_0_0.Upgrade 
+                     else empty())
+                |> attach 
+                    (if currentSchemaVersion <= Version(1,1,0,0) then
+                        fromUpgradeFunc logger Upgrade1_1_0_0to1_1_1_0.Upgrade
+                     else empty())
+        Some(Yaaf.GameMediaManager.Primitives.Task(asy, ev) :> Yaaf.GameMediaManager.Primitives.ITask<_>)
+

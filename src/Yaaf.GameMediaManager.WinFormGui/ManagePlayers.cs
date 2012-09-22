@@ -41,17 +41,26 @@ namespace Yaaf.GameMediaManager.WinFormGui
         private void ManagePlayers_Load(object sender, EventArgs e)
         {
             this.SetupForm(logger);
-            var task = Primitives.Task.FromDelegate(
+            try
+            {
+                var task = Primitives.Task.FromDelegate(
                 () =>
+                {
+                    foreach (var player in wrapper.Context.Players)
                     {
-                        foreach (var player in wrapper.Context.Players)
-                        {
-                        }
-                        return wrapper.Context.Players;
-                    });
-            WaitingForm.StartTask(logger,  task, "loading players...");
-            playerBindingSource.DataSource = task.Result.Value;
-            SetMe(FSharpInterop.Interop.Database.GetIdentityPlayer(wrapper));
+                    }
+                    return wrapper.Context.Players;
+                });
+                WaitingForm.StartTask(logger, task, "loading players...");
+                playerBindingSource.DataSource = task.Result.Value;
+                SetMe(FSharpInterop.Interop.Database.GetIdentityPlayer(wrapper));
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError(logger, "Could not load ManagePlayers");
+                this.Close();
+            }
+            
         }
         
         private void SetMe(Player player)
