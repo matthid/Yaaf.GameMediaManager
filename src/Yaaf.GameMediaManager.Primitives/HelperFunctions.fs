@@ -51,5 +51,11 @@ module HelperFunctions
             e 
                 |> sortWith
                     (fun item1 item2 -> f (extractKey item1) (extractKey item2))
+        
+        let filterSome s = 
+            s
+                |> Seq.filter (fun (t:'a option) -> t.IsSome)
+                |> Seq.map (fun t -> t.Value)
+
 
     let pathCombine l = List.fold (curry System.IO.Path.Combine) "" l

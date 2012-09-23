@@ -83,7 +83,9 @@ module Upgrading =
             }
             
         xml.DocumentElement.ChildNodes
-            |> Seq.cast
+            |> Seq.cast<obj>
+            |> Seq.map (fun t -> match t with | :? XmlElement as xml -> Some xml | _ -> None)
+            |> Seq.filterSome            
             |> Seq.map parseUpgradeFileItem
     
     let parseUpgradeFileString s = 
