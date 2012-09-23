@@ -178,9 +178,8 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 matchSessionsPlayers.Item1
                     .Aggregate(media, (current, selectedPlayer) =>
                         current.Union(from copy in matchmediaDataCopy.CopyLinqData
-                                      let row = matchmediaDataCopy.GetRowFromCopy(copy)
-                                      let orig = matchmediaDataCopy.GetItem(row)
-                                      where orig.MatchSessions_Player == primaryPlayer
+                                      let orig = matchmediaDataCopy.get_CopyItemToOriginal(copy)
+                                      where orig.MatchSessions_Player == selectedPlayer.Original
                                       select copy));
 
             var value = matchmediaDataCopy.GetCopiedTableFromCopyData(media);
