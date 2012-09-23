@@ -5,6 +5,7 @@
 namespace Yaaf.GameMediaManager
 
 open System
+open System.IO
 open Yaaf.Logging
 open Yaaf.Utils
 open Yaaf.Utils.Upgrading
@@ -17,7 +18,9 @@ module Upgrading =
         let file = 
             versionData.FileUrls
                 |> Seq.head
+
         let targetFile = Database.upgradeFile versionData.Version
+        if File.Exists targetFile then File.Delete targetFile
 
         do! downloadFile 
                 (fun progress -> show (sprintf "Downloading File (%d%%)" progress.ProgressPercentage)) 
