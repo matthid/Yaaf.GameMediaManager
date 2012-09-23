@@ -474,6 +474,15 @@ namespace Yaaf.GameMediaManager.WinFormGui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Shutdown ähnelt.
+        /// </summary>
+        public static string Shutdown {
+            get {
+                return ResourceManager.GetString("Shutdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Start Upgrade? ähnelt.
         /// </summary>
         public static string UpgradeCaption {

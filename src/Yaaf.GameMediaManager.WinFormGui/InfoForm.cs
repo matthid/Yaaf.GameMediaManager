@@ -112,7 +112,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
         private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            TryStart(ProjectConstants.GetLink("issues"));
+            TryStart(ProjectConstants.GetLink("issues/new"));
         }
 
         private void linkLabel6_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

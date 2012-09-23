@@ -24,6 +24,12 @@ type ReplayWirePlugin() =
         let trace = Source "Yaaf.GameMediaManager.ReplayWirePlugin" ""
         DefaultTracer trace "Initialization"
     
+    let shutdown reason = 
+        logger.logVerb "Shutdown (%s)" reason
+        try
+            Process.GetCurrentProcess().Kill()
+        with exn ->
+            logger.logErr "Shutdown-Error (%O)" exn
 
     let contextMenu = 
         let cm = 
@@ -53,7 +59,7 @@ type ReplayWirePlugin() =
             item Resources.ReportBug Resources.mail
                 (fun () -> 
                     try 
-                        Process.Start("https://github.com/matthid/Yaaf.GameMediaManager/issues") |> ignore
+                        Process.Start(ProjectConstants.GetLink "issues/new") |> ignore
                     with exn -> logger.logErr "Error: %O" exn)
             item Resources.Info Resources.i
                 (fun () -> new InfoForm(logger) |> showForm)
@@ -66,6 +72,13 @@ type ReplayWirePlugin() =
                 (fun () ->
                     new ManagePlayers(logger)|> showForm)
             seperator()
+            item Resources.Shutdown Resources.cancel
+                (fun () ->
+                    try 
+                        Process.Start(Database.pluginFolder) |> ignore
+                        Process.Start(ProjectConstants.GetLink "issues/new") |> ignore
+                    with exn -> logger.logErr "Error: %O" exn
+                    shutdown "User exit")
             item Resources.CloseMenu Resources.cancel id
         ]
             |> List.iter (fun t -> cm.Items.Add(t) |> ignore)
@@ -183,12 +196,7 @@ type ReplayWirePlugin() =
                         failwith "Session not already closed on MatchEnd!"
                     | None -> ()))
 
-    let shutdown reason = 
-        logger.logVerb "Shutdown (%s)" reason
-        try
-            Process.GetCurrentProcess().Kill()
-        with exn ->
-            logger.logErr "Shutdown-Error (%O)" exn
+
 
     let shutdownAndThrow reason = 
         shutdown reason

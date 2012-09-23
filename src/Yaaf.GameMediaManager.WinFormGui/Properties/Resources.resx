@@ -307,4 +307,7 @@ Upgrade-Message: {1}</value>
   <data name="UpgradingPlugin" xml:space="preserve">
     <value>Upgrading Plugin....</value>
   </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Shutdown</value>
+  </data>
 </root>
