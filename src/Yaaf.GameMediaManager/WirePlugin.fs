@@ -244,7 +244,8 @@ type ReplayWirePlugin() =
                 let asyncTask = async { return! EslGrabber.getMatchMembers link } 
                 Primitives.Task(asyncTask) :> Primitives.ITask<_> 
             member x.FillWrapperTable(session, players, wrapperTable, mediaTable) = 
-                Database.fillWrapperTable session players wrapperTable mediaTable }    
+                Database.fillWrapperTable session players wrapperTable mediaTable
+            member x.GetUpgradeTask logger = Upgrading.getUpgradeTask logger }    
 
     /// Init Global variables & Setup Assembly Loading machanism
     do  logger.logVerb "Starting up Yaaf.GameMediaManager (%s)" ProjectConstants.VersionString
@@ -296,7 +297,7 @@ type ReplayWirePlugin() =
             executeTask false Resources.UpgradingDatabase Resources.FailedToUpgradeDatabase dbtask
             
             let upgradeTask = Upgrading.getUpgradeTask logger
-            executeTask true Resources.UpgradingPlugin Resources.FailedToUpgradePlugin upgradeTask
+            executeTask true Resources.UpgradingPlugin Resources.FailedToUpgradePlugin (Some upgradeTask)
 
             setupGameEvents gameInterface
             

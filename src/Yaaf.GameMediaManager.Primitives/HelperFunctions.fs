@@ -9,6 +9,12 @@ module HelperFunctions
         
     let curry f a b = f (a,b)
     let uncurry f (a,b) = f a b
+    let oneTime f = 
+        let isStarted = ref false
+        (fun () ->
+            if not !isStarted then
+                f()
+                isStarted := true)
 
     module Event =
         /// Executes f just after adding the event-handler
@@ -19,6 +25,8 @@ module HelperFunctions
                 member x.RemoveHandler(d) = e.RemoveHandler(d)
                 member x.Subscribe(observer) = 
                   let rm = e.Subscribe(observer) in f(); rm }
+        let await cancelFun e = 
+            Async.AwaitEvent(e, cancelFun)
 
     module Seq =
         /// Returns the first n items of s. If there are fewer items then alls are returned.

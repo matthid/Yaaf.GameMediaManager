@@ -14,14 +14,20 @@ module Upgrading =
         let client = createClient()
         let! data = client.AsyncDownloadString (System.Uri(uri))
         return data }
-
+        
     let downloadFile progressChanged uri localFile = async {
         let client = createClient()
-        let await = Async.AwaitEvent(client.DownloadFileCompleted, client.CancelAsync)
         client.DownloadProgressChanged
             |> Event.add (fun t ->  progressChanged(t))
-        client.DownloadFile(System.Uri(uri), localFile) 
-        let! completed = await
+
+        let start = 
+            oneTime (fun () ->
+                client.DownloadFileAsync(System.Uri(uri), localFile)) 
+
+        let! completed = 
+            client.DownloadFileCompleted
+                |> Event.guard start
+                |> Event.await client.CancelAsync
         if completed.Error <> null then
             raise (System.Reflection.TargetInvocationException("error while downloading file", completed.Error)) }
 

@@ -48,7 +48,8 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            TryStart(ProjectConstants.GetLink("downloads"));
+            var task = FSharpInterop.Interop.GetUpgradeTask(logger);
+            WaitingForm.StartTaskAsync(logger, task, Resources.UpgradingPlugin, () => { });
         }
 
         private void InfoForm_Load(object sender, EventArgs e)

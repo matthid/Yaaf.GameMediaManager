@@ -48,8 +48,8 @@
     <Compile Include="WrapperDataTable.fs" />
     <Compile Include="SetDictionary.fs" />
     <None Include="Script.fsx" />
-    <Content Include="..\..\Upgradefile.xml">
-      <Link>Upgradefile.xml</Link>
+    <Content Include="..\..\Updatefile.xml">
+      <Link>Updatefile.xml</Link>
     </Content>
   </ItemGroup>
   <ItemGroup>

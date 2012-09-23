@@ -1,5 +1,5 @@
 22.09.2012 Version 0.9.3.0
- - Added Automatic Upgrade
+ - Added Automatic Update
  
 18.09.2012 Version 0.9.2.7
  - Fixed a bug on Esl Matches

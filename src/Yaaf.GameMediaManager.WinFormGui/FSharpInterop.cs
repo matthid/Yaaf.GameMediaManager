@@ -32,6 +32,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
         LocalDatabaseWrapper GetNewContext();
 
         ITask<IEnumerable<EslGrabber.Player>> GetFetchPlayerTask(string link);
+        ITask<Unit> GetUpgradeTask(Logging.LoggingInterfaces.ITracer logger);
 
         void FillWrapperTable(
             MatchSession session, 
