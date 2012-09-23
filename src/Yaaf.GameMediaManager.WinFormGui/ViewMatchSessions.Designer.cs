@@ -31,16 +31,15 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewMatchSessions));
             this.matchSessionDataGridView = new System.Windows.Forms.DataGridView();
+            this.matchSessionBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label1 = new System.Windows.Forms.Label();
+            this.saveButton = new System.Windows.Forms.Button();
+            this.cancelButton = new System.Windows.Forms.Button();
             this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MatchsessionTagColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gameIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.startdateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.durationDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.eslMatchLinkDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.matchSessionBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.label1 = new System.Windows.Forms.Label();
-            this.saveButton = new System.Windows.Forms.Button();
-            this.cancelButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.matchSessionDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.matchSessionBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -57,52 +56,11 @@
             this.MatchsessionTagColumn,
             this.gameIdDataGridViewTextBoxColumn,
             this.startdateDataGridViewTextBoxColumn,
-            this.durationDataGridViewTextBoxColumn,
-            this.eslMatchLinkDataGridViewTextBoxColumn});
+            this.durationDataGridViewTextBoxColumn});
             this.matchSessionDataGridView.DataSource = this.matchSessionBindingSource;
             this.matchSessionDataGridView.Name = "matchSessionDataGridView";
             this.matchSessionDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.matchSessionDataGridView_CellClick);
             this.matchSessionDataGridView.DoubleClick += new System.EventHandler(this.matchSessionDataGridView_DoubleClick);
-            // 
-            // idDataGridViewTextBoxColumn
-            // 
-            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
-            this.idDataGridViewTextBoxColumn.FillWeight = 50F;
-            resources.ApplyResources(this.idDataGridViewTextBoxColumn, "idDataGridViewTextBoxColumn");
-            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
-            this.idDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // MatchsessionTagColumn
-            // 
-            this.MatchsessionTagColumn.DataPropertyName = "MyTags";
-            resources.ApplyResources(this.MatchsessionTagColumn, "MatchsessionTagColumn");
-            this.MatchsessionTagColumn.Name = "MatchsessionTagColumn";
-            // 
-            // gameIdDataGridViewTextBoxColumn
-            // 
-            this.gameIdDataGridViewTextBoxColumn.DataPropertyName = "GameId";
-            this.gameIdDataGridViewTextBoxColumn.FillWeight = 60F;
-            resources.ApplyResources(this.gameIdDataGridViewTextBoxColumn, "gameIdDataGridViewTextBoxColumn");
-            this.gameIdDataGridViewTextBoxColumn.Name = "gameIdDataGridViewTextBoxColumn";
-            // 
-            // startdateDataGridViewTextBoxColumn
-            // 
-            this.startdateDataGridViewTextBoxColumn.DataPropertyName = "Startdate";
-            resources.ApplyResources(this.startdateDataGridViewTextBoxColumn, "startdateDataGridViewTextBoxColumn");
-            this.startdateDataGridViewTextBoxColumn.Name = "startdateDataGridViewTextBoxColumn";
-            // 
-            // durationDataGridViewTextBoxColumn
-            // 
-            this.durationDataGridViewTextBoxColumn.DataPropertyName = "Duration";
-            resources.ApplyResources(this.durationDataGridViewTextBoxColumn, "durationDataGridViewTextBoxColumn");
-            this.durationDataGridViewTextBoxColumn.Name = "durationDataGridViewTextBoxColumn";
-            // 
-            // eslMatchLinkDataGridViewTextBoxColumn
-            // 
-            this.eslMatchLinkDataGridViewTextBoxColumn.DataPropertyName = "EslMatchLink";
-            this.eslMatchLinkDataGridViewTextBoxColumn.FillWeight = 250F;
-            resources.ApplyResources(this.eslMatchLinkDataGridViewTextBoxColumn, "eslMatchLinkDataGridViewTextBoxColumn");
-            this.eslMatchLinkDataGridViewTextBoxColumn.Name = "eslMatchLinkDataGridViewTextBoxColumn";
             // 
             // matchSessionBindingSource
             // 
@@ -127,6 +85,40 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
+            // idDataGridViewTextBoxColumn
+            // 
+            this.idDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.idDataGridViewTextBoxColumn.FillWeight = 75F;
+            resources.ApplyResources(this.idDataGridViewTextBoxColumn, "idDataGridViewTextBoxColumn");
+            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
+            // 
+            // MatchsessionTagColumn
+            // 
+            this.MatchsessionTagColumn.DataPropertyName = "Tags";
+            this.MatchsessionTagColumn.FillWeight = 75F;
+            resources.ApplyResources(this.MatchsessionTagColumn, "MatchsessionTagColumn");
+            this.MatchsessionTagColumn.Name = "MatchsessionTagColumn";
+            // 
+            // gameIdDataGridViewTextBoxColumn
+            // 
+            this.gameIdDataGridViewTextBoxColumn.DataPropertyName = "Game";
+            resources.ApplyResources(this.gameIdDataGridViewTextBoxColumn, "gameIdDataGridViewTextBoxColumn");
+            this.gameIdDataGridViewTextBoxColumn.Name = "gameIdDataGridViewTextBoxColumn";
+            // 
+            // startdateDataGridViewTextBoxColumn
+            // 
+            this.startdateDataGridViewTextBoxColumn.DataPropertyName = "Startdate";
+            this.startdateDataGridViewTextBoxColumn.FillWeight = 50F;
+            resources.ApplyResources(this.startdateDataGridViewTextBoxColumn, "startdateDataGridViewTextBoxColumn");
+            this.startdateDataGridViewTextBoxColumn.Name = "startdateDataGridViewTextBoxColumn";
+            // 
+            // durationDataGridViewTextBoxColumn
+            // 
+            this.durationDataGridViewTextBoxColumn.DataPropertyName = "Duration";
+            this.durationDataGridViewTextBoxColumn.FillWeight = 50F;
+            resources.ApplyResources(this.durationDataGridViewTextBoxColumn, "durationDataGridViewTextBoxColumn");
+            this.durationDataGridViewTextBoxColumn.Name = "durationDataGridViewTextBoxColumn";
+            // 
             // ViewMatchSessions
             // 
             resources.ApplyResources(this, "$this");
@@ -135,7 +127,6 @@
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.matchSessionDataGridView);
-
             this.Name = "ViewMatchSessions";
             this.Load += new System.EventHandler(this.ViewMatchSessions_Load);
             ((System.ComponentModel.ISupportInitialize)(this.matchSessionDataGridView)).EndInit();
@@ -157,6 +148,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn gameIdDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn startdateDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn durationDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn eslMatchLinkDataGridViewTextBoxColumn;
     }
 }

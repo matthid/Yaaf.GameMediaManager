@@ -193,6 +193,14 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 foreach (var deletedSession in deletedSessions)
                 {
                     FSharpInterop.Interop.Database.DeleteMatchSession(this, true, deletedSession);
+                } 
+                var addedSessions = changes.Inserts.Select(o => o as MatchSession).Where(o => o != null);
+                foreach (var addedSession in addedSessions)
+                {
+                    if (addedSession.MyGame != null)
+                    {
+                        addedSession.Game = addedSession.MyGame;
+                    }
                 }
 
                 try

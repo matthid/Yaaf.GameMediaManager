@@ -542,5 +542,15 @@ namespace Yaaf.GameMediaManager.WinFormGui.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The entry {0} has an invalid game, please enter a valid game (short gamename, gamename or id) ähnelt.
+        /// </summary>
+        public static string ViewMatchSessions_saveButton_Click_The_entry__0__has_an_invalid_game__please_enter_a_valid_game__short_gamename__gamename_or_id_ {
+            get {
+                return ResourceManager.GetString("ViewMatchSessions_saveButton_Click_The_entry__0__has_an_invalid_game__please_ente" +
+                        "r_a_valid_game__short_gamename__gamename_or_id_", resourceCulture);
+            }
+        }
     }
 }

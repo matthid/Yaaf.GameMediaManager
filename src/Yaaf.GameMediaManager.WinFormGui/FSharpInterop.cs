@@ -21,6 +21,8 @@ namespace Yaaf.GameMediaManager.WinFormGui
         Player GetPlayerByEslId(LocalDatabaseWrapper context, int eslId);
         Player GetPlayerById(LocalDatabaseWrapper context, int id);
 
+        Game GetGame(LocalDatabaseWrapper context, string nameOrId);
+
         void DeleteMatchSession(LocalDatabaseWrapper context, bool deleteFiles, MatchSession session);
     }
 

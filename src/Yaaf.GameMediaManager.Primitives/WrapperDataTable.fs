@@ -14,7 +14,16 @@ module WrapperDataTable =
     type ItemData<'T> = {
         Original : 'T
         Copy : 'T }
+    type ItemChangedData<'T> = {
+        Items : ItemData<'T>
+        ChangedCopy : bool ref }
 
+    type InitRowData<'T> = {
+        CopyOrTempItem : 'T }
+    type UserAddedRowData<'T> = {
+        OriginalItem : 'T }
+    type DeletedRowData<'T> = {
+        CopyItem : 'T }
     /// Wrapps an DataTable in a type-safe manner.
     /// Does not write though into the item collection, but on a copy.
     type WrapperTable<'T when 'T : not struct and 'T : equality and 'T : null> 
@@ -30,10 +39,10 @@ module WrapperDataTable =
                     /// Init the data (initOriginal -> data)
                     initFun: bool -> 'T) =   
         let table = new DataTable()  
-        let itemChanged = new Event<'T * 'T * bool ref>()
-        let initRow = new Event<'T>()
-        let userAddedRow = new Event<'T>()        
-        let deletedRow = new Event<'T>()        
+        let itemChanged = new Event<ItemChangedData<'T>>()
+        let initRow = new Event<InitRowData<'T>>()
+        let userAddedRow = new Event<UserAddedRowData<'T>>()        
+        let deletedRow = new Event<DeletedRowData<'T>>()        
         do
             for c in createColumns() do
                 table.Columns.Add c
@@ -78,7 +87,7 @@ module WrapperDataTable =
         let triggerRowChanged row = 
             let copyItem = copyRowReferences.Item row
             let updateCopy = ref false
-            itemChanged.Trigger(rowReferences.Item row, copyItem, updateCopy)
+            itemChanged.Trigger({ Items = { Original = rowReferences.Item row; Copy = copyItem}; ChangedCopy = updateCopy})
             if !updateCopy then
                 withoutListening (fun _ ->
                     updateRowRaw copyItem row)
@@ -115,7 +124,7 @@ module WrapperDataTable =
         
         let handleDeletion row = 
             let copyItem = copyRowReferences.Item row
-            deletedRow.Trigger copyItem
+            deletedRow.Trigger { CopyItem = copyItem }
             if inserts.Contains row then
                 inserts.Remove row |> ignore
             else
@@ -137,13 +146,13 @@ module WrapperDataTable =
                     // INCONSISTENCY: This is no copy but we do this anyway to get the latest changes from user
                     updateCopyItem row newItem
                     //updateItem false row newItem
-                    userAddedRow.Trigger(newItem)
+                    userAddedRow.Trigger { OriginalItem = newItem }
                     addReferencesForNewItem row newItem
                     triggerRowChanged row
 
         let handleNewRow row = 
             let newItem = initFun false
-            initRow.Trigger(newItem)
+            initRow.Trigger { CopyOrTempItem = newItem }
             updateRowRaw newItem row
 
         do 
@@ -224,7 +233,8 @@ module WrapperDataTable =
             
         member internal x.StartListening () = 
             startListen()
-        member internal x.UpdateItem (orig, changed) = 
+
+        member x.UpdateItem (orig, changed) = 
             updateItem orig changed
             table.AcceptChanges()
 

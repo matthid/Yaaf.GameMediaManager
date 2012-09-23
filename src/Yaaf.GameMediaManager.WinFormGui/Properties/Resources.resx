@@ -310,4 +310,7 @@ Upgrade-Message: {1}</value>
   <data name="Shutdown" xml:space="preserve">
     <value>Shutdown</value>
   </data>
+  <data name="ViewMatchSessions_saveButton_Click_The_entry__0__has_an_invalid_game__please_enter_a_valid_game__short_gamename__gamename_or_id_">
+    <value xml:space="preserve">The entry {0} has an invalid game, please enter a valid game (short gamename, gamename or id)</value>
+  </data>
 </root>

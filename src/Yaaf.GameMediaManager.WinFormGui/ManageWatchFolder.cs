@@ -39,14 +39,14 @@ namespace Yaaf.GameMediaManager.WinFormGui
             InitializeComponent();
         }
 
-        void wrapperTableCopy_DeletedRow(object sender, WatchFolder args)
+        void wrapperTableCopy_DeletedRow(object sender, WrapperDataTable.DeletedRowData<WatchFolder> args)
         {
-            wrapperTableCopy.get_CopyItemToOriginal(args).Game = null;
+            wrapperTableCopy.get_CopyItemToOriginal(args.CopyItem).Game = null;
         }
 
-        void wrapperTableCopy_UserAddedRow(object sender, WatchFolder args)
+        void wrapperTableCopy_UserAddedRow(object sender, WrapperDataTable.UserAddedRowData<WatchFolder> args)
         {
-            args.MyGame = game;
+            args.OriginalItem.MyGame = game;
         }
 
 

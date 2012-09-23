@@ -63,16 +63,14 @@ namespace Yaaf.GameMediaManager.WinFormGui
             matchmediaDataCopy = matchmediaData.Clone();
             playersData = sessionData.Item2;
             playersDataCopy = playersData.Clone();
-            playersDataCopy.ItemChanged += playersDataCopy_ItemChanged;
-            playersDataCopy.DeletedRow += playersDataCopy_DeletedRow;
             this.session = session;
             this.matchEndMode = matchEndMode;
             InitializeComponent();
         }
 
-        void playersDataCopy_DeletedRow(object sender, MatchSessions_Player args)
+        void playersDataCopy_DeletedRow(object sender, WrapperDataTable.DeletedRowData<MatchSessions_Player> args)
         {
-            var originalPlayer = playersDataCopy.get_CopyItemToOriginal(args);
+            var originalPlayer = playersDataCopy.get_CopyItemToOriginal(args.CopyItem);
             var count = (from matchmediaCopy in matchmediaDataCopy.CopyLinqData
                          let original = matchmediaDataCopy.get_CopyItemToOriginal(matchmediaCopy)
                          where original.MyMatchSessionsPlayer == originalPlayer
@@ -88,9 +86,9 @@ namespace Yaaf.GameMediaManager.WinFormGui
         public bool? DeleteMatchmedia { get; private set; }
 
         private void playersDataCopy_ItemChanged(
-            object sender, Tuple<MatchSessions_Player, MatchSessions_Player, FSharpRef<bool>> tuple)
+            object sender, WrapperDataTable.ItemChangedData<MatchSessions_Player> tuple)
         {
-            var copyItem = tuple.Item2;
+            var copyItem = tuple.Items.Copy;
 
             var changedCopyItem = false;
             if (copyItem.Player.MyId != 0)
@@ -135,7 +133,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
             if (changedCopyItem)
             {
-                tuple.Item3.Value = true;
+                tuple.ChangedCopy.Value = true;
             }
         }
 
@@ -189,14 +187,14 @@ namespace Yaaf.GameMediaManager.WinFormGui
             SetNewWrapper(value);
         }
 
-        private void value_UserAddedRow(object sender, Matchmedia media)
+        private void value_UserAddedRow(object sender, WrapperDataTable.UserAddedRowData<Matchmedia> media)
         {
-            media.PlayerId = primaryPlayer.PlayerId;
+            media.OriginalItem.PlayerId = primaryPlayer.PlayerId;
         }
 
-        private void value_InitRow(object sender, Matchmedia media)
+        private void value_InitRow(object sender, WrapperDataTable.InitRowData<Matchmedia> media)
         {
-            media.Created = DateTime.Now;
+            media.CopyOrTempItem.Created = DateTime.Now;
         }
 
         private void SetNewWrapper(WrapperMatchmediaTable value)
@@ -241,10 +239,12 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 Skill.DisplayMember = "name";
 
                 matchnameTextBox.Text = session.Name;
-                matchSessionsPlayerBindingSource.DataSource = playersDataCopy.SourceTable;
                 linkLabel.Text = session.EslMatchLink;
+                playersDataCopy.ItemChanged += playersDataCopy_ItemChanged;
+                playersDataCopy.DeletedRow += playersDataCopy_DeletedRow;
                 playersDataCopy.InitRow += playersDataCopy_InitRow;
                 playersDataCopy.UserAddedRow += playersDataCopy_UserAddedRow;
+                matchSessionsPlayerBindingSource.DataSource = playersDataCopy.SourceTable;
                 matchTagsTextBox.Text = session.MyTags;
             }
             catch (Exception ex)
@@ -254,15 +254,15 @@ namespace Yaaf.GameMediaManager.WinFormGui
             }
         }
 
-        void playersDataCopy_UserAddedRow(object sender, MatchSessions_Player args)
+        void playersDataCopy_UserAddedRow(object sender, WrapperDataTable.UserAddedRowData<MatchSessions_Player> args)
         {
-            args.MyMatchSession = session;
+            args.OriginalItem.MyMatchSession = session;
         }
         
-        private void playersDataCopy_InitRow(object sender, MatchSessions_Player player)
+        private void playersDataCopy_InitRow(object sender, WrapperDataTable.InitRowData<MatchSessions_Player> player)
         {
-            player.MyTeam = PlayerTeam.Team1;
-            player.MySkill = PlayerSkill.Mid;
+            player.CopyOrTempItem.MyTeam = PlayerTeam.Team1;
+            player.CopyOrTempItem.MySkill = PlayerSkill.Mid;
         }
 
         private void saveButton_Click(object sender, EventArgs e)

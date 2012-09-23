@@ -242,7 +242,11 @@ type ReplayWirePlugin() =
                     | Some s -> s
                     | None -> null 
                 member x.DeleteMatchSession (db, delFiles,session) = 
-                    Database.removeSession db.Context delFiles session }
+                    Database.removeSession db.Context delFiles session
+                member x.GetGame (db, nameOrId) =
+                    match Database.getGameByName db.Context nameOrId with
+                    | Some s -> s
+                    | None -> null }
         { new IFSharpInterop with
             member x.GetMatchmediaPath media = 
                 Database.mediaPath media

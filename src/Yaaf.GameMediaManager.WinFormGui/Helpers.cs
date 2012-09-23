@@ -174,10 +174,54 @@
                         targetPlayer.MySkill = sourcePlayer.MySkill;
                         targetPlayer.Cheating = sourcePlayer.Cheating;
                     });
-            table.DeletedRow += (sender, args) => { args.Player = null; };
+            table.DeletedRow += (sender, args) => { args.CopyItem.Player = null; };
             return table;
         }
 
+        public static WrapperDataTable.WrapperTable<MatchSession> GetWrapper(this IEnumerable<MatchSession> matchSessions)
+        {
+            var createColumns =
+                new Func<IEnumerable<DataColumn>>(
+                    () => new[] {
+                            new DataColumn("Name", typeof(string)), new DataColumn("Tags", typeof(string)),
+                            new DataColumn("Game", typeof(string)), new DataColumn("StartDate", typeof(DateTime)),
+                            new DataColumn("Duration", typeof(TimeSpan))
+                        });
+            WrapperDataTable.WrapperTable<MatchSession> table = null;
+            table = matchSessions.CreateTable(
+                createColumns,
+                (initOriginal) => new MatchSession() { MyGame = new Game() { Name = "Unknown", Shortname = "unknown" }, Startdate = DateTime.Now },
+                (session, row) =>
+                {
+                    row["Name"] = session.Name.ConvertValueToDb();
+                    row["Tags"] = session.MyTags.ConvertValueToDb();
+                    row["Game"] = session.MyGame.Name.ConvertValueToDb();
+                    row["StartDate"] = session.Startdate.ConvertValueToDb();
+                    row["Duration"] = TimeSpan.FromSeconds(session.Duration).ConvertValueToDb();
+                },
+                (row, session) =>
+                {
+                    session.Name = row["Name"].ConvertValueBack("");
+                    session.MyTags = row["Tags"].ConvertValueBack("");
+                    session.MyGame.Name = row["Game"].ConvertValueBack("unknown");
+                    session.Startdate = row["StartDate"].ConvertValueBack(new DateTime());
+                    session.Duration = (int)row["Duration"].ConvertValueBack(new TimeSpan()).TotalSeconds;
+                },
+                (isOriginal, targetSession, sourceSession) =>
+                {
+                    targetSession.Name = sourceSession.Name;
+                    targetSession.MyTags = sourceSession.MyTags;
+                    if (!isOriginal)
+                    {
+                        targetSession.MyGame.Name = sourceSession.MyGame.Name;
+                    }
+                    targetSession.Startdate = sourceSession.Startdate;
+                    targetSession.Duration = sourceSession.Duration;
+
+                });
+            table.DeletedRow += (sender, args) => { args.CopyItem.MyGame = null; };
+            return table;
+        }
         public static WrapperDataTable.WrapperTable<Matchmedia> GetWrapper(IEnumerable<Matchmedia> medias)
         {
             return

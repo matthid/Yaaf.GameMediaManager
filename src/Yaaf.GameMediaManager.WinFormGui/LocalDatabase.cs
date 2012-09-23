@@ -146,11 +146,14 @@ namespace Yaaf.GameMediaManager.WinFormGui.Database
         
         private bool isOriginal;
 
+        private Game myGame;
+
         partial void OnLoaded()
         {
             if (Id != 0)
             {
                 SetOriginal();
+                myGame = Game;
             }
         }
 
@@ -218,6 +221,23 @@ namespace Yaaf.GameMediaManager.WinFormGui.Database
                         matchSessionsTag.MatchSession.MatchSessions_Tag.Remove(matchSessionsTag);
                         currentContext.MatchSessions_Tags.DeleteOnSubmit(matchSessionsTag);
                     }
+                }
+            }
+        }
+
+
+        public Game MyGame
+        {
+            get
+            {
+                return myGame;
+            }
+            set
+            {
+                myGame = value;
+                if (isOriginal)
+                {
+                    Game = myGame;
                 }
             }
         }

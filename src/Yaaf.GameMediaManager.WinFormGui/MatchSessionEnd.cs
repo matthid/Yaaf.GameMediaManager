@@ -15,6 +15,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
     using Microsoft.FSharp.Control;
     using Microsoft.FSharp.Core;
 
+    using Yaaf.GameMediaManager.Primitives;
     using Yaaf.GameMediaManager.WinFormGui.Database;
 
     using WrapperMatchmediaTable = Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>;
@@ -88,9 +89,9 @@ namespace Yaaf.GameMediaManager.WinFormGui
             }
         }
 
-        void playerTableCopy_UserAddedRow(object sender, MatchSessions_Player args)
+        void playerTableCopy_UserAddedRow(object sender, WrapperDataTable.UserAddedRowData<MatchSessions_Player> args)
         { // can't happen actually.
-            args.MyMatchSession = session;
+            args.OriginalItem.MyMatchSession = session;
         }
 
         private void saveMatchmediaButton_Click(object sender, EventArgs e)

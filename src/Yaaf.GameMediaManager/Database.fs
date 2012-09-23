@@ -81,6 +81,29 @@ module Database =
                     if a.Id = id then
                         yield a } @>
     
+    let getGameByName (db:Context) nameOrId = 
+        let item = 
+            tryGetSingle
+                <@ seq {
+                    for a in db.Games do
+                        if a.Name = nameOrId then
+                            yield a } @>
+        match item with
+        | Some game -> Some game
+        | None ->
+            let item = 
+                tryGetSingle
+                    <@ seq {
+                        for a in db.Games do
+                            if a.Shortname = nameOrId then
+                                yield a } @>
+            match item with
+            | Some game -> Some game
+            | None ->
+                match System.Int32.TryParse nameOrId with
+                | false, _ -> None
+                | true, id -> getGame db id
+
     let findEslMatch (db:Context) link = 
         tryGetSingle
             <@ seq {

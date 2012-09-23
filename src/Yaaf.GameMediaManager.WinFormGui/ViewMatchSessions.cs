@@ -13,6 +13,8 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
     using Yaaf.GameMediaManager.Primitives;
     using Yaaf.GameMediaManager.WinFormGui.Database;
+    using Yaaf.GameMediaManager.WinFormGui.Properties;
+
     using WrapperMatchmediaTable = Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>;
     using WrapperPlayerTable = Primitives.WrapperDataTable.WrapperTable<Database.MatchSessions_Player>;
     using SessionData = Tuple<Primitives.WrapperDataTable.WrapperTable<Database.Matchmedia>, Primitives.WrapperDataTable.WrapperTable<Database.MatchSessions_Player>>;
@@ -35,7 +37,10 @@ namespace Yaaf.GameMediaManager.WinFormGui
             this.SetupForm(logger);
             try
             {
-                matchSessionBindingSource.DataSource = context.Context.MatchSessions;
+                copyMatchSessionsTable = context.Context.MatchSessions.GetWrapper();
+                copyMatchSessionsTable.ItemChanged += copyMatchSessionsTable_ItemChanged;
+                matchSessionBindingSource.DataSource = copyMatchSessionsTable.SourceTable;
+                matchSessionDataGridView.Sort(matchSessionDataGridView.Columns["startdateDataGridViewTextBoxColumn"], ListSortDirection.Descending);
             }
             catch(Exception ex)
             {
@@ -43,13 +48,35 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 Close();
             }
         }
+
+        void copyMatchSessionsTable_ItemChanged(object sender, WrapperDataTable.ItemChangedData<MatchSession> args)
+        {
+            var copyItem = args.Items.Copy;
+            var enteredName = copyItem.MyGame.Name;
+
+            // Try to find the game
+            var game = FSharpInterop.Interop.Database.GetGame(context, enteredName);
+            if (game != null)
+            {
+                copyItem.MyGame.Name = game.Name;
+                args.Items.Original.MyGame = game; // Save here because we only commit on save
+                args.ChangedCopy.Value = true;
+            }
+        }
+
         private Dictionary<MatchSession, SessionData> sessionData = new Dictionary<MatchSession, SessionData>();
+
+        private WrapperDataTable.WrapperTable<MatchSession> copyMatchSessionsTable;
+
         private void matchSessionDataGridView_DoubleClick(object sender, EventArgs e)
         {
             try
             {
-                var selectedSession = (MatchSession)matchSessionBindingSource.Current;
-                if (selectedSession == null) return;
+                var selectedRow = (DataRowView)matchSessionBindingSource.Current;
+                if (selectedRow == null) return;
+                var selectedSessionCopy = copyMatchSessionsTable.GetCopyItem(selectedRow.Row);
+                if (selectedSessionCopy.IsNone()) return;
+                var selectedSession = copyMatchSessionsTable.GetItem(selectedRow.Row);
                 SessionData wrapperTable;
                 if (!sessionData.TryGetValue(selectedSession, out wrapperTable))
                 {
@@ -61,6 +88,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
                 var editForm = new EditMatchSession(logger, context, wrapperTable, selectedSession, false);
                 editForm.ShowDialog();
+                copyMatchSessionsTable.UpdateItem(selectedSession, selectedSession);
             }
             catch (Exception ex)
             {
@@ -72,7 +100,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
         {
             try
             {
-                var selectedSession = (MatchSession)matchSessionBindingSource.Current;
+                var selectedSession = (DataRowView)matchSessionBindingSource.Current;
                 if (selectedSession == null) return;
             }
             catch (Exception ex)
@@ -85,6 +113,21 @@ namespace Yaaf.GameMediaManager.WinFormGui
         {
             try
             {
+                var invalidItem = (from copy in copyMatchSessionsTable.CopyLinqData
+                                   let orig = copyMatchSessionsTable.get_CopyItemToOriginal(copy)
+                                   where context.Context.Games.GetOriginalEntityState(orig.MyGame) == null
+                                   select copy).FirstOrDefault();
+                if (invalidItem != null)
+                {
+                    MessageBox.Show(
+                        string.Format(
+                            Resources.ViewMatchSessions_saveButton_Click_The_entry__0__has_an_invalid_game__please_enter_a_valid_game__short_gamename__gamename_or_id_, 
+                            invalidItem));
+                    return;
+                }
+
+                copyMatchSessionsTable.UpdateTable(context.Context.MatchSessions);
+
                 foreach (var wrapperTables in sessionData.Values)
                 {
                     var mediaTable = wrapperTables.Item1;
