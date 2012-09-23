@@ -150,6 +150,10 @@ module SessionOperations =
         let watcher, game = data.Watcher, data.Game
         watcher.EndGameWatching()
         let matchSession = data.MatchSession 
+        
+        let elapsedTime = int (System.DateTime.Now - session.StartTime).TotalSeconds
+        matchSession.Duration <- elapsedTime
+
         let me = Database.getIdentityPlayer db
         watcher.FoundMedia
             |> Seq.mapi  
