@@ -377,23 +377,25 @@ module Database =
         fillWrapperTable matchSession players wrapper medias
         db.UpdateMatchSessionPlayerTable(wrapper)
 
+    let removeMatchmedia (db:Context) deleteFile (matchmedia:Database.Matchmedia) = 
+        if deleteFile && File.Exists matchmedia.Path then
+            File.Delete matchmedia.Path
+        matchmedia.MatchSessions_Player.Player.Matchmedia.Remove matchmedia |> ignore
+            
+        if db.Matchmedias.GetOriginalEntityState(matchmedia) <> null then
+            db.Matchmedias.DeleteOnSubmit matchmedia
+
+        for tag in System.Collections.Generic.List<_> matchmedia.Matchmedia_Tag do
+            matchmedia.Matchmedia_Tag.Remove tag |> ignore
+            tag.Tag.Matchmedia_Tag.Remove tag |> ignore
+                
+            if db.Matchmedia_Tags.GetOriginalEntityState(tag) <> null then
+                db.Matchmedia_Tags.DeleteOnSubmit tag
 
     let removeSession (db:Context) deleteFiles (matchSession:Database.MatchSession) = 
         for matchmedia in System.Collections.Generic.List<_> matchSession.Matchmedia do
-            if deleteFiles && File.Exists matchmedia.Path then
-                File.Delete matchmedia.Path
+            removeMatchmedia db deleteFiles matchmedia
             matchSession.Matchmedia.Remove matchmedia |> ignore
-            matchmedia.MatchSessions_Player.Player.Matchmedia.Remove matchmedia |> ignore
-            
-            if db.Matchmedias.GetOriginalEntityState(matchmedia) <> null then
-                db.Matchmedias.DeleteOnSubmit matchmedia
-
-            for tag in System.Collections.Generic.List<_> matchmedia.Matchmedia_Tag do
-                matchmedia.Matchmedia_Tag.Remove tag |> ignore
-                tag.Tag.Matchmedia_Tag.Remove tag |> ignore
-                
-                if db.Matchmedia_Tags.GetOriginalEntityState(tag) <> null then
-                    db.Matchmedia_Tags.DeleteOnSubmit tag
                 
 
         for player in System.Collections.Generic.List<_> matchSession.MatchSessions_Player do

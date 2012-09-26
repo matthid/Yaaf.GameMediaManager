@@ -1,5 +1,8 @@
 ﻿// Weitere Informationen zu F# unter "http://fsharp.net".
 
-printf "%O"
-    (Yaaf.GameMediaManager.EslGrabber.getMatchMembers "http://www.esl.eu/eu/wire/anti-cheat/css/anticheat_test/match/26077222/"
-    |> Async.RunSynchronously)
+TestRunner.runtests
+    (DatabaseTests.tests
+     |> Seq.append EslGrabberTests.tests)
+
+System.Console.ReadLine() |> ignore
+    

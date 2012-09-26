@@ -24,6 +24,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
         Game GetGame(LocalDatabaseWrapper context, string nameOrId);
 
         void DeleteMatchSession(LocalDatabaseWrapper context, bool deleteFiles, MatchSession session);
+        void DeleteMatchmedia(LocalDatabaseWrapper context, bool deleteFile, Matchmedia matchmedia);
     }
 
     public interface IFSharpInterop

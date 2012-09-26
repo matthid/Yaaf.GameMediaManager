@@ -246,7 +246,9 @@ type ReplayWirePlugin() =
                 member x.GetGame (db, nameOrId) =
                     match Database.getGameByName db.Context nameOrId with
                     | Some s -> s
-                    | None -> null }
+                    | None -> null 
+                member x.DeleteMatchmedia (db,delFile, media) =
+                    Database.removeMatchmedia db.Context delFile media }
         { new IFSharpInterop with
             member x.GetMatchmediaPath media = 
                 Database.mediaPath media

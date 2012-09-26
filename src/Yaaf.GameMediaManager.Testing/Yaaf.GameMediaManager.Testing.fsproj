@@ -42,12 +42,25 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestRunner.fs" />
+    <Compile Include="EslGrabberTests.fs" />
+    <Compile Include="DatabaseTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Yaaf.GameMediaManager.Primitives.CSharp\Yaaf.GameMediaManager.Primitives.CSharp.csproj">
+      <Name>Yaaf.GameMediaManager.Primitives.CSharp</Name>
+      <Project>{ce3e2ac2-3e44-46c5-9539-cb201ec19b94}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Yaaf.GameMediaManager.Primitives\Yaaf.GameMediaManager.Primitives.fsproj">
       <Name>Yaaf.GameMediaManager.Primitives</Name>
       <Project>{94a3c463-e692-450d-9fe6-8688610eccbc}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Yaaf.GameMediaManager.WinFormGui\Yaaf.GameMediaManager.WinFormGui.csproj">
+      <Name>Yaaf.GameMediaManager.WinFormGui</Name>
+      <Project>{e138ffd4-1a33-458e-a93c-1d8373756c86}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Yaaf.GameMediaManager\Yaaf.GameMediaManager.fsproj">

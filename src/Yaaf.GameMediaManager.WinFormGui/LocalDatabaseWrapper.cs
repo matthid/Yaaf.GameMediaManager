@@ -176,6 +176,12 @@ namespace Yaaf.GameMediaManager.WinFormGui
                     {
                         matchmedia.MatchSessions_Player = matchmedia.MyMatchSessionsPlayer;
                     }
+                }
+
+                matchmedias = changes.Deletes.Select(o => o as Matchmedia).Where(o => o != null).Cache();
+                foreach (var matchmedia in matchmedias)
+                {
+                    FSharpInterop.Interop.Database.DeleteMatchmedia(this, true, matchmedia);
                 } 
 
                 // Update WatchFolders
