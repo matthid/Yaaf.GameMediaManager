@@ -29,6 +29,11 @@ module HelperFunctions
             Async.AwaitEvent(e, cancelFun)
 
     module Seq =
+        let last (s: _ seq) = 
+            match s |> Seq.fold (fun _ item -> Some item) None with
+            | Some s -> s
+            | None -> failwith "No last item found!"
+
         /// Returns the first n items of s. If there are fewer items then alls are returned.
         let tryTake (n : int) (s : _ seq) =
             s 

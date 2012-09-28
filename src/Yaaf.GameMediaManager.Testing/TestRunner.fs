@@ -6,31 +6,42 @@
     type TestOptions = {
         Writer : ConsoleColor -> string -> unit}
     type TestResults = {
+        Time : TimeSpan
         Failure : exn option
         }
     type Test = {
         Name : string
+        Finished : IEvent<TestResults>
+        SetFinished : TestResults -> unit
         TestFunc : TestOptions -> Async<TestResults> }
 
-    let createTest name f = {
-        Name = name 
-        TestFunc = 
-            (fun options -> async {
-                try
-                    do! f options
-                    return { Failure = None }
-                with exn ->
-                    return { Failure = Some exn }})}
+    let createTest name f =  
+        let ev = new Event<TestResults>()
+        {
+            Name = name 
+            Finished = ev.Publish
+            SetFinished = (fun res -> ev.Trigger res)
+            TestFunc = 
+                (fun options -> async {
+                    let watch = System.Diagnostics.Stopwatch.StartNew()
+                    try
+                        do! f options
+                        watch.Stop()
+                        return { Failure = None; Time = watch.Elapsed }
+                    with exn ->
+                        watch.Stop()
+                        return { Failure = Some exn; Time = watch.Elapsed }
+                    })}
 
     let simpleTest name f = 
         createTest name (fun options -> f options.Writer)
     
-    let mapResult mapping test = {
-        Name = test.Name 
-        TestFunc = 
-            (fun options -> async {
-                let! result = test.TestFunc options
-                return mapping result})}
+    let mapResult mapping test = 
+        { test with
+            TestFunc = 
+                (fun options -> async {
+                    let! result = test.TestFunc options
+                    return mapping result})}
 
     /// Test with expected exception testExn should return true wenn exception is expected
     let simpleTestExpectExn testExn name f =
@@ -57,17 +68,19 @@
 
 
     type WriterMessage = 
+        | NormalWrite of ConsoleColor * String
         | StartTask of AsyncReplyChannel<int> * String
         | WriteMessage of int * ConsoleColor * String
         | EndTask of int
 
-
     let writer = MailboxProcessor.Start (fun inbox -> 
         let currentTask = ref 0
-        let newHandle () = 
-            System.Threading.Interlocked.Increment currentTask
+        let newHandle (returnHandle:AsyncReplyChannel<int>) = 
+            let handle = System.Threading.Interlocked.Increment currentTask
+            returnHandle.Reply handle
+            handle 
         let rec loop tasks = async {
-            let! ret, newTasks =
+            let! newTasks =
                 match tasks with
                 | (t, name) :: next ->
                     inbox.Scan
@@ -75,52 +88,63 @@
                             match msg with
                             | EndTask (endTask) -> 
                                 if t = endTask then
-                                    Some (async { return None, next })
+                                    Some (async { return next })
                                 else None
                             | WriteMessage(writeTask, color, message) ->
                                 if writeTask = t then 
                                     Some (async {
                                         printColor color (sprintf "Task %s: %s" name message)
-                                        return None, tasks
+                                        return tasks
                                     })
                                 else None
                             | StartTask (returnHandle, name) -> 
-                                let handle = newHandle ()
-                                Some (async { return Some (returnHandle,handle), (List.append tasks [handle, name]) }))
+                                Some (async { 
+                                    let handle = newHandle returnHandle
+                                    return (List.append tasks [handle, name]) })
+                            | _ -> None)
                 | [] ->
                     inbox.Scan     
                         (fun msg -> 
                             match msg with
                             | StartTask (returnHandle, name) -> 
-                                let handle = newHandle ()
-                                Some (async { return Some (returnHandle,handle), [handle, name] })
+                                Some (async { 
+                                    let handle = newHandle returnHandle
+                                    return [handle, name] })
+                            | NormalWrite(color, message) ->
+                                Some (async {
+                                    printColor color message
+                                    return []
+                                })
                             | _ -> None)   
-            match ret with
-            | Some (r,handle) -> r.Reply handle
-            | None -> ()
+
             return! loop newTasks 
         }
         loop [])
+
+    let writerWrite color (text:String) = 
+        writer.Post(NormalWrite(color, text))
 
     let createTestWriter name f = async {
         let! handle = writer.PostAndAsyncReply(fun reply -> StartTask(reply, name))
         try
             let writer color s = 
                 writer.Post(WriteMessage(handle,color,s))
-            do! f(writer)
-        finally 
+            return! f(writer)
+        finally
             writer.Post (EndTask(handle))
         }
 
     let testRun t = async {
-        do! createTestWriter t.Name (fun writer -> async {
+        let! results = createTestWriter t.Name (fun writer -> async {
             writer ConsoleColor.Green (sprintf "started")
             let! results = t.TestFunc { Writer = writer }
             match results.Failure with
             | Some exn -> 
                 writer ConsoleColor.Red (sprintf "failed with %O" exn)
             | None ->
-                writer ConsoleColor.Green (sprintf "succeeded!")}) 
+                writer ConsoleColor.Green (sprintf "succeeded!")
+            return results}) 
+        t.SetFinished results
         }
 
     let runtests allTests = 
@@ -145,5 +169,34 @@
             }
             loop ())
 
-    let startTests test = 
-        for t in test do testRunner.Post t
+    let startTests tests = async {
+        let! results =
+            tests 
+                |> Seq.map (fun t ->
+                    let waiter = t.Finished |> Async.AwaitEvent
+                    testRunner.Post t
+                    waiter
+                   )
+                |> Async.Parallel
+        let testTime = 
+            results
+                |> Seq.map (fun res -> res.Time)
+                |> Seq.fold (fun state item -> state + item) TimeSpan.Zero
+        let failed = 
+            results
+                |> Seq.map (fun res -> res.Failure) 
+                |> Seq.filter (fun o -> o.IsSome)
+                |> Seq.length
+        let testCount = results.Length
+        if failed > 0 then
+            writerWrite ConsoleColor.DarkRed (sprintf "--- %d of %d TESTS FAILED (%A) ---" failed testCount testTime)
+        else
+            writerWrite ConsoleColor.DarkGray (sprintf "--- %d TESTS FINISHED SUCCESFULLY (%A) ---" testCount testTime)
+        }
+
+        
+//           
+//        let last = tests |> Seq.last
+//        last.Finished
+//            |> Event.add (fun t -> printColor ConsoleColor.Green "--- ALL TESTS FINISHED ---")
+//        for t in tests do
