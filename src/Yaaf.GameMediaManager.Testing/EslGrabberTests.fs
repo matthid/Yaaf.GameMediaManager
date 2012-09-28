@@ -5,7 +5,6 @@ open TestRunner
 let testLink link =
     Yaaf.GameMediaManager.EslGrabber.getMatchMembers link
     |> Async.Ignore
-    |> Async.RunSynchronously
 
 let tests = [
     // Some working links (links that should work)
@@ -18,7 +17,7 @@ let tests = [
         "SC2cup1on1", "http://www.esl.eu/eu/sc2/go4sc2/cup230/match/26964055/" // TODO: FAIL
         "CSGO2on2Cup", "http://www.esl.eu/de/csgo/cups/2on2/season_08/match/26854846/" // TODO: FAIL
         "CSSAwpCup", "http://www.esl.eu/eu/css/cups/2on2/awp_cup_11/match/26811005/"
-        ] |> Seq.map (fun (name, workingLink) -> test (sprintf "TestEslMatches_%s" name) (fun () -> testLink workingLink))
+        ] |> Seq.map (fun (name, workingLink) -> simpleTest (sprintf "TestEslMatches_%s" name) (fun o -> testLink workingLink))
          
 
     ]
