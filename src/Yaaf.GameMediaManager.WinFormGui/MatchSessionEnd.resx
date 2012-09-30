@@ -391,7 +391,7 @@
     <value>True</value>
   </data>
   <data name="linkLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>213, 52</value>
+    <value>213, 58</value>
   </data>
   <data name="linkLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>0, 13</value>
@@ -399,11 +399,14 @@
   <data name="linkLabel.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>
   </data>
+  <data name="linkLabel.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
   <data name="&gt;&gt;linkLabel.Name" xml:space="preserve">
     <value>linkLabel</value>
   </data>
   <data name="&gt;&gt;linkLabel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;linkLabel.Parent" xml:space="preserve">
     <value>$this</value>

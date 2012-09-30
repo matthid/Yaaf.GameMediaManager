@@ -30,20 +30,7 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            TryStart(ProjectConstants.GetLink(""));
-        }
-
-        private void TryStart(string link)
-        {
-            try
-            {
-                Process.Start(link);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, Resources.InfoForm_TryStart_Could_not_start_browser);
-                logger.LogError("{0}", e.ToString());
-            }
+            Helpers.TryStart(logger, ProjectConstants.GetLink(""));
         }
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -101,23 +88,23 @@ namespace Yaaf.GameMediaManager.WinFormGui
 
         private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            TryStart(ProjectConstants.GetLink("wiki"));
+            Helpers.TryStart(logger, ProjectConstants.GetLink("wiki"));
         }
 
         private void linkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var loc = Assembly.GetExecutingAssembly().Location;
-            TryStart(Path.Combine(Path.GetDirectoryName(loc), "Scripting"));
+            Helpers.TryStart(logger, Path.Combine(Path.GetDirectoryName(loc), "Scripting"));
         }
 
         private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            TryStart(ProjectConstants.GetLink("issues/new"));
+            Helpers.TryStart(logger, ProjectConstants.GetLink("issues/new"));
         }
 
         private void linkLabel6_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            TryStart("mailto:matthi.d@googlemail.com");
+            Helpers.TryStart(logger, "mailto:matthi.d@googlemail.com");
         }
 
         private void button1_Click(object sender, EventArgs e)

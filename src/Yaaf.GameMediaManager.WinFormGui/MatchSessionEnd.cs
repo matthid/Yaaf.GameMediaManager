@@ -78,7 +78,12 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 }
                 tagTextBox.Text = session.MyTags;
                 matchNameTextBox.Text = session.Name;
-                linkLabel.Text = session.EslMatchLink;
+                if (!string.IsNullOrEmpty(session.EslMatchLink))
+                {
+                    linkLabel.Text = session.EslMatchLink;
+                    linkLabel.Visible = true;
+                }
+
                 playerTableCopy.UserAddedRow += playerTableCopy_UserAddedRow;
                 matchmediaBindingSource.DataSource = matchmediaTableCopy.SourceTable;
             }
@@ -192,9 +197,13 @@ namespace Yaaf.GameMediaManager.WinFormGui
             try
             {
                 var players = Helpers.ShowLoadMatchDataDialog(logger, session.EslMatchLink);
-                FSharpInterop.Interop.FillWrapperTable(session, players.Item1, playerTableCopy, matchmediaTableCopy);
-                linkLabel.Text = players.Item2;
-                rememberCheckBox.Enabled = false;
+                if (players != null)
+                {
+                    FSharpInterop.Interop.FillWrapperTable(session, players.Item1, playerTableCopy, matchmediaTableCopy);
+                    linkLabel.Text = players.Item2;
+                    linkLabel.Visible = true;
+                    rememberCheckBox.Enabled = false;
+                }
             }
             catch (Exception ex)
             {
@@ -222,6 +231,11 @@ namespace Yaaf.GameMediaManager.WinFormGui
         private void matchmediaDataGridView_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
+        }
+
+        private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Helpers.TryStart(logger, linkLabel.Text);
         }
     }
 }

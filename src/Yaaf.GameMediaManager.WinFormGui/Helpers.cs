@@ -5,6 +5,7 @@
     using System.ComponentModel;
     using System.Data;
     using System.Data.Linq;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -12,6 +13,8 @@
 
     using Yaaf.GameMediaManager.Primitives;
     using Yaaf.GameMediaManager.WinFormGui.Database;
+    using Yaaf.GameMediaManager.WinFormGui.Properties;
+
     public static class Helpers
     {
          public static void ShowError (this Exception ex, Logging.LoggingInterfaces.ITracer logger, string message)
@@ -243,6 +246,19 @@
         {
             Logging.setupLogging(logger);
             form.Icon = Properties.Resources.reddragonIco;
+        }
+
+        public static void TryStart(Logging.LoggingInterfaces.ITracer tracer, string link)
+        {
+            try
+            {
+                Process.Start(link);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, Resources.InfoForm_TryStart_Could_not_start_browser);
+                tracer.LogError("{0}", e.ToString());
+            }
         }
     }
 }

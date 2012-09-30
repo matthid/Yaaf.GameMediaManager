@@ -45,7 +45,7 @@
             this.createdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.matchmediaBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.fetchMatchDatabutton = new System.Windows.Forms.Button();
-            this.linkLabel = new System.Windows.Forms.Label();
+            this.linkLabel = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.matchNameTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.matchmediaDataGridView)).BeginInit();
@@ -161,6 +161,7 @@
             // 
             resources.ApplyResources(this.linkLabel, "linkLabel");
             this.linkLabel.Name = "linkLabel";
+            this.linkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
             // 
             // label3
             // 
@@ -213,7 +214,7 @@
         private System.Windows.Forms.DataGridView matchmediaDataGridView;
         private System.Windows.Forms.BindingSource matchmediaBindingSource;
         private System.Windows.Forms.Button fetchMatchDatabutton;
-        private System.Windows.Forms.Label linkLabel;
+        private System.Windows.Forms.LinkLabel linkLabel;
         private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn Tags;
         private System.Windows.Forms.DataGridViewTextBoxColumn typeDataGridViewTextBoxColumn;

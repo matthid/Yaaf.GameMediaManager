@@ -239,7 +239,14 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 Skill.DisplayMember = "name";
 
                 matchnameTextBox.Text = session.Name;
-                linkLabel.Text = session.EslMatchLink;
+
+                if (!string.IsNullOrEmpty(session.EslMatchLink))
+                {
+                    linkLabel.Text = session.EslMatchLink;
+                    linkLabel.Visible = true;
+                }
+
+
                 playersDataCopy.ItemChanged += playersDataCopy_ItemChanged;
                 playersDataCopy.DeletedRow += playersDataCopy_DeletedRow;
                 playersDataCopy.InitRow += playersDataCopy_InitRow;
@@ -283,14 +290,6 @@ namespace Yaaf.GameMediaManager.WinFormGui
         {
             matchmediaDataCopy.ImportChanges(oldWrapper);
             matchmediaData.ImportChanges(matchmediaDataCopy);
-            //var playerData = from copyData in playersDataCopy.CopyLinqData
-            //                 let row = playersDataCopy.get_CopyItemToRow(copyData)
-            //                 let original = playersDataCopy.GetItem(row)
-            //                 select original;
-            //foreach (var p in playerData)
-            //{
-            //    p.MatchSession = session;
-            //}
 
             if (matchnameTextBox.Text.Length > 100)
             {
@@ -408,16 +407,25 @@ namespace Yaaf.GameMediaManager.WinFormGui
             try
             {
                 var players = Helpers.ShowLoadMatchDataDialog(logger, session.EslMatchLink);
-                matchmediaDataCopy.ImportChanges(oldWrapper);
-                oldWrapper = null;
-                FSharpInterop.Interop.FillWrapperTable(session, players.Item1, playersDataCopy, matchmediaDataCopy);
-                linkLabel.Text = players.Item2;
-                RefreshMatchmediaView();
+                if (players != null)
+                {
+                    matchmediaDataCopy.ImportChanges(oldWrapper);
+                    oldWrapper = null;
+                    FSharpInterop.Interop.FillWrapperTable(session, players.Item1, playersDataCopy, matchmediaDataCopy);
+                    linkLabel.Text = players.Item2;
+                    linkLabel.Visible = true;
+                    RefreshMatchmediaView();
+                }
             }
             catch (Exception ex)
             {
                 ex.ShowError(logger, "Could not load data");
             }
+        }
+
+        private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Helpers.TryStart(logger, linkLabel.Text);
         }
     }
 }
