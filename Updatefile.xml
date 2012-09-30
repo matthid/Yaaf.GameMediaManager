@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Versions>
+  
+  <Version VersionNumber="0.9.3.3" CanBeSkipped="true" Message="some bugfixes" >
+    <FileUrl Source="Github">https://github.com/downloads/matthid/Yaaf.GameMediaManager/GameMediaManager.%200.9.3.3.wireplugin</FileUrl>
+  </Version>
   <Version VersionNumber="0.9.3.2" CanBeSkipped="true" Message="some bugfixes" >
     <FileUrl Source="Github">https://github.com/downloads/matthid/Yaaf.GameMediaManager/GameMediaManager.%200.9.3.2.wireplugin</FileUrl>
   </Version>

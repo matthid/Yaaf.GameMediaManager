@@ -13,7 +13,7 @@ namespace Yaaf.GameMediaManager
     {
         public const string DatabaseSchemaVersionString = "1.1.1.0";
         public static readonly Version DatabaseSchemaVersion = new Version(DatabaseSchemaVersionString);
-        public const string VersionString = "0.9.3.2";
+        public const string VersionString = "0.9.3.3";
 
         public static readonly Version ProjectVersion = new Version(VersionString);
 
