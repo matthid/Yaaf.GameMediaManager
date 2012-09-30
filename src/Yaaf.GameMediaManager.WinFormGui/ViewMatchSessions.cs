@@ -87,6 +87,8 @@ namespace Yaaf.GameMediaManager.WinFormGui
                 }
 
                 var editForm = new EditMatchSession(logger, context, wrapperTable, selectedSession, false);
+                selectedRow.EndEdit();
+                copyMatchSessionsTable.ImportChangesToOriginal(selectedSession, selectedSessionCopy.Value);
                 editForm.ShowDialog();
                 copyMatchSessionsTable.UpdateItem(selectedSession, selectedSession);
             }
