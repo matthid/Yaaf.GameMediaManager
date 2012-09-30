@@ -96,7 +96,10 @@ namespace Yaaf.GameMediaManager.WinFormGui.Database
                     {
                         playertag.Player.Player_Tag.Remove(playertag);
                         playertag.Tag.Player_Tag.Remove(playertag);
-                        currentContext.Player_Tags.DeleteOnSubmit(playertag);
+                        if (currentContext.Player_Tags.GetOriginalEntityState(playertag) != null)
+                        {
+                            currentContext.Player_Tags.DeleteOnSubmit(playertag);
+                        }
                     }
                 }
             }
@@ -219,7 +222,10 @@ namespace Yaaf.GameMediaManager.WinFormGui.Database
                     {
                         matchSessionsTag.Tag.MatchSessions_Tag.Remove(matchSessionsTag);
                         matchSessionsTag.MatchSession.MatchSessions_Tag.Remove(matchSessionsTag);
-                        currentContext.MatchSessions_Tags.DeleteOnSubmit(matchSessionsTag);
+                        if (currentContext.MatchSessions_Tags.GetOriginalEntityState(matchSessionsTag) != null)
+                        {
+                            currentContext.MatchSessions_Tags.DeleteOnSubmit(matchSessionsTag);
+                        }
                     }
                 }
             }
@@ -328,7 +334,10 @@ namespace Yaaf.GameMediaManager.WinFormGui.Database
                     {
                         tagToRemove.Matchmedia.Matchmedia_Tag.Remove(tagToRemove);
                         tagToRemove.Tag.Matchmedia_Tag.Remove(tagToRemove);
-                        currentContext.Matchmedia_Tags.DeleteOnSubmit(tagToRemove);
+                        if (currentContext.Matchmedia_Tags.GetOriginalEntityState(tagToRemove) != null)
+                        {
+                            currentContext.Matchmedia_Tags.DeleteOnSubmit(tagToRemove);
+                        }
                     }
                 }
             }
