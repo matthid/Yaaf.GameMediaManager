@@ -81,9 +81,18 @@ module EslGrabber =
     let getTeamMembers team teamLink = async {
         let! matchDocument = loadHtmlDocument teamLink
         let playerNodes = matchDocument.GetElementbyId "main_content"
+        let nodes = 
+            let firstTry = (playerNodes.SelectNodes "./div[4]/div[5]/table/tr/td[2]/div")
+            if (firstTry = null) then
+                // Example http://www.esl.eu/de/csgo/cups/2on2/season_08/team/7077167/
+                (playerNodes.SelectNodes "./div[4]/div[5]/table/tr/td/table/tr/td/table/tr/td[2]/a[2]")
+                |> Seq.cast
+            else
+                firstTry.Descendants "a"
+        if nodes = null then
+            invalidOp (sprintf "Could not find nodes in main_content (link: %s)" teamLink)
         return!
-            (playerNodes.SelectNodes "./div[4]/div[5]/table/tr/td[2]/div")
-            .Descendants "a"
+            nodes
             |> Seq.map getLinkAndNickFromNode
             |> Seq.filter (fun (link, nick) -> not <| link.Contains "playercard")
             //|> Seq.map (fun (link, node) -> link, )
@@ -97,7 +106,7 @@ module EslGrabber =
         let getTeamLink team nodeString = 
             let teamLink = teamLinkNodes.SelectSingleNode nodeString
             let teamOrPlayerlink,nick = getLinkAndNickFromNode teamLink
-            if link.Contains "/1on1/" then
+            if teamOrPlayerlink.Contains "/player/" then // 1on1 
                 async {
                     let! player = getPlayerFromLink team nick teamOrPlayerlink
                     return [| player |]

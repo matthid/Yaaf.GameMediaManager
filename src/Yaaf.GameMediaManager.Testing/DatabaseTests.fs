@@ -1,11 +1,13 @@
 ﻿module DatabaseTests
-
+open System
 open TestRunner
+
+let crashTest s = null
+
 let tests = [
 
-
     yield! 
-        [1..1000]
+        [1..50]
         |> Seq.map (fun i ->
             simpleTest
                 (sprintf "Test_%d" i) 
@@ -13,10 +15,11 @@ let tests = [
                     o System.ConsoleColor.Yellow "Before"
                     //do! Async.Sleep (1000*(i%5))
                     let childTask childId = async {
-                        if (i%11 = 1) then
-                            failwith "child failed!"
-                        o System.ConsoleColor.Yellow "Child_Before"
-                        System.Threading.Thread.Sleep 50
+                            return!
+                                ((crashTest "blub"):System.String)
+                                .ToLowerInvariant()
+                                |> Seq.map (fun c -> async { return c })
+                                |> Async.Parallel
                         } 
                     do!
                         Seq.init 10 (fun i -> childTask i)

@@ -164,7 +164,7 @@
         startParallelMailbox 10 (fun inbox ->
             let rec loop () = async {
                 let! test = inbox.Receive()
-                do! testRun test
+                do! testRun test 
                 return! loop()
             }
             loop ())
@@ -176,7 +176,7 @@
                     let waiter = t.Finished |> Async.AwaitEvent
                     testRunner.Post t
                     waiter
-                   )
+                    )
                 |> Async.Parallel
         let testTime = 
             results
