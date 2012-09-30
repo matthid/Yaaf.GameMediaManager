@@ -1,3 +1,6 @@
+30.09.2012 Version 0.9.3.3
+ - Fixed a designer produced graphical bug
+
 30.09.2012 Version 0.9.3.2
  - Fixed a Bug in parsing some team links
  - Fixed "Can't delete matchmedias with tags" bug
