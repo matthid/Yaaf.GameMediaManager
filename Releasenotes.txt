@@ -1,3 +1,10 @@
+30.09.2012 Version 0.9.3.2
+ - Fixed a Bug in parsing some team links
+ - Fixed "Can't delete matchmedias with tags" bug
+ - Fixed a bug where edits got lost (still not perfect)
+ - Fixed a bug with editing tags
+ - Matchlinks are now clickable
+
 23.09.2012 Version 0.9.3.1
  - Fixed duration not calculated correctly
  - Fixed display issue with matchmedia
